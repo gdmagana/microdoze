@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://c1jhp8cwiqypt"]
+
+[ext_resource type="Script" uid="uid://bfciwee2uiwpv" path="res://ice_cube.gd" id="1_dhjbd"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_bt24t"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dhjbd"]
+size = Vector2(99, 108)
+
+[node name="IceCube" type="StaticBody2D"]
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("1_dhjbd")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(12, 3.49999)
+scale = Vector2(74, 123)
+texture = SubResource("PlaceholderTexture2D_bt24t")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_dhjbd")

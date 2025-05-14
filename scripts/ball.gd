@@ -1,5 +1,7 @@
 extends RigidBody2D
 
+@export var canBreak := false
+
 @export var initial_speed := 300.0
 @export var min_speed := 100.0
 @export var max_lateral_speed := 400.0
@@ -30,7 +32,7 @@ func _physics_process(_delta):
 	# Always keep the total velocity normalized to the current speed
 	linear_velocity = linear_velocity.normalized() * max(speed, min_speed)
 
-func bounce_off_paddle(paddle_velocity: Vector2):
+func bounce_off_paddle(paddle_velocity: Vector2 = Vector2.ZERO):
 	# Reflect the Y axis
 	linear_velocity.y = -abs(linear_velocity.y)
 	

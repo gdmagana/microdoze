@@ -1,6 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://c0taanyjcfsqx"]
+[gd_scene load_steps=4 format=3 uid="uid://c56tdwek10dmn"]
 
-[ext_resource type="Script" path="res://ball.gd" id="1_gk6bx"]
+[ext_resource type="Script" uid="uid://cd0xx83h25033" path="res://scripts/ball.gd" id="1_gk6bx"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_pa54t"]
 

@@ -1,14 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://co02mpd30ym25"]
+[gd_scene load_steps=5 format=3 uid="uid://c1jhp8cwiqypt"]
 
-[ext_resource type="Script" path="res://ice_cube.gd" id="1_dhjbd"]
+[ext_resource type="Script" uid="uid://bfciwee2uiwpv" path="res://scripts/ice_cube.gd" id="1_dhjbd"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_bt24t"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dhjbd"]
-size = Vector2(68.75, 117)
+size = Vector2(78, 127)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_34cs0"]
-size = Vector2(88, 137)
+size = Vector2(78, 127)
 
 [node name="IceCube" type="StaticBody2D"]
 collision_mask = 256
@@ -20,13 +20,12 @@ scale = Vector2(74, 123)
 texture = SubResource("PlaceholderTexture2D_bt24t")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(10.625, 2.5)
+position = Vector2(12, 3.5)
 shape = SubResource("RectangleShape2D_dhjbd")
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_mask = 256
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-visible = false
 position = Vector2(12, 3.5)
 shape = SubResource("RectangleShape2D_34cs0")

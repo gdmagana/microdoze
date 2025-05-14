@@ -1,7 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://cfgx0gmg12t5j"]
+[gd_scene load_steps=7 format=3 uid="uid://b7mu1034wh12b"]
 
-[ext_resource type="Script" path="res://player.gd" id="1_xhfnw"]
-[ext_resource type="Script" path="res://stick.gd" id="2_kpjcp"]
+[ext_resource type="Script" uid="uid://c42nmw6pvf0vi" path="res://scripts/player.gd" id="1_xhfnw"]
+[ext_resource type="Script" uid="uid://qeipi7vrr5j6" path="res://scripts/stick.gd" id="2_kpjcp"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_xhfnw"]
 
@@ -27,6 +27,7 @@ shape = SubResource("CircleShape2D_xhfnw")
 
 [node name="Stick" type="Area2D" parent="."]
 collision_layer = 2
+collision_mask = 257
 script = ExtResource("2_kpjcp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stick"]

@@ -40,7 +40,7 @@ func _physics_process(delta):
 	position.x = clamp(position.x, 0, screen_width)
 	
 	# Stick logic
-	if Input.is_action_just_pressed("ui_accept") and not is_stick_pushing:
+	if (Input.is_action_just_pressed("ui_accept") or Input.is_action_just_pressed("ui_up")) and not is_stick_pushing:
 		is_stick_pushing = true
 		stick_push_timer = stick_push_duration
 	if is_stick_pushing:

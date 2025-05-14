@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://co02mpd30ym25"]
 
-[ext_resource type="Script" path="res://ice_cube.gd" id="1_dhjbd"]
+[ext_resource type="Script" uid="uid://bfciwee2uiwpv" path="res://scripts/ice_cube.gd" id="1_dhjbd"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_bt24t"]
 

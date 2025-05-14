@@ -19,28 +19,17 @@ size = Vector2(915.5, 89.5)
 [node name="Player" parent="." instance=ExtResource("1_glv2v")]
 position = Vector2(330, 1181)
 
-[node name="IcePuck" parent="."]
-_import_path = NodePath("")
-unique_name_in_owner = false
-process_mode = 0
-process_priority = 0
-process_physics_priority = 0
-process_thread_group = 0
-physics_interpolation_mode = 0
-auto_translate_mode = 0
-editor_description = ""
-visible = false
-position = Vector2(213.861, 491.151)
-script = null
-
 [node name="IceCube" parent="." instance=ExtResource("2_cm0pq")]
 position = Vector2(621, 135)
+script = null
 
 [node name="Ball" parent="." instance=ExtResource("3_r0du0")]
 position = Vector2(275, 185)
+script = null
 
 [node name="Ball2" parent="." instance=ExtResource("3_r0du0")]
 position = Vector2(442, 408)
+script = null
 
 [node name="Node" type="Node" parent="."]
 

@@ -44,7 +44,7 @@ func _physics_process(delta):
 	
 	# Update position manually
 	var new_x = position.x + dx * delta
-	print("new_x: " + str(new_x))
+
 	if (new_x - hitbox_radius <= 0):
 		new_x = 0 + hitbox_radius
 		dx = 0
@@ -57,10 +57,6 @@ func _physics_process(delta):
 		position.x = new_x
 	
 	position.x = clamp(position.x, 0, stage_width)
-	
-	print("radius: " + str($CollisionShape2D.shape.radius))
-	# 23.5624580383301 686.891906738281
-
 	
 	# Stick logic
 	if (Input.is_action_just_pressed("ui_accept") or Input.is_action_just_pressed("ui_up")) and not is_stick_pushing:

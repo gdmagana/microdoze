@@ -1,5 +1,10 @@
 extends CharacterBody2D
 
+@onready var health_ui = get_tree().get_current_scene().get_node("HUD/HealthUI")
+
+# Player Health
+@export var health := 3
+
 # Player Movement
 @export var acceleration := 800.0
 @export var friction := 600.0
@@ -17,6 +22,9 @@ var stage_width
 
 func _ready():
 	stage_width = get_viewport_rect().size.x
+	health_ui.update_health(health)
+	print("Player ready")
+	$Hitbox.connect("body_entered", Callable(self, "_on_hitbox_body_entered"))
 
 func _physics_process(delta):
 	var input_direction := 0
@@ -75,8 +83,7 @@ func _physics_process(delta):
 	
 	move_and_slide()
 
-
-
-func _on_area_entered(area):
-	if area.is_in_group("pucks"):
-		print("Hit!")
+func _on_hitbox_body_entered(body):
+	if body.is_in_group("pucks"):
+		health -= 1
+		health_ui.update_health(health)

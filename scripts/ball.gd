@@ -31,13 +31,3 @@ func _physics_process(_delta):
 
 	# Always keep the total velocity normalized to the current speed
 	linear_velocity = linear_velocity.normalized() * max(speed, min_speed)
-
-func bounce_off_paddle(paddle_velocity: Vector2 = Vector2.ZERO):
-	# Reflect the Y axis
-	linear_velocity.y = -abs(linear_velocity.y)
-	
-	# Optionally add paddle influence
-	linear_velocity.x += paddle_velocity.x * 0.3
-
-	# Normalize to keep constant speed
-	linear_velocity = linear_velocity.normalized() * speed

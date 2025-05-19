@@ -5,14 +5,15 @@
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_pa54t"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gk6bx"]
-radius = 44.0114
+radius = 49.0102
 
-[node name="Ball" type="RigidBody2D"]
-collision_layer = 256
-collision_mask = 259
+[node name="Ball" type="RigidBody2D" groups=["pucks"]]
+collision_layer = 261
+collision_mask = 263
 mass = 0.536
 linear_velocity = Vector2(50, 50)
 script = ExtResource("1_gk6bx")
+canBreak = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(1, 1.90735e-06)

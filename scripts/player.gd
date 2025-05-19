@@ -12,6 +12,12 @@ var stick_push_timer := 0.0
 var stick_push_duration := 0.15  # seconds
 var is_stick_pushing := false
 
+# Stage
+var stage_width
+
+func _ready():
+	stage_width = get_viewport_rect().size.x
+
 func _physics_process(delta):
 	var input_direction := 0
 	if Input.is_action_pressed("ui_left"):
@@ -31,13 +37,30 @@ func _physics_process(delta):
 
 	# Clamp max speed
 	dx = clamp(dx, -max_speed, max_speed)
-
+	
+	# Player Hitbox
+	var hitbox = $CollisionShape2D.shape
+	var hitbox_radius = hitbox.radius
+	
 	# Update position manually
-	position.x += dx * delta
+	var new_x = position.x + dx * delta
+	print("new_x: " + str(new_x))
+	if (new_x - hitbox_radius <= 0):
+		new_x = 0 + hitbox_radius
+		dx = 0
+		
+	elif (new_x + hitbox_radius >= stage_width):
+		new_x = stage_width - hitbox_radius
+		dx = 0
+		
+	else:
+		position.x = new_x
+	
+	position.x = clamp(position.x, 0, stage_width)
+	
+	print("radius: " + str($CollisionShape2D.shape.radius))
+	# 23.5624580383301 686.891906738281
 
-	# keep the player on screen
-	var screen_width = get_viewport_rect().size.x
-	position.x = clamp(position.x, 0, screen_width)
 	
 	# Stick logic
 	if (Input.is_action_just_pressed("ui_accept") or Input.is_action_just_pressed("ui_up")) and not is_stick_pushing:

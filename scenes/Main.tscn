@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://bhbf48fir0ikx"]
+[gd_scene load_steps=8 format=3 uid="uid://bhbf48fir0ikx"]
 
 [ext_resource type="PackedScene" uid="uid://b7mu1034wh12b" path="res://scenes/Player.tscn" id="1_glv2v"]
 [ext_resource type="PackedScene" uid="uid://c1jhp8cwiqypt" path="res://scenes/IceCube.tscn" id="2_cm0pq"]
 [ext_resource type="PackedScene" uid="uid://c56tdwek10dmn" path="res://scenes/Ball.tscn" id="3_r0du0"]
+[ext_resource type="PackedScene" uid="uid://drb605l5hvpfw" path="res://scenes/ice_cream_boss.tscn" id="4_rarhs"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_uu6xs"]
 friction = 0.0
@@ -61,3 +62,6 @@ physics_material_override = SubResource("PhysicsMaterial_uu6xs")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Node/WallRight"]
 position = Vector2(763, 643)
 shape = SubResource("RectangleShape2D_r0du0")
+
+[node name="IceCreamBoss" parent="." instance=ExtResource("4_rarhs")]
+position = Vector2(348, 275)

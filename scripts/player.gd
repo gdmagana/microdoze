@@ -75,11 +75,14 @@ func _physics_process(delta):
 		if stick_push_timer < 0:
 			is_stick_pushing = false
 			
-	var stick_offset := Vector2(50,0) * last_direction
+# Stick position offset and flip
+	var stick_offset := Vector2(50, 0) * last_direction
 	if is_stick_pushing:
 		stick_offset += Vector2(0, -25)
-	
+
 	$Stick.position = stick_offset
+	$Stick.scale.x = last_direction  # Flip the stick sprite to face correct side
+
 	
 	move_and_slide()
 

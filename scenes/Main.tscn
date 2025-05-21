@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://bhbf48fir0ikx"]
+[gd_scene load_steps=9 format=3 uid="uid://bhbf48fir0ikx"]
 
 [ext_resource type="PackedScene" uid="uid://b7mu1034wh12b" path="res://scenes/Player.tscn" id="1_glv2v"]
+[ext_resource type="Texture2D" uid="uid://du4d4rqryad3h" path="res://assets/freezer/snow_texture.jpg" id="1_vcsgt"]
 [ext_resource type="PackedScene" uid="uid://c1jhp8cwiqypt" path="res://scenes/IceCube.tscn" id="2_cm0pq"]
 [ext_resource type="PackedScene" uid="uid://c56tdwek10dmn" path="res://scenes/Ball.tscn" id="3_r0du0"]
 [ext_resource type="PackedScene" uid="uid://bsdi5day054n2" path="res://scenes/HealthUI.tscn" id="4_rarhs"]
@@ -16,6 +17,11 @@ size = Vector2(86, 1370)
 size = Vector2(915.5, 89.5)
 
 [node name="Node2D" type="Node2D"]
+
+[node name="SnowTexture" type="Sprite2D" parent="."]
+position = Vector2(387, -2998)
+scale = Vector2(1.86688, 3.52576)
+texture = ExtResource("1_vcsgt")
 
 [node name="HUD" type="CanvasLayer" parent="."]
 

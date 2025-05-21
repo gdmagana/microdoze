@@ -1,20 +1,24 @@
-[gd_scene load_steps=8 format=3 uid="uid://b7mu1034wh12b"]
+[gd_scene load_steps=10 format=3 uid="uid://b7mu1034wh12b"]
 
 [ext_resource type="Script" uid="uid://c42nmw6pvf0vi" path="res://scripts/player.gd" id="1_xhfnw"]
 [ext_resource type="Script" uid="uid://qeipi7vrr5j6" path="res://scripts/stick.gd" id="2_kpjcp"]
+[ext_resource type="Texture2D" uid="uid://cgh1cok0km66j" path="res://assets/freezer/helmet.png" id="2_mdl7e"]
+[ext_resource type="Texture2D" uid="uid://cr106ydl1b4j0" path="res://assets/ui/stick.png" id="3_3li8b"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_xhfnw"]
-radius = 35.0
+radius = 56.0089
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_xhfnw"]
+[sub_resource type="AnimatedTexture" id="AnimatedTexture_qu4a1"]
+frame_0/texture = ExtResource("2_mdl7e")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kpjcp"]
-size = Vector2(77, 17.5)
+size = Vector2(218.169, 35.4094)
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_xhfnw"]
+[sub_resource type="AnimatedTexture" id="AnimatedTexture_mdl7e"]
+frame_0/texture = ExtResource("3_3li8b")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_v6fml"]
-radius = 38.0
+radius = 55.0364
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 4
@@ -26,8 +30,8 @@ shape = SubResource("CircleShape2D_xhfnw")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-4.76837e-07, -0.499998)
-scale = Vector2(0.128906, 0.130859)
-texture = SubResource("NoiseTexture2D_xhfnw")
+scale = Vector2(0.109, 0.111)
+texture = SubResource("AnimatedTexture_qu4a1")
 
 [node name="Stick" type="Area2D" parent="."]
 collision_layer = 2
@@ -35,12 +39,15 @@ collision_mask = 257
 script = ExtResource("2_kpjcp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stick"]
+position = Vector2(-1.14641, 0.616975)
+rotation = -0.31765
 shape = SubResource("RectangleShape2D_kpjcp")
 
 [node name="Sprite2D" type="Sprite2D" parent="Stick"]
 position = Vector2(0.5, 1)
-scale = Vector2(67, 12)
-texture = SubResource("PlaceholderTexture2D_xhfnw")
+rotation = -0.31765
+scale = Vector2(0.2, 0.036)
+texture = SubResource("AnimatedTexture_mdl7e")
 
 [node name="Hitbox" type="Area2D" parent="."]
 collision_layer = 4

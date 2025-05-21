@@ -1,3 +1,11 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+.vscode/
+.vscode/*
+
+.DS_Store
+**/.godot/
+**/android/
+**/.vscode/
+**/.DS_Store

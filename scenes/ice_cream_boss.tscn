@@ -8,6 +8,8 @@
 size = Vector2(419, 293)
 
 [node name="IceCreamBoss" type="Area2D"]
+collision_layer = 0
+collision_mask = 0
 script = ExtResource("1_q3t3g")
 projectile_scene = ExtResource("2_1hgda")
 

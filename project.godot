@@ -24,6 +24,7 @@ window/size/viewport_height=1280
 
 2d_physics/layer_1="Environment"
 2d_physics/layer_2="Player"
+2d_physics/layer_4="Projectiles"
 2d_physics/layer_9="Props"
 
 [rendering]

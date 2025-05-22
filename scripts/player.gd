@@ -12,6 +12,13 @@ var stick_push_timer := 0.0
 var stick_push_duration := 0.15  # seconds
 var is_stick_pushing := false
 
+func _ready():
+	add_to_group("player")
+	$Stick.add_to_group("player_stick")
+
+func take_damage():
+	print("Player hurt!")
+
 func _physics_process(delta):
 	var input_direction := 0
 	if Input.is_action_pressed("ui_left"):

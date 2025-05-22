@@ -15,5 +15,4 @@ func _on_ball_hit(ball: Node2D):
 		if health <= 0:
 			ball.linear_velocity.y = -abs(ball.linear_velocity.y)
 			ball.linear_velocity = ball.linear_velocity * 1.5
-			
 			queue_free()

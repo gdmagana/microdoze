@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://drb605l5hvpfw"]
+
+[ext_resource type="Texture2D" uid="uid://by8xod6wb7ohy" path="res://assets/sprites/ice cream.png" id="1_51paf"]
+[ext_resource type="Script" uid="uid://bh2kvdma1guj7" path="res://scripts/ice_cream_boss.gd" id="1_q3t3g"]
+[ext_resource type="PackedScene" uid="uid://chkrln0i73kui" path="res://scenes/projectile_ice_cube.tscn" id="2_1hgda"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1vifr"]
+size = Vector2(419, 293)
+
+[node name="IceCreamBoss" type="Area2D"]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("1_q3t3g")
+projectile_scene = ExtResource("2_1hgda")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(7, -3)
+scale = Vector2(0.803191, 0.744681)
+texture = ExtResource("1_51paf")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(7.5, -55.5)
+shape = SubResource("RectangleShape2D_1vifr")
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true

@@ -24,10 +24,17 @@ var stick_rotation_max := -0.5  # Maximum rotation in radians
 var stage_width
 
 func _ready():
+	add_to_group("player")
+	$Stick.add_to_group("player_stick")
 	stage_width = get_viewport_rect().size.x
 	health_ui.update_health(health)
 	print("Player ready")
-	$Hitbox.connect("body_entered", Callable(self, "_on_hitbox_body_entered"))
+	$Hitbox.connect("body_entered", Callable(self, "_on_hitbox_body_entered"))	
+
+func take_damage():
+	print("Player hurt!")
+	health -= 1
+	health_ui.update_health(health)
 
 func _physics_process(delta):
 	var input_direction := 0
@@ -99,6 +106,5 @@ func _physics_process(delta):
 	move_and_slide()
 
 func _on_hitbox_body_entered(body):
-	if body.is_in_group("pucks"):
-		health -= 1
-		health_ui.update_health(health)
+	if body.is_in_group("pucks") or body.is_in_group(""):
+		take_damage()

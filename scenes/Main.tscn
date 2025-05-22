@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://bhbf48fir0ikx"]
+[gd_scene load_steps=10 format=3 uid="uid://bhbf48fir0ikx"]
 
 [ext_resource type="PackedScene" uid="uid://b7mu1034wh12b" path="res://scenes/Player.tscn" id="1_glv2v"]
 [ext_resource type="Texture2D" uid="uid://du4d4rqryad3h" path="res://assets/freezer/snow_texture.jpg" id="1_vcsgt"]
 [ext_resource type="PackedScene" uid="uid://c1jhp8cwiqypt" path="res://scenes/IceCube.tscn" id="2_cm0pq"]
 [ext_resource type="PackedScene" uid="uid://c56tdwek10dmn" path="res://scenes/Ball.tscn" id="3_r0du0"]
-[ext_resource type="PackedScene" uid="uid://bsdi5day054n2" path="res://scenes/HealthUI.tscn" id="4_rarhs"]
+[ext_resource type="PackedScene" uid="uid://drb605l5hvpfw" path="res://scenes/ice_cream_boss.tscn" id="4_rarhs"]
+[ext_resource type="PackedScene" path="res://scenes/HealthUI.tscn" id="5_healthui"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_uu6xs"]
 friction = 0.0
@@ -25,7 +26,7 @@ texture = ExtResource("1_vcsgt")
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
-[node name="HealthUI" parent="HUD" instance=ExtResource("4_rarhs")]
+[node name="HealthUI" parent="HUD" instance=ExtResource("5_healthui")]
 
 [node name="Player" parent="." instance=ExtResource("1_glv2v")]
 position = Vector2(330, 1181)
@@ -72,3 +73,6 @@ physics_material_override = SubResource("PhysicsMaterial_uu6xs")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Node/WallRight"]
 position = Vector2(763, 643)
 shape = SubResource("RectangleShape2D_r0du0")
+
+[node name="IceCreamBoss" parent="." instance=ExtResource("4_rarhs")]
+position = Vector2(348, 275)

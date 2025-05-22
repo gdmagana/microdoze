@@ -10,6 +10,8 @@ extends CharacterBody2D
 @export var friction := 600.0
 @export var max_speed := 500.0
 var dx := 0.0
+var is_frozen := false
+var frozen_timer := 0.0
 
 # Stick
 var last_direction := 1  # 1 = right, -1 = left
@@ -35,8 +37,21 @@ func take_damage():
 	print("Player hurt!")
 	health -= 1
 	health_ui.update_health(health)
+	
+func freeze():
+	is_frozen = true
+	frozen_timer = 2.0  # seconds
+	$Sprite2D.modulate = Color(0.5, 0.5, 1.0)  # light blue
+	
 
 func _physics_process(delta):
+	if is_frozen:
+		frozen_timer -= delta
+		if frozen_timer <= 0:
+			is_frozen = false
+			$Sprite2D.modulate = Color(1, 1, 1)  # back to normal
+		return  # skip movement while frozen
+		
 	var input_direction := 0
 	if Input.is_action_pressed("ui_left"):
 		input_direction -= 1

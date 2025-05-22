@@ -1,6 +1,7 @@
 extends Area2D
 
 var velocity = Vector2.ZERO
+var canHurtBoss = false
 
 func _ready():
 	connect("body_entered", Callable(self, "_on_body_entered"))
@@ -18,4 +19,9 @@ func _on_body_entered(body):
 func _on_area_entered(area):
 	# if the ice cube is hit by the stick, be hit back
 	if area.is_in_group("player_stick"):
+		canHurtBoss = true
 		velocity = -velocity
+	elif area.is_in_group("boss"):
+		if canHurtBoss:
+			area.take_damage()
+			queue_free()

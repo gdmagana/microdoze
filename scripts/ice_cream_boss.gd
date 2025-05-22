@@ -6,8 +6,12 @@ extends Area2D
 var player: Node2D
 
 func _ready():
+	add_to_group("boss")
 	player = get_tree().get_current_scene().find_child("Player", true, false)
 	$Timer.timeout.connect(_on_Timer_timeout)
+	
+func take_damage():
+	print("Ice cream boss hurt!") 
 	
 func _on_Timer_timeout():
 	if player:

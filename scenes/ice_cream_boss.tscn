@@ -1,8 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://drb605l5hvpfw"]
+[gd_scene load_steps=7 format=3 uid="uid://cbbvng4r76oex"]
 
 [ext_resource type="Texture2D" uid="uid://by8xod6wb7ohy" path="res://assets/sprites/ice cream.png" id="1_51paf"]
 [ext_resource type="Script" uid="uid://bh2kvdma1guj7" path="res://scripts/ice_cream_boss.gd" id="1_q3t3g"]
 [ext_resource type="PackedScene" uid="uid://chkrln0i73kui" path="res://scenes/projectile_ice_cube.tscn" id="2_1hgda"]
+[ext_resource type="PackedScene" uid="uid://cevktclg1pfkk" path="res://scenes/IceCreamScoop.tscn" id="3_xrgnj"]
+[ext_resource type="PackedScene" uid="uid://cbb2ytbvuoo7c" path="res://scenes/Icicle.tscn" id="4_rmwav"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1vifr"]
 size = Vector2(419, 293)
@@ -11,7 +13,9 @@ size = Vector2(419, 293)
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("1_q3t3g")
-projectile_scene = ExtResource("2_1hgda")
+projectile_ice_cube_scene = ExtResource("2_1hgda")
+projectile_ice_cream_scoop = ExtResource("3_xrgnj")
+projectile_icicle = ExtResource("4_rmwav")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(7, -3)

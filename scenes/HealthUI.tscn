@@ -1,0 +1,43 @@
+[gd_scene load_steps=8 format=3 uid="uid://bsdi5day054n2"]
+
+[ext_resource type="Texture2D" uid="uid://bqpr2g6brdixj" path="res://assets/ui/m1_full.png" id="1_7ok5m"]
+[ext_resource type="Script" uid="uid://b0tp4q4spq8x2" path="res://scripts/health_ui.gd" id="1_n5v8r"]
+[ext_resource type="Texture2D" uid="uid://bihuwprnkvvnm" path="res://assets/ui/m2_full.png" id="2_n5v8r"]
+[ext_resource type="Texture2D" uid="uid://bitmdsckanqn6" path="res://assets/ui/m3_full.png" id="3_tpp0q"]
+[ext_resource type="Texture2D" uid="uid://yealr3riuen2" path="res://assets/ui/m1_outline.png" id="5_l7tsm"]
+[ext_resource type="Texture2D" uid="uid://b7fepjvxmhp8b" path="res://assets/ui/m2_outline.png" id="6_ptri2"]
+[ext_resource type="Texture2D" uid="uid://dycqlgbd4108r" path="res://assets/ui/m3_outline.png" id="7_74onp"]
+
+[node name="HealthUI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+scale = Vector2(0.1, 0.1)
+script = ExtResource("1_n5v8r")
+full_mushrooms = Array[Texture2D]([ExtResource("1_7ok5m"), ExtResource("2_n5v8r"), ExtResource("3_tpp0q")])
+empty_mushrooms = Array[Texture2D]([ExtResource("5_l7tsm"), ExtResource("6_ptri2"), ExtResource("7_74onp")])
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/separation = 10
+alignment = 2
+
+[node name="Mushroom1" type="TextureRect" parent="HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("1_7ok5m")
+stretch_mode = 5
+
+[node name="Mushroom2" type="TextureRect" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("2_n5v8r")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Mushroom3" type="TextureRect" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("3_tpp0q")
+expand_mode = 3
+stretch_mode = 5

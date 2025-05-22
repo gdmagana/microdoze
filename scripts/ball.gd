@@ -4,6 +4,7 @@ extends RigidBody2D
 
 @export var initial_speed := 300.0
 @export var min_speed := 100.0
+@export var max_speed := 800.0  # Maximum allowed speed
 @export var max_lateral_speed := 400.0
 @export var min_lateral_speed := 80.0
 @export var lateral_damp := 0.98
@@ -15,6 +16,12 @@ func _ready():
 	# Launch in a random direction
 	var angle = randf_range(-PI / 4, -3 * PI / 4)  # upward
 	linear_velocity = Vector2(cos(angle), sin(angle)) * initial_speed
+
+func accelerate(multiplier: float):
+	# Update the ball's speed with the multiplier
+	speed = min(speed * multiplier, max_speed)
+	# Immediately apply the new speed while maintaining direction
+	linear_velocity = linear_velocity.normalized() * speed
 
 func _physics_process(_delta):
 	# Enforce minimum vertical speed only
@@ -31,13 +38,3 @@ func _physics_process(_delta):
 
 	# Always keep the total velocity normalized to the current speed
 	linear_velocity = linear_velocity.normalized() * max(speed, min_speed)
-
-func bounce_off_paddle(paddle_velocity: Vector2 = Vector2.ZERO):
-	# Reflect the Y axis
-	linear_velocity.y = -abs(linear_velocity.y)
-	
-	# Optionally add paddle influence
-	linear_velocity.x += paddle_velocity.x * 0.3
-
-	# Normalize to keep constant speed
-	linear_velocity = linear_velocity.normalized() * speed

@@ -21,7 +21,7 @@ frame_0/texture = ExtResource("3_3li8b")
 radius = 55.0364
 
 [node name="Player" type="CharacterBody2D"]
-collision_layer = 4
+collision_layer = 2
 collision_mask = 0
 script = ExtResource("1_xhfnw")
 

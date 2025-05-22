@@ -2,18 +2,19 @@ extends CharacterBody2D
 
 @onready var health_ui = get_tree().get_current_scene().get_node("HUD/HealthUI")
 
-# Player Health
+# -- Player Health --
 @export var health := 3
 
-# Player Movement
+# -- Player Movement --
 @export var acceleration := 800.0
 @export var friction := 600.0
 @export var max_speed := 500.0
-var dx := 0.0
+
 var is_frozen := false
 var frozen_timer := 0.0
+var can_move_up := false
 
-# Stick
+# -- Stick --
 var last_direction := 1  # 1 = right, -1 = left
 var stick_push_timer := 0.0
 var stick_push_duration := 0.15  # seconds
@@ -22,20 +23,27 @@ var stick_base_offset := Vector2(50, 0)
 var stick_extended_offset := Vector2(50, -25)
 var stick_rotation_max := -0.5  # Maximum rotation in radians
 
-# Stage
+# -- Puck --
+@export var puck_scene: PackedScene
+@export var puck_speed := 700.0
+var can_shoot_puck = false
+
+# -- Stage Bounds --
 var stage_width
+var stage_height
 
 func _ready():
 	add_to_group("player")
 	$Stick.add_to_group("player_stick")
+	
 	stage_width = get_viewport_rect().size.x
+	stage_height = get_viewport_rect().size.y
+	
 	health_ui.update_health(health)
-	print("Player ready")
 	$Hitbox.connect("body_entered", Callable(self, "_on_hitbox_body_entered"))	
 
-func take_damage():
-	print("Player hurt!")
-	health -= 1
+func take_damage(amount := 1):
+	health -= amount
 	health_ui.update_health(health)
 	
 func freeze():
@@ -43,6 +51,21 @@ func freeze():
 	frozen_timer = 2.0  # seconds
 	$Sprite2D.modulate = Color(0.5, 0.5, 1.0)  # light blue
 	
+func bounce_back_from_wall(wall_pos):
+	var bounce_dir = (position - wall_pos).normalized()
+	velocity = bounce_dir * 400
+	
+func enable_vertical_movement():
+	can_move_up = true
+	
+func enable_puck_shooting():
+	can_shoot_puck = true
+	
+func shoot_puck():
+	var puck = puck_scene.instantiate()
+	get_parent().add_child(puck)
+	puck.global_position = $Stick.global_position
+	puck.velocity = Vector2(0, -puck_speed)
 
 func _physics_process(delta):
 	if is_frozen:
@@ -52,47 +75,58 @@ func _physics_process(delta):
 			$Sprite2D.modulate = Color(1, 1, 1)  # back to normal
 		return  # skip movement while frozen
 		
-	var input_direction := 0
+	var input_direction = Vector2.ZERO
 	if Input.is_action_pressed("ui_left"):
-		input_direction -= 1
+		input_direction.x -= 1
 	if Input.is_action_pressed("ui_right"):
-		input_direction += 1
+		input_direction.x += 1
+	if can_move_up:
+		if Input.is_action_pressed("ui_up"):
+			input_direction.y -= 1
+		if Input.is_action_pressed("ui_down"):
+			input_direction.y += 1
 
-	if input_direction != 0:
-		last_direction = sign(input_direction)
-		dx += input_direction * acceleration * delta
+	# -- Movement Physics --
+	# Horizontal
+	if input_direction.x != 0:
+		last_direction = sign(input_direction.x)
+		velocity.x += input_direction.x * acceleration * delta
 	else:
 		# Apply friction to gradually stop
-		if abs(dx) < friction * delta:
-			dx = 0
+		if abs(velocity.x) < friction * delta:
+			velocity.x = 0
 		else:
-			dx -= sign(dx) * friction * delta
-
-	# Clamp max speed
-	dx = clamp(dx, -max_speed, max_speed)
+			velocity.x -= sign(velocity.x) * friction * delta
+			
+	# clamp max horizontal speed
+	velocity.x = clamp(velocity.x, -max_speed, max_speed)
 	
-	# Player Hitbox
+	# Vertical
+	if can_move_up:
+		if input_direction.y != 0:
+			velocity.y += input_direction.y * acceleration * delta
+		else:
+			if abs(velocity.y) < friction * delta:
+				velocity.y = 0
+			else:
+				velocity.y -= sign(velocity.y) * friction * delta
+				
+			velocity.y = clamp(velocity.y, -max_speed, max_speed)
+	else:
+		velocity.y = 0
+
+	move_and_slide()
+	
+	# clamp player movement to screen bounds
+	position.x = clamp(position.x, 0, stage_width)
+	position.y = clamp(position.y, 0, stage_height)
+	
+	# -- Player Hitbox --
 	var hitbox = $CollisionShape2D.shape
 	var hitbox_radius = hitbox.radius
 	
-	# Update position manually
-	var new_x = position.x + dx * delta
-
-	if (new_x - hitbox_radius <= 0):
-		new_x = 0 + hitbox_radius
-		dx = 0
-		
-	elif (new_x + hitbox_radius >= stage_width):
-		new_x = stage_width - hitbox_radius
-		dx = 0
-		
-	else:
-		position.x = new_x
-	
-	position.x = clamp(position.x, 0, stage_width)
-	
-	# Stick logic
-	if (Input.is_action_just_pressed("ui_accept") or Input.is_action_just_pressed("ui_up")) and not is_stick_pushing:
+	# -- Stick logic --
+	if Input.is_action_just_pressed("ui_accept") and not is_stick_pushing:
 		is_stick_pushing = true
 		stick_push_timer = stick_push_duration
 	if is_stick_pushing:
@@ -118,7 +152,9 @@ func _physics_process(delta):
 	$Stick.rotation = rotation
 	$Stick.scale.x = last_direction  # Flip the stick sprite to face correct side
 	
-	move_and_slide()
+	# -- Puck Shooting --
+	if can_shoot_puck and Input.is_action_just_pressed("shoot_puck"):
+		shoot_puck()
 
 func _on_hitbox_body_entered(body):
 	if body.is_in_group("pucks") or body.is_in_group(""):

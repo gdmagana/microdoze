@@ -20,6 +20,7 @@ func _ready():
 func accelerate(multiplier: float):
 	# Update the ball's speed with the multiplier
 	speed = min(speed * multiplier, max_speed)
+	$"../audio/Yay1".play()
 	# Immediately apply the new speed while maintaining direction
 	linear_velocity = linear_velocity.normalized() * speed
 

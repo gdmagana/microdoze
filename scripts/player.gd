@@ -50,6 +50,7 @@ func freeze():
 	is_frozen = true
 	frozen_timer = 2.0  # seconds
 	$Sprite2D.modulate = Color(0.5, 0.5, 1.0)  # light blue
+	$"../audio/Pain1".play()
 	
 func bounce_back_from_wall(wall_pos):
 	var bounce_dir = (position - wall_pos).normalized()

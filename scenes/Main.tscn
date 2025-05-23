@@ -18,30 +18,31 @@ bounce = 1.0
 size = Vector2(86, 1370)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cm0pq"]
-size = Vector2(915.5, 89.5)
+size = Vector2(1254.75, 89.5)
 
 [node name="Node2D" type="Node2D"]
 
 [node name="SnowTexture" type="Sprite2D" parent="."]
-position = Vector2(387, -2998)
+position = Vector2(416, -2778)
 scale = Vector2(1.86688, 3.52576)
 texture = ExtResource("1_vcsgt")
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
 [node name="HealthUI" parent="HUD" instance=ExtResource("5_healthui")]
+metadata/_edit_use_anchors_ = true
 
 [node name="Player" parent="." instance=ExtResource("1_glv2v")]
-position = Vector2(330, 1181)
+position = Vector2(525, 1176)
 
 [node name="IceCube" parent="." instance=ExtResource("2_cm0pq")]
-position = Vector2(621, 135)
+position = Vector2(961, 135)
 
 [node name="Ball" parent="." instance=ExtResource("3_r0du0")]
-position = Vector2(275, 185)
+position = Vector2(202, 344)
 
 [node name="Ball2" parent="." instance=ExtResource("3_r0du0")]
-position = Vector2(442, 408)
+position = Vector2(755, 437)
 
 [node name="Node" type="Node" parent="."]
 
@@ -50,7 +51,7 @@ collision_layer = 2
 physics_material_override = SubResource("PhysicsMaterial_uu6xs")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Node/WallLeft"]
-position = Vector2(-43, 596)
+position = Vector2(-45, 635)
 shape = SubResource("RectangleShape2D_r0du0")
 
 [node name="WallTop" type="StaticBody2D" parent="Node"]
@@ -58,7 +59,7 @@ collision_layer = 2
 physics_material_override = SubResource("PhysicsMaterial_uu6xs")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Node/WallTop"]
-position = Vector2(360, -44)
+position = Vector2(529.625, -44)
 shape = SubResource("RectangleShape2D_cm0pq")
 
 [node name="WallFloor" type="StaticBody2D" parent="Node"]
@@ -66,7 +67,7 @@ collision_layer = 2
 physics_material_override = SubResource("PhysicsMaterial_uu6xs")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Node/WallFloor"]
-position = Vector2(371.75, 1326.25)
+position = Vector2(525, 1328)
 shape = SubResource("RectangleShape2D_cm0pq")
 
 [node name="WallRight" type="StaticBody2D" parent="Node"]
@@ -74,11 +75,11 @@ collision_layer = 2
 physics_material_override = SubResource("PhysicsMaterial_uu6xs")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Node/WallRight"]
-position = Vector2(763, 643)
+position = Vector2(1124, 645)
 shape = SubResource("RectangleShape2D_r0du0")
 
 [node name="IceCreamBoss" parent="." instance=ExtResource("4_rarhs")]
-position = Vector2(348, 275)
+position = Vector2(534, 268)
 
 [node name="audio" type="Node" parent="."]
 

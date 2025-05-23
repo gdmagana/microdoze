@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="MICRODOZE"
-run/main_scene="uid://bhbf48fir0ikx"
+run/main_scene="uid://du87sb7bhgow6"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 

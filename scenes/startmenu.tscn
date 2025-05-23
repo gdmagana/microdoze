@@ -1,0 +1,45 @@
+[gd_scene load_steps=2 format=3 uid="uid://du87sb7bhgow6"]
+
+[ext_resource type="Script" uid="uid://cve0bsiyjp674" path="res://control.gd" id="1_u4tt2"]
+
+[node name="StartMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 650.0
+offset_top = 336.0
+offset_right = 690.0
+offset_bottom = 376.0
+script = ExtResource("1_u4tt2")
+
+[node name="MicroDoze" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -13.425
+anchor_top = -6.15
+anchor_right = 8.325
+anchor_bottom = -0.4
+offset_right = -783.0
+offset_bottom = -207.0
+scale = Vector2(10, 10)
+text = "Microdoze"
+
+[node name="StartButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = -591.0
+offset_top = 369.0
+offset_right = -545.0
+offset_bottom = 400.0
+scale = Vector2(10, 10)
+text = "Start"
+
+[node name="QuitButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = -95.0
+offset_top = 372.0
+offset_right = -53.0
+offset_bottom = 403.0
+scale = Vector2(10, 10)
+text = "Quit"
+
+[connection signal="pressed" from="StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="QuitButton" to="." method="_on_quit_button_pressed"]

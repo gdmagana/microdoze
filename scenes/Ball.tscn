@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://c56tdwek10dmn"]
 
 [ext_resource type="Script" uid="uid://cd0xx83h25033" path="res://scripts/ball.gd" id="1_gk6bx"]
-[ext_resource type="Texture2D" uid="uid://dq6xg64qkei3v" path="res://assets/ui/puck.png" id="2_ja1hk"]
+[ext_resource type="Texture2D" uid="uid://ki5fresmje4l" path="res://assets/sprites/puck.png" id="2_ja1hk"]
 
 [sub_resource type="AnimatedTexture" id="AnimatedTexture_ul5l2"]
 frame_0/texture = ExtResource("2_ja1hk")
@@ -17,12 +17,10 @@ linear_velocity = Vector2(50, 50)
 script = ExtResource("1_gk6bx")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0.5, 1.90735e-06)
-scale = Vector2(0.059, 0.095)
+scale = Vector2(0.05, 0.05)
 texture = SubResource("AnimatedTexture_ul5l2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-1, -1)
 shape = SubResource("CircleShape2D_gk6bx")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

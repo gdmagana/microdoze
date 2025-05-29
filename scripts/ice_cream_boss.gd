@@ -24,6 +24,8 @@ func _on_body_entered(body):
 	if body.is_in_group("puck"):
 		# Use call_deferred to avoid changing physics state during physics processing
 		call_deferred("take_damage")
+		body.queue_free()
+		
 
 	if body.is_in_group("ice_cube"):
 		# If an ice cube hits the boss, take damage
@@ -39,10 +41,8 @@ func _on_Timer_timeout():
 
 		if random_number < 2:
 			# "throw" the icicle projectiles at the player
-			if random_number== 0:
-				projectile = projectile_ice_cube_scene.instantiate()
-			else:
-				projectile = projectile_icicle.instantiate()
+			
+			projectile = projectile_icicle.instantiate()
 			direction = (player.global_position - global_position).normalized()
 		else:
 			# "throw" the ice cream scoop at a random position
@@ -60,15 +60,13 @@ func _on_Timer_timeout():
 
 func take_damage(amount := 1):
 	hits_to_ice_wall_rage -= amount
-	
 	# Play damage sound if we can find one
 	# if get_node_or_null("../audio/Pain1") != null:
-	# 	$"../audio/Pain1".play()
-	# elif get_node_or_null("/root/Main/audio/Pain1") != null:
-	# 	$"/root/Main/audio/Pain1".play()
 	
 	# Flash red
 	damage_flash()
+	
+	# Do wave that kills nearby pucks??
 	
 	if not is_raging and hits_to_ice_wall_rage == 0:
 		rage()

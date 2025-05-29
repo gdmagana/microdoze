@@ -26,9 +26,6 @@ func _on_body_entered(body):
 		var collision_normal = (global_position - body.global_position).normalized()
 		linear_velocity = linear_velocity.bounce(collision_normal).normalized() * speed
 		
-		# Only destroy if allowed to break
-		if canBreak:
-			queue_free()
 
 func accelerate(multiplier: float):
 	# Update the ball's speed with the multiplier

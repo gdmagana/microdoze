@@ -1,12 +1,10 @@
 # Godot 4+ specific ignores
-.godot/
 /android/
 .vscode/
 .vscode/*
 .vscode/settings.json
 
 .DS_Store
-**/.godot/
 **/android/
 **/.vscode/
 **/.DS_Store

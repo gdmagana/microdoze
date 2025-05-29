@@ -6,7 +6,7 @@ func _ready():
 	connect("body_shape_entered", Callable(self, "_on_body_shape_entered"))
 
 func _on_body_shape_entered(body_id, body, body_shape_index, local_shape_index):
-	if body.is_in_group("balls"):
+	if body.is_in_group("puck"):
 		# Accelerate the ball
 		body.accelerate(hit_acceleration)
 		
@@ -15,3 +15,4 @@ func _on_body_shape_entered(body_id, body, body_shape_index, local_shape_index):
 		
 		# Allow the ball to break ice cubes after being hit
 		body.canBreak = true
+		

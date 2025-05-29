@@ -7,22 +7,22 @@
 frame_0/texture = ExtResource("2_ja1hk")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gk6bx"]
-radius = 49.0102
+radius = 32.0156
 
-[node name="Ball" type="RigidBody2D" groups=["pucks"]]
-collision_layer = 261
-collision_mask = 263
+[node name="Ball" type="RigidBody2D" groups=["puck", "pucks"]]
+collision_layer = 8
+collision_mask = 14
 mass = 0.536
 linear_velocity = Vector2(50, 50)
 script = ExtResource("1_gk6bx")
-canBreak = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(1, 1.90735e-06)
-scale = Vector2(0.1, 0.095)
+position = Vector2(0.5, 1.90735e-06)
+scale = Vector2(0.059, 0.095)
 texture = SubResource("AnimatedTexture_ul5l2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -1)
-scale = Vector2(1, 0.6)
+position = Vector2(-1, -1)
 shape = SubResource("CircleShape2D_gk6bx")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

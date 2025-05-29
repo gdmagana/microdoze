@@ -1,0 +1,13 @@
+res://scenes/Main.tscn
+res://scripts/puck.gd
+res://scripts/ice_cube.gd
+res://scripts/player.gd
+res://scripts/ball.gd
+res://scenes/ice_cream_boss.tscn
+res://scenes/puck.tscn
+res://scenes/Ball.tscn
+res://scripts/stick.gd
+res://scenes/projectile_ice_cube.tscn
+res://scripts/ice_cream_boss.gd
+res://scripts/projectile_ice_cube.gd
+res://scenes/Player.tscn

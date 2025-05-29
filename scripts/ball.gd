@@ -1,6 +1,6 @@
 extends RigidBody2D
 
-@export var canBreak := false
+@export var canBreak := true
 
 @export var initial_speed := 300.0
 @export var min_speed := 100.0
@@ -11,11 +11,24 @@ extends RigidBody2D
 @onready var speed := initial_speed
 
 func _ready():
-	add_to_group("balls")
+	add_to_group("puck")
 	gravity_scale = 0
 	# Launch in a random direction
 	var angle = randf_range(-PI / 4, -3 * PI / 4)  # upward
 	linear_velocity = Vector2(cos(angle), sin(angle)) * initial_speed
+
+func _on_body_entered(body):
+	if body.is_in_group("boss"):
+		if body.has_method("take_damage"):
+			body.take_damage()
+			
+		# Bounce off the boss by reflecting the velocity
+		var collision_normal = (global_position - body.global_position).normalized()
+		linear_velocity = linear_velocity.bounce(collision_normal).normalized() * speed
+		
+		# Only destroy if allowed to break
+		if canBreak:
+			queue_free()
 
 func accelerate(multiplier: float):
 	# Update the ball's speed with the multiplier

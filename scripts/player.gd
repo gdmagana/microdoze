@@ -14,6 +14,9 @@ var is_frozen := false
 var frozen_timer := 0.0
 var can_move_up := false
 
+var is_invulnerable := false
+var invulnerable_timer := 0.0
+
 # -- Stick --
 var last_direction := 1  # 1 = right, -1 = left
 var stick_push_timer := 0.0
@@ -26,7 +29,7 @@ var stick_rotation_max := -0.5  # Maximum rotation in radians
 # -- Puck --
 @export var puck_scene: PackedScene
 @export var puck_speed := 700.0
-var can_shoot_puck = false
+var can_shoot_puck = true
 
 # -- Stage Bounds --
 var stage_width
@@ -62,11 +65,14 @@ func enable_vertical_movement():
 func enable_puck_shooting():
 	can_shoot_puck = true
 	
+func disable_puck_shooting():
+	can_shoot_puck = false
+	
 func shoot_puck():
 	var puck = puck_scene.instantiate()
 	get_parent().add_child(puck)
 	puck.global_position = $Stick.global_position
-	puck.velocity = Vector2(0, -puck_speed)
+	
 
 func _physics_process(delta):
 	if is_frozen:
@@ -158,5 +164,5 @@ func _physics_process(delta):
 		shoot_puck()
 
 func _on_hitbox_body_entered(body):
-	if body.is_in_group("pucks") or body.is_in_group(""):
+	if body.is_in_group("puck") or body.is_in_group(""):
 		take_damage()

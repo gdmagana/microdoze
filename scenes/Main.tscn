@@ -1,8 +1,7 @@
-[gd_scene load_steps=13 format=3 uid="uid://bhbf48fir0ikx"]
+[gd_scene load_steps=12 format=3 uid="uid://bhbf48fir0ikx"]
 
 [ext_resource type="PackedScene" uid="uid://b7mu1034wh12b" path="res://scenes/Player.tscn" id="1_glv2v"]
 [ext_resource type="Texture2D" uid="uid://du4d4rqryad3h" path="res://assets/freezer/snow_texture.jpg" id="1_vcsgt"]
-[ext_resource type="PackedScene" uid="uid://c1jhp8cwiqypt" path="res://scenes/IceCube.tscn" id="2_cm0pq"]
 [ext_resource type="PackedScene" uid="uid://c56tdwek10dmn" path="res://scenes/Ball.tscn" id="3_r0du0"]
 [ext_resource type="PackedScene" uid="uid://drb605l5hvpfw" path="res://scenes/ice_cream_boss.tscn" id="4_rarhs"]
 [ext_resource type="PackedScene" uid="uid://bsdi5day054n2" path="res://scenes/HealthUI.tscn" id="5_healthui"]
@@ -35,14 +34,8 @@ metadata/_edit_use_anchors_ = true
 [node name="Player" parent="." instance=ExtResource("1_glv2v")]
 position = Vector2(525, 1176)
 
-[node name="IceCube" parent="." instance=ExtResource("2_cm0pq")]
-position = Vector2(961, 135)
-
 [node name="Ball" parent="." instance=ExtResource("3_r0du0")]
-position = Vector2(202, 344)
-
-[node name="Ball2" parent="." instance=ExtResource("3_r0du0")]
-position = Vector2(755, 437)
+position = Vector2(192, 883)
 
 [node name="Node" type="Node" parent="."]
 
@@ -85,12 +78,13 @@ position = Vector2(534, 268)
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="audio"]
 stream = ExtResource("7_nxtc6")
+volume_db = -80.0
 autoplay = true
 
 [node name="Pain1" type="AudioStreamPlayer" parent="audio"]
 stream = ExtResource("8_q8u5g")
-volume_db = -6.97
+volume_db = -27.5
 
 [node name="Yay1" type="AudioStreamPlayer" parent="audio"]
 stream = ExtResource("9_lhr70")
-volume_db = -4.2
+volume_db = -17.65

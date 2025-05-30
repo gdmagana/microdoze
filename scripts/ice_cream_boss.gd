@@ -8,6 +8,13 @@ extends Area2D
 @export var hits_to_ice_wall_rage := 3
 @export var damage_flash_duration := 0.3
 
+# Boss sprite textures for different health states
+@export_group("Boss Sprites")
+@export var sprite_full_health: Texture2D  # When hits_to_ice_wall_rage = 3
+@export var sprite_damaged_once: Texture2D  # When hits_to_ice_wall_rage = 2
+@export var sprite_damaged_twice: Texture2D  # When hits_to_ice_wall_rage = 1
+@export var sprite_raging: Texture2D  # When hits_to_ice_wall_rage = 0 (raging state)
+
 # randomness used for later
 var rng = RandomNumberGenerator.new()
 
@@ -22,6 +29,9 @@ func _ready():
 	player = get_tree().get_current_scene().find_child("Player", true, false)
 	$Timer.timeout.connect(_on_Timer_timeout)
 	connect("body_entered", Callable(self, "_on_body_entered"))
+	
+	# Initialize sprite based on current health
+	update_sprite_for_health_state()
 
 func _on_body_entered(body):
 	if body.is_in_group("puck"):
@@ -66,6 +76,9 @@ func take_damage(amount := 1):
 	# Play damage sound if we can find one
 	# if get_node_or_null("../audio/Pain1") != null:
 	
+	# Update sprite for new health state
+	update_sprite_for_health_state()
+	
 	# Flash red
 	damage_flash()
 	
@@ -76,7 +89,27 @@ func take_damage(amount := 1):
 	else:
 		throw_ice_wall(-200)
 
-# Flash the boss red when taking damage
+# Update the boss sprite based on current health state
+func update_sprite_for_health_state():
+	var current_texture: Texture2D = null
+	
+	match hits_to_ice_wall_rage:
+		3:
+			current_texture = sprite_full_health
+		2:
+			current_texture = sprite_damaged_once
+		1:
+			current_texture = sprite_damaged_twice
+		0:
+			current_texture = sprite_raging
+		_:
+			# Fallback for any unexpected values
+			current_texture = sprite_full_health
+	
+	# Only update if we have a texture assigned, otherwise keep current
+	if current_texture != null:
+		$Sprite2D.texture = current_texture
+
 func damage_flash():
 	# Set sprite to red
 	$Sprite2D.modulate = Color(1, 0, 0)
@@ -87,6 +120,8 @@ func damage_flash():
 
 func rage():
 	is_raging = true
+	# Update sprite for raging state
+	update_sprite_for_health_state()
 	run_away()
 	if player:
 		player.enable_vertical_movement()

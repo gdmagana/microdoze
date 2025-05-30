@@ -1,10 +1,13 @@
-[gd_scene load_steps=7 format=3 uid="uid://drb605l5hvpfw"]
+[gd_scene load_steps=10 format=3 uid="uid://drb605l5hvpfw"]
 
 [ext_resource type="Script" uid="uid://bh2kvdma1guj7" path="res://scripts/ice_cream_boss.gd" id="1_q3t3g"]
 [ext_resource type="PackedScene" uid="uid://chkrln0i73kui" path="res://scenes/projectile_ice_cube.tscn" id="2_rmwav"]
 [ext_resource type="PackedScene" uid="uid://cevktclg1pfkk" path="res://scenes/IceCreamScoop.tscn" id="3_jfhmo"]
 [ext_resource type="PackedScene" uid="uid://cbb2ytbvuoo7c" path="res://scenes/Icicle.tscn" id="4_yuhxq"]
 [ext_resource type="Texture2D" uid="uid://boc8ehd6ycmpn" path="res://assets/sprites/evillactosefree.png" id="5_rmwav"]
+[ext_resource type="Texture2D" uid="uid://by8xod6wb7ohy" path="res://assets/sprites/ice cream.png" id="6_qtmpm"]
+[ext_resource type="Texture2D" uid="uid://cw2vioxjrvrik" path="res://assets/sprites/lactosefree.png" id="7_rocre"]
+[ext_resource type="Texture2D" uid="uid://b51myk12ckyl5" path="res://icon.svg" id="8_1pu0b"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1vifr"]
 size = Vector2(419, 293)
@@ -16,6 +19,10 @@ script = ExtResource("1_q3t3g")
 projectile_ice_cube_scene = ExtResource("2_rmwav")
 projectile_ice_cream_scoop = ExtResource("3_jfhmo")
 projectile_icicle = ExtResource("4_yuhxq")
+sprite_full_health = ExtResource("5_rmwav")
+sprite_damaged_once = ExtResource("6_qtmpm")
+sprite_damaged_twice = ExtResource("7_rocre")
+sprite_raging = ExtResource("8_1pu0b")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(7, -3)

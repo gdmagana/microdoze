@@ -1,0 +1,87 @@
+[gd_scene load_steps=9 format=3 uid="uid://b0s5dg4wpgcuw"]
+
+[ext_resource type="Script" uid="uid://fu7r4qyt7evy" path="res://scenes/narrative_four.gd" id="1_8v6y4"]
+[ext_resource type="Texture2D" uid="uid://ctrc2aqacldld" path="res://assets/narrative/kitchen_wide.png" id="2_8v6y4"]
+[ext_resource type="Texture2D" uid="uid://b2fn5knoj3pmq" path="res://assets/narrative/characters/main_character_two.png" id="3_6hdb0"]
+[ext_resource type="Texture2D" uid="uid://x4utwuqk2014" path="res://assets/narrative/characters/frat_bro.png" id="4_0xxwi"]
+[ext_resource type="Texture2D" uid="uid://g5yvw20sy1ra" path="res://assets/narrative/items/mystical_object.png" id="4_8ggqk"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_fyl4g"]
+
+[sub_resource type="Theme" id="Theme_d1i1p"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_8v6y4"]
+
+[node name="NarrativeFour" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_8v6y4")
+
+[node name="KitchenWide" type="Sprite2D" parent="."]
+position = Vector2(538.5, 638.5)
+scale = Vector2(1.05957, 0.833984)
+texture = ExtResource("2_8v6y4")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = -3.0
+offset_right = 1081.0
+offset_bottom = 145.0
+texture = SubResource("CanvasTexture_fyl4g")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.993
+anchor_bottom = 0.102
+offset_right = 7.55994
+offset_bottom = 14.44
+theme = SubResource("Theme_d1i1p")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "One of the older guys enters"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MainCharacter" type="Sprite2D" parent="."]
+position = Vector2(241, 970)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("3_6hdb0")
+
+[node name="FratBro" type="Sprite2D" parent="."]
+position = Vector2(728, 973)
+scale = Vector2(0.65, 0.65)
+texture = ExtResource("4_0xxwi")
+flip_h = true
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 478.0
+offset_top = 362.0
+offset_right = 835.0
+offset_bottom = 520.0
+texture = SubResource("CanvasTexture_8v6y4")
+
+[node name="Label2" type="Label" parent="TextureRect2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.981
+offset_bottom = 4.00198
+theme_override_colors/font_color = Color(0.0313726, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "Try a small bite
+of this"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MysticalObject" type="Sprite2D" parent="."]
+position = Vector2(861, 1170)
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("4_8ggqk")
+
+[node name="Timer" type="Timer" parent="."]

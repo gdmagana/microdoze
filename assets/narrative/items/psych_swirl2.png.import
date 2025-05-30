@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://clgffjaqud0jw"
-path="res://.godot/imported/kitchen.png-5046e3c5e8f87df70b07b9016fbcf696.ctex"
+uid="uid://kyorandmk60b"
+path="res://.godot/imported/psych_swirl2.png-5ea49a0f5ae4e30fa0ebe31d22b6074a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/narrative/kitchen.png"
-dest_files=["res://.godot/imported/kitchen.png-5046e3c5e8f87df70b07b9016fbcf696.ctex"]
+source_file="res://assets/narrative/items/psych_swirl2.png"
+dest_files=["res://.godot/imported/psych_swirl2.png-5ea49a0f5ae4e30fa0ebe31d22b6074a.ctex"]
 
 [params]
 

@@ -31,22 +31,10 @@ texture = ExtResource("1_vcsgt")
 [node name="HealthUI" parent="HUD" instance=ExtResource("5_healthui")]
 metadata/_edit_use_anchors_ = true
 
-[node name="Control" type="Control" parent="HUD"]
-layout_mode = 3
-anchor_left = 0.959
-anchor_top = 0.016
-anchor_right = 0.959
-anchor_bottom = 0.016
-offset_left = -1035.72
-offset_top = -20.48
-offset_right = -995.72
-offset_bottom = 19.52
-
-[node name="PuckCounter" parent="HUD/Control" instance=ExtResource("3_q8u5g")]
-layout_mode = 1
-offset_left = 882.0
+[node name="PuckCounter" parent="HUD" instance=ExtResource("3_q8u5g")]
+offset_left = -158.0
 offset_top = 16.0
-offset_right = 1029.0
+offset_right = -11.0
 
 [node name="Player" parent="." instance=ExtResource("1_glv2v")]
 position = Vector2(525, 1176)

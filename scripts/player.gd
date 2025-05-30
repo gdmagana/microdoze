@@ -195,6 +195,12 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("ui_accept") and not is_stick_pushing:
 		is_stick_pushing = true
 		stick_push_timer = stick_push_duration
+	# also use up arrow if user cant move up
+	elif Input.is_action_just_pressed("ui_up") and not can_move_up and not is_stick_pushing:
+		is_stick_pushing = true
+		stick_push_timer = stick_push_duration
+		# in this case, also try shooting puck
+		shoot_puck()
 	if is_stick_pushing:
 		stick_push_timer -= delta
 		if stick_push_timer < 0:

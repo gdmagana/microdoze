@@ -14,6 +14,9 @@ var rng = RandomNumberGenerator.new()
 var player: Node2D
 var is_raging := false
 
+# Ice cube tracking system to prevent overlapping ice cubes
+var active_ice_cubes = {}  # Dictionary to track ice cubes by position key
+
 func _ready():
 	add_to_group("boss")
 	player = get_tree().get_current_scene().find_child("Player", true, false)
@@ -99,12 +102,36 @@ func throw_ice_wall(y_offset = null):
 		y_pos = global_position.y - 100
 	else:
 		y_pos = global_position.y - y_offset
-	for x in range(0, screen_width, ice_cube_width):
-		var ice_cube = projectile_ice_cube_scene.instantiate()
-		get_parent().add_child(ice_cube)
-		ice_cube.global_position = Vector2(x + ice_cube_width/2, y_pos)
-		ice_cube.set_as_static_wall()
 	
+	for x in range(0, screen_width, ice_cube_width):
+		var ice_cube_x = x + ice_cube_width/2
+		var position_key = get_position_key(ice_cube_x, y_pos)
+		
+		# Only create ice cube if position is not occupied
+		if not active_ice_cubes.has(position_key):
+			var ice_cube = projectile_ice_cube_scene.instantiate()
+			get_parent().add_child(ice_cube)
+			ice_cube.global_position = Vector2(ice_cube_x, y_pos)
+			ice_cube.set_as_static_wall()
+			
+			# Track this ice cube
+			active_ice_cubes[position_key] = ice_cube
+			
+			# Connect to ice cube's tree_exiting signal to clean up tracking
+			ice_cube.connect("tree_exiting", Callable(self, "_on_ice_cube_destroyed").bind(position_key))
+
+# Helper function to create a position key for tracking ice cubes
+func get_position_key(x: float, y: float) -> String:
+	# Round positions to nearest 10 pixels to handle slight position differences
+	var rounded_x = round(x / 10) * 10
+	var rounded_y = round(y / 10) * 10
+	return str(rounded_x) + "," + str(rounded_y)
+
+# Called when an ice cube is destroyed to remove it from tracking
+func _on_ice_cube_destroyed(position_key: String):
+	if active_ice_cubes.has(position_key):
+		active_ice_cubes.erase(position_key)
+
 func run_away():
 	var tween = create_tween()
 	tween.tween_property(self, "position:y", position.y - 300, 1.5)

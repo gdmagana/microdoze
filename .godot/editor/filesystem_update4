@@ -1,11 +1,10 @@
-res://scenes/Main.tscn
-res://scripts/ice_cube.gd
 res://scenes/ice_cream_boss.tscn
+res://scripts/ice_cube.gd
 res://scenes/puck.tscn
 res://scenes/Ball.tscn
 res://scenes/projectile_ice_cube.tscn
 res://scenes/Player.tscn
 res://scenes/startmenu.tscn
 res://scenes/GameOver.tscn
+res://scenes/Main.tscn
 res://scenes/PuckCounter.tscn
-res://scripts/player.gd

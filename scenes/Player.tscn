@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://b7mu1034wh12b"]
+[gd_scene load_steps=11 format=3 uid="uid://b7mu1034wh12b"]
 
 [ext_resource type="Script" uid="uid://c42nmw6pvf0vi" path="res://scripts/player.gd" id="1_xhfnw"]
 [ext_resource type="Script" uid="uid://qeipi7vrr5j6" path="res://scripts/stick.gd" id="2_kpjcp"]
 [ext_resource type="Texture2D" uid="uid://cgh1cok0km66j" path="res://assets/freezer/helmet.png" id="2_mdl7e"]
+[ext_resource type="PackedScene" uid="uid://c56tdwek10dmn" path="res://scenes/Ball.tscn" id="2_qu4a1"]
 [ext_resource type="Texture2D" uid="uid://cr106ydl1b4j0" path="res://assets/ui/stick.png" id="3_3li8b"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_xhfnw"]
@@ -21,9 +22,10 @@ frame_0/texture = ExtResource("3_3li8b")
 radius = 55.0364
 
 [node name="Player" type="CharacterBody2D"]
-collision_layer = 4
+collision_layer = 2
 collision_mask = 0
 script = ExtResource("1_xhfnw")
+puck_scene = ExtResource("2_qu4a1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_xhfnw")
@@ -35,7 +37,7 @@ texture = SubResource("AnimatedTexture_qu4a1")
 
 [node name="Stick" type="Area2D" parent="."]
 collision_layer = 2
-collision_mask = 257
+collision_mask = 9
 script = ExtResource("2_kpjcp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stick"]

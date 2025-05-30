@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://chkrln0i73kui"]
+
+[ext_resource type="Script" uid="uid://dhn83mhiqt1rk" path="res://scripts/projectile_ice_cube.gd" id="1_3bhuc"]
+[ext_resource type="Texture2D" uid="uid://cyxvjhf43tv54" path="res://assets/sprites/ice cube.png" id="2_qj5fu"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dw7h8"]
+size = Vector2(92, 100)
+
+[node name="ProjectileIceCube" type="Area2D"]
+collision_layer = 8
+collision_mask = 14
+script = ExtResource("1_3bhuc")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-1, 1)
+scale = Vector2(0.145, 0.149281)
+texture = ExtResource("2_qj5fu")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1, -5)
+shape = SubResource("RectangleShape2D_dw7h8")

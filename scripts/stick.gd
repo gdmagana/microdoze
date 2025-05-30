@@ -1,16 +1,18 @@
 extends Area2D
 
+@export var hit_acceleration := 1.2  # Multiplier for ball speed when hit
+
 func _ready():
 	connect("body_shape_entered", Callable(self, "_on_body_shape_entered"))
 
 func _on_body_shape_entered(body_id, body, body_shape_index, local_shape_index):
-	if body.is_in_group("balls"):
-		# Example: bounce the ball upward and add a little lateral push
-		body.linear_velocity.y = -abs(body.linear_velocity.y)
-		# Optionally add some x velocity if you want
-		# body.linear_velocity.x += 100 * sign(body.position.x - position.x)
+	if body.is_in_group("puck"):
+		# Accelerate the ball
+		body.accelerate(hit_acceleration)
 		
-		# for now, the player must hit a ball with their stick in order for the
-		# ball to break the ice cube (as opposed to a ball breaking an ice cube
-		# with no help from the player)
+		# Bounce the ball upward while maintaining horizontal momentum
+		body.linear_velocity.y = -abs(body.linear_velocity.y)
+		
+		# Allow the ball to break ice cubes after being hit
 		body.canBreak = true
+		

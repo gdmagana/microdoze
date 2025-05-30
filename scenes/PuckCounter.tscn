@@ -1,0 +1,43 @@
+[gd_scene load_steps=3 format=3 uid="uid://do281nd83ggn3"]
+
+[ext_resource type="Script" uid="uid://dmf7aubxxncml" path="res://scripts/puck_counter.gd" id="1_vk5tg"]
+[ext_resource type="Texture2D" uid="uid://ki5fresmje4l" path="res://assets/sprites/puck.png" id="2_0sy6f"]
+
+[node name="PuckCounter" type="Control"]
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -150.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 70.0
+grow_horizontal = 0
+script = ExtResource("1_vk5tg")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -130.0
+offset_bottom = 50.0
+grow_horizontal = 0
+alignment = 2
+
+[node name="PuckIcon" type="TextureRect" parent="HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("2_0sy6f")
+expand_mode = 2
+stretch_mode = 5
+
+[node name="Separator" type="Control" parent="HBoxContainer"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="RemainingPucks" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 32
+text = "x 5"
+vertical_alignment = 1

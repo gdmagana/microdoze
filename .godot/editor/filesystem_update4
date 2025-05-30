@@ -5,3 +5,10 @@ res://scenes/puck.tscn
 res://scenes/Ball.tscn
 res://scenes/projectile_ice_cube.tscn
 res://scenes/Player.tscn
+res://scenes/startmenu.tscn
+res://scenes/GameOver.tscn
+res://scripts/ball.gd
+res://scripts/player.gd
+res://scripts/puck_counter.gd
+res://scenes/PuckCounter.tscn
+res://scripts/game_over.gd

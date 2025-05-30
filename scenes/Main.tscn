@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://b7mu1034wh12b" path="res://scenes/Player.tscn" id="1_glv2v"]
 [ext_resource type="Texture2D" uid="uid://du4d4rqryad3h" path="res://assets/freezer/snow_texture.jpg" id="1_vcsgt"]
-[ext_resource type="PackedScene" uid="uid://c56tdwek10dmn" path="res://scenes/Ball.tscn" id="3_r0du0"]
+[ext_resource type="PackedScene" uid="uid://do281nd83ggn3" path="res://scenes/PuckCounter.tscn" id="3_q8u5g"]
 [ext_resource type="PackedScene" uid="uid://drb605l5hvpfw" path="res://scenes/ice_cream_boss.tscn" id="4_rarhs"]
 [ext_resource type="PackedScene" uid="uid://bsdi5day054n2" path="res://scenes/HealthUI.tscn" id="5_healthui"]
 [ext_resource type="AudioStream" uid="uid://dsuur5ttlumq7" path="res://assets/audio/microdozeTheme2.wav" id="7_nxtc6"]
@@ -31,11 +31,25 @@ texture = ExtResource("1_vcsgt")
 [node name="HealthUI" parent="HUD" instance=ExtResource("5_healthui")]
 metadata/_edit_use_anchors_ = true
 
+[node name="Control" type="Control" parent="HUD"]
+layout_mode = 3
+anchor_left = 0.959
+anchor_top = 0.016
+anchor_right = 0.959
+anchor_bottom = 0.016
+offset_left = -1035.72
+offset_top = -20.48
+offset_right = -995.72
+offset_bottom = 19.52
+
+[node name="PuckCounter" parent="HUD/Control" instance=ExtResource("3_q8u5g")]
+layout_mode = 1
+offset_left = 882.0
+offset_top = 16.0
+offset_right = 1029.0
+
 [node name="Player" parent="." instance=ExtResource("1_glv2v")]
 position = Vector2(525, 1176)
-
-[node name="Ball" parent="." instance=ExtResource("3_r0du0")]
-position = Vector2(192, 883)
 
 [node name="Node" type="Node" parent="."]
 
@@ -48,18 +62,22 @@ position = Vector2(-45, 635)
 shape = SubResource("RectangleShape2D_r0du0")
 
 [node name="WallTop" type="StaticBody2D" parent="Node"]
-collision_layer = 2
+visible = false
+collision_layer = 16
 physics_material_override = SubResource("PhysicsMaterial_uu6xs")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Node/WallTop"]
+visible = false
 position = Vector2(529.625, -44)
 shape = SubResource("RectangleShape2D_cm0pq")
 
 [node name="WallFloor" type="StaticBody2D" parent="Node"]
-collision_layer = 2
+visible = false
+collision_layer = 16
 physics_material_override = SubResource("PhysicsMaterial_uu6xs")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Node/WallFloor"]
+visible = false
 position = Vector2(525, 1328)
 shape = SubResource("RectangleShape2D_cm0pq")
 
@@ -76,15 +94,15 @@ position = Vector2(534, 268)
 
 [node name="audio" type="Node" parent="."]
 
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="audio"]
+[node name="BossMusic" type="AudioStreamPlayer2D" parent="audio"]
 stream = ExtResource("7_nxtc6")
-volume_db = -80.0
+volume_db = -5.354
 autoplay = true
 
 [node name="Pain1" type="AudioStreamPlayer" parent="audio"]
 stream = ExtResource("8_q8u5g")
-volume_db = -27.5
+volume_db = -11.022
 
 [node name="Yay1" type="AudioStreamPlayer" parent="audio"]
 stream = ExtResource("9_lhr70")
-volume_db = -17.65
+volume_db = -9.546

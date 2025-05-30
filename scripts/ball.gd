@@ -16,6 +16,7 @@ func _ready():
 	# Launch in a random direction
 	var angle = randf_range(-PI / 4, -3 * PI / 4)  # upward
 	linear_velocity = Vector2(cos(angle), sin(angle)) * initial_speed
+	$VisibleOnScreenNotifier2D.connect("screen_exited", Callable(self, "_on_screen_exited"))
 
 func _on_body_entered(body):
 	if body.is_in_group("boss"):
@@ -33,6 +34,15 @@ func accelerate(multiplier: float):
 	$"../audio/Yay1".play()
 	# Immediately apply the new speed while maintaining direction
 	linear_velocity = linear_velocity.normalized() * speed
+	
+	# Turn the puck red briefly to indicate acceleration
+	flash_red()
+
+func flash_red():
+	var original_modulate = self.modulate
+	self.modulate = Color(1, 0, 0)  # Red
+	await get_tree().create_timer(0.3).timeout
+	self.modulate = original_modulate
 
 func _physics_process(_delta):
 	# Enforce minimum vertical speed only
@@ -49,3 +59,10 @@ func _physics_process(_delta):
 
 	# Always keep the total velocity normalized to the current speed
 	linear_velocity = linear_velocity.normalized() * max(speed, min_speed)
+
+func _on_screen_exited():
+	# Notify the player that this puck is being destroyed
+	var player = get_tree().get_current_scene().find_child("Player", true, false)
+	if player and player.has_method("puck_destroyed"):
+		player.puck_destroyed()
+	queue_free()

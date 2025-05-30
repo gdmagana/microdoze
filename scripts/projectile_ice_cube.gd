@@ -6,8 +6,8 @@ var is_static_wall := false
 var health := 3
 
 # Preload the textures for different health states
-var texture_normal = preload("res://assets/sprites/ice cube.png")
-var texture_blue = preload("res://assets/GIMP/ice cube.png")
+var texture_normal = preload("res://assets/sprites/ice_cube.png")
+var texture_blue = preload("res://assets/sprites/ice_cube_blue.png")
 var texture_damaged = preload("res://assets/sprites/ice_cube_weak.png")
 
 func _ready():

@@ -23,7 +23,7 @@ offset_bottom = -207.0
 scale = Vector2(10, 10)
 text = "Microdoze"
 
-[node name="StartButton" type="Button" parent="."]
+[node name="MicroDoze2" type="Button" parent="."]
 layout_mode = 0
 offset_left = -591.0
 offset_top = 369.0
@@ -32,7 +32,7 @@ offset_bottom = 400.0
 scale = Vector2(10, 10)
 text = "Start"
 
-[node name="QuitButton" type="Button" parent="."]
+[node name="MicroDoze3" type="Button" parent="."]
 layout_mode = 0
 offset_left = -95.0
 offset_top = 372.0
@@ -41,5 +41,5 @@ offset_bottom = 403.0
 scale = Vector2(10, 10)
 text = "Quit"
 
-[connection signal="pressed" from="StartButton" to="." method="_on_start_button_pressed"]
-[connection signal="pressed" from="QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="MicroDoze2" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="MicroDoze3" to="." method="_on_quit_button_pressed"]

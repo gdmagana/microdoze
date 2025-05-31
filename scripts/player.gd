@@ -19,21 +19,21 @@ var is_invulnerable := false
 var invulnerable_timer := 0.0
 
 # -- Stick --
-var last_direction := 1  # 1 = right, -1 = left
+var last_direction := 1 # 1 = right, -1 = left
 var stick_push_timer := 0.0
-var stick_push_duration := 0.15  # seconds
+var stick_push_duration := 0.15 # seconds
 var is_stick_pushing := false
 var stick_base_offset := Vector2(50, 0)
 var stick_extended_offset := Vector2(50, -25)
-var stick_rotation_max := -0.5  # Maximum rotation in radians
+var stick_rotation_max := -0.5 # Maximum rotation in radians
 
 # -- Puck --
 @export var puck_scene: PackedScene
 @export var puck_speed := 700.0
-@export var max_active_pucks := 5  # Maximum number of active pucks allowed
-@export var puck_cooldown := 0.5   # Time in seconds between puck shots
-var active_pucks := 0              # Current number of active pucks
-var puck_cooldown_timer := 0.0     # Timer for puck shooting cooldown
+@export var max_active_pucks := 5 # Maximum number of active pucks allowed
+@export var puck_cooldown := 0.5 # Time in seconds between puck shots
+var active_pucks := 0 # Current number of active pucks
+var puck_cooldown_timer := 0.0 # Timer for puck shooting cooldown
 var can_shoot_puck = true
 
 # -- Stage Bounds --
@@ -50,7 +50,7 @@ func _ready():
 	health_ui.update_health(health)
 	if puck_counter:
 		puck_counter.update_puck_count(max_active_pucks, active_pucks)
-	$Hitbox.connect("body_entered", Callable(self, "_on_hitbox_body_entered"))	
+	$Hitbox.connect("body_entered", Callable(self, "_on_hitbox_body_entered"))
 
 func take_damage(amount := 1):
 	health -= amount
@@ -63,32 +63,32 @@ func take_damage(amount := 1):
 		# Flash red to indicate damage
 		$Sprite2D.modulate = Color(1, 0.5, 0.5)
 		is_invulnerable = true
-		invulnerable_timer = 1.0  # seconds
+		invulnerable_timer = 1.0 # seconds
 		$"../audio/Pain1".play()
 
 		# Reset modulate after a short time
 		await get_tree().create_timer(0.2).timeout
-		$Sprite2D.modulate = Color(1, 1, 1)  # back to normal
+		$Sprite2D.modulate = Color(1, 1, 1) # back to normal
 		is_invulnerable = false
 		invulnerable_timer = 0.0
 	
 func freeze():
 	is_frozen = true
-	frozen_timer = 2.0  # seconds
-	$Sprite2D.modulate = Color(0.5, 0.5, 1.0)  # light blue
+	frozen_timer = 2.0 # seconds
+	$Sprite2D.modulate = Color(0.5, 0.5, 1.0) # light blue
 	# Smoothly slow down the background music, then restore it
 	var audio = $"../audio/BossMusic"
 	var start_pitch = audio.pitch_scale
 	if start_pitch > 0.6: # Avoid modulating music if scoop hits you after death
 		var target_pitch = 0.8
-		var transition_time = 0.5  # seconds for smooth transition
+		var transition_time = 0.5 # seconds for smooth transition
 
 		# Smoothly decrease pitch
 		var t := 0.0
 		while t < transition_time:
 			t += get_process_delta_time()
 			audio.pitch_scale = lerp(start_pitch, target_pitch, t / transition_time)
-			await get_tree().process_frame #TODO: fix crash when this occurs during game end
+			await get_tree().process_frame # TODO: fix crash when this occurs during game end
 		audio.pitch_scale = target_pitch
 
 		# Wait for frozen_timer duration
@@ -100,9 +100,9 @@ func freeze():
 			t += get_process_delta_time()
 			audio.pitch_scale = lerp(target_pitch, 1.0, t / transition_time)
 			await get_tree().process_frame
-		audio.pitch_scale = 1.0  # reset pitch
+		audio.pitch_scale = 1.0 # reset pitch
 
-	$Sprite2D.modulate = Color(1, 1, 1)  # back to normal
+	$Sprite2D.modulate = Color(1, 1, 1) # back to normal
 
 	
 func bounce_back_from_wall(wall_pos):
@@ -120,7 +120,7 @@ func disable_puck_shooting():
 	
 func shoot_puck():
 	if not can_shoot_puck or active_pucks >= max_active_pucks:
-		return  # Can't shoot if puck shooting is disabled or max pucks active
+		return # Can't shoot if puck shooting is disabled or max pucks active
 	
 	var puck = puck_scene.instantiate()
 	get_parent().add_child(puck)
@@ -131,15 +131,15 @@ func shoot_puck():
 		puck_counter.update_puck_count(max_active_pucks, active_pucks)
 	
 	can_shoot_puck = false
-	puck_cooldown_timer = puck_cooldown  # Reset cooldown timer
+	puck_cooldown_timer = puck_cooldown # Reset cooldown timer
 
 func _physics_process(delta):
 	if is_frozen:
 		frozen_timer -= delta
 		if frozen_timer <= 0:
 			is_frozen = false
-			$Sprite2D.modulate = Color(1, 1, 1)  # back to normal
-		return  # skip movement while frozen
+			$Sprite2D.modulate = Color(1, 1, 1) # back to normal
+		return # skip movement while frozen
 		
 	var input_direction = Vector2.ZERO
 	if Input.is_action_pressed("ui_left"):
@@ -183,9 +183,20 @@ func _physics_process(delta):
 
 	move_and_slide()
 	
+	# Store position before clamping to detect edge collisions
+	var old_position = position
+	
 	# clamp player movement to screen bounds
 	position.x = clamp(position.x, 0, stage_width)
 	position.y = clamp(position.y, 0, stage_height)
+	
+	# Reset velocity if player hit the screen bounds
+	if old_position.x != position.x:
+		# Hit left or right edge, stop horizontal momentum
+		velocity.x = 0
+	if old_position.y != position.y:
+		# Hit top or bottom edge, stop vertical momentum
+		velocity.y = 0
 	
 	# -- Player Hitbox --
 	var hitbox = $CollisionShape2D.shape
@@ -211,7 +222,7 @@ func _physics_process(delta):
 	if is_stick_pushing:
 		# Calculate smooth progress (ease out)
 		progress = 1.0 - (stick_push_timer / stick_push_duration)
-		progress = ease(progress, 0.5)  # Smooth easing function
+		progress = ease(progress, 0.5) # Smooth easing function
 	
 	# Interpolate between base and extended position
 	var stick_offset = stick_base_offset.lerp(stick_extended_offset, progress)
@@ -222,13 +233,13 @@ func _physics_process(delta):
 	
 	$Stick.position = stick_offset
 	$Stick.rotation = stick_rotation
-	$Stick.scale.x = last_direction  # Flip the stick sprite to face correct side
+	$Stick.scale.x = last_direction # Flip the stick sprite to face correct side
 	
 	# -- Puck Shooting --
 	if not can_shoot_puck:
 		puck_cooldown_timer -= delta
 		if puck_cooldown_timer <= 0:
-			can_shoot_puck = true  # Re-enable puck shooting after cooldown
+			can_shoot_puck = true # Re-enable puck shooting after cooldown
 	else:
 		# Check if the player is trying to shoot a puck
 		if Input.is_action_just_pressed("shoot_puck"):
@@ -240,7 +251,7 @@ func _on_hitbox_body_entered(body):
 		
 func puck_destroyed():
 	# Called when a puck is destroyed or goes out of bounds
-	active_pucks = max(0, active_pucks - 1)  # Ensure it never goes below 0
+	active_pucks = max(0, active_pucks - 1) # Ensure it never goes below 0
 	if puck_counter:
 		puck_counter.update_puck_count(max_active_pucks, active_pucks)
 	
@@ -248,14 +259,14 @@ func show_game_over():
 	# Slow down background music
 	var audio = $"../audio/BossMusic"
 	if audio:
-		var target_pitch = 0.5  # Slow to half speed
+		var target_pitch = 0.5 # Slow to half speed
 		
 		# Immediately set half speed if we can't do smooth transition
 		if not is_inside_tree() or get_tree() == null:
 			audio.pitch_scale = target_pitch
 		else:
 			# Try to create a smooth transition for music slowdown
-			var transition_time = 1.0  # seconds for smooth transition
+			var transition_time = 1.0 # seconds for smooth transition
 			var tween = create_tween()
 			tween.tween_property(audio, "pitch_scale", target_pitch, transition_time)
 			# Wait for the tween to finish
@@ -271,7 +282,7 @@ func show_game_over():
 	get_tree().get_current_scene().add_child(game_over_instance)
 	
 	# Don't remove player yet - let the game over screen handle restarting
-	visible = false  # Hide the player
+	visible = false # Hide the player
 	set_process(false)
 	set_physics_process(false)
 

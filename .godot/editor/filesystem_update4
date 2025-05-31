@@ -8,4 +8,4 @@ res://scenes/startmenu.tscn
 res://scenes/GameOver.tscn
 res://scenes/Main.tscn
 res://scenes/PuckCounter.tscn
-res://scripts/ice_cream_boss.gd
+res://scripts/player.gd

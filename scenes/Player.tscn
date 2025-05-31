@@ -13,7 +13,7 @@ radius = 56.0089
 frame_0/texture = ExtResource("2_mdl7e")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kpjcp"]
-size = Vector2(218.169, 35.4094)
+size = Vector2(181.066, 59.7047)
 
 [sub_resource type="AnimatedTexture" id="AnimatedTexture_mdl7e"]
 frame_0/texture = ExtResource("3_3li8b")
@@ -41,14 +41,13 @@ collision_mask = 9
 script = ExtResource("2_kpjcp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stick"]
-position = Vector2(-1.14641, 0.616975)
-rotation = -0.31765
+position = Vector2(62.4672, -15.1476)
 shape = SubResource("RectangleShape2D_kpjcp")
 
 [node name="Sprite2D" type="Sprite2D" parent="Stick"]
-position = Vector2(0.5, 1)
-rotation = -0.31765
-scale = Vector2(0.2, 0.036)
+position = Vector2(67, -18)
+rotation = -0.760964
+scale = Vector2(0.182449, 0.103073)
 texture = SubResource("AnimatedTexture_mdl7e")
 
 [node name="Hitbox" type="Area2D" parent="."]

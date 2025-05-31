@@ -1,0 +1,51 @@
+[gd_scene load_steps=6 format=3 uid="uid://ddpan584qu2f"]
+
+[ext_resource type="Texture2D" uid="uid://ctrc2aqacldld" path="res://assets/narrative/kitchen_wide.png" id="1_aqhs2"]
+[ext_resource type="Script" uid="uid://dt8i3c172d50c" path="res://scenes/narrative_one.gd" id="1_fyl4g"]
+[ext_resource type="Texture2D" uid="uid://b2fn5knoj3pmq" path="res://assets/narrative/characters/main_character_two.png" id="2_d1i1p"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_fyl4g"]
+
+[sub_resource type="Theme" id="Theme_d1i1p"]
+
+[node name="NarrativeOne" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_fyl4g")
+
+[node name="KitchenWide" type="Sprite2D" parent="."]
+position = Vector2(540, 640)
+scale = Vector2(1.05469, 0.833333)
+texture = ExtResource("1_aqhs2")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 1080.0
+offset_bottom = 145.0
+texture = SubResource("CanvasTexture_fyl4g")
+
+[node name="Label" type="Label" parent="TextureRect"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.998
+anchor_bottom = 1.007
+offset_right = 0.159912
+offset_bottom = -0.0150146
+theme = SubResource("Theme_d1i1p")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "You're a lowly pledge and you find yourself 
+in your frat's kitchen"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MainCharacter" type="Sprite2D" parent="."]
+position = Vector2(241, 970)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("2_d1i1p")
+
+[node name="Timer" type="Timer" parent="."]

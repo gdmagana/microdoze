@@ -1,5 +1,10 @@
-res://scenes/ice_cream_boss.tscn
+res://scripts/ice_cream_boss.gd
 res://scripts/ice_cube.gd
+res://scripts/player.gd
+res://scripts/powerup_debug_ui.gd
+res://scripts/power_up_manager.gd
+res://scenes/ice_cream_boss.tscn
+res://POWERUP_SETUP_GUIDE.md
 res://scenes/puck.tscn
 res://scenes/Ball.tscn
 res://scenes/projectile_ice_cube.tscn
@@ -8,4 +13,9 @@ res://scenes/startmenu.tscn
 res://scenes/GameOver.tscn
 res://scenes/Main.tscn
 res://scenes/PuckCounter.tscn
-res://scripts/player.gd
+res://scenes/FirePucksPowerUp.tscn
+res://scenes/SpeedBoostPowerUp.tscn
+res://scenes/PowerupDebugUI.tscn
+res://scenes/BasePowerUp.tscn
+res://scenes/InvincibilityPowerUp.tscn
+res://scripts/powerup_weight_helper.gd

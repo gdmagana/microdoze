@@ -23,6 +23,9 @@ sprite_full_health = ExtResource("5_rmwav")
 sprite_damaged_once = ExtResource("6_qtmpm")
 sprite_damaged_twice = ExtResource("7_rocre")
 sprite_raging = ExtResource("8_1pu0b")
+unlimited_pucks_weight = 0.0
+fire_pucks_weight = 0.0
+invincibility_weight = 1.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(7, -3)

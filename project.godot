@@ -15,6 +15,10 @@ run/main_scene="res://scenes/startmenu.tscn"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+PowerUpManager="*res://scripts/power_up_manager.gd"
+
 [display]
 
 window/size/viewport_width=1080

@@ -18,6 +18,10 @@ var can_move_up := false
 var is_invulnerable := false
 var invulnerable_timer := 0.0
 
+# Rainbow effect for invincibility
+var rainbow_tween: Tween
+var original_modulate: Color
+
 # -- Stick --
 var last_direction := 1 # 1 = right, -1 = left
 var stick_push_timer := 0.0
@@ -51,8 +55,21 @@ func _ready():
 	if puck_counter:
 		puck_counter.update_puck_count(max_active_pucks, active_pucks)
 	$Hitbox.connect("body_entered", Callable(self, "_on_hitbox_body_entered"))
+	
+	# Store original color for rainbow effect
+	original_modulate = $Sprite2D.modulate
+	
+	# Connect to PowerUpManager signals if available
+	if PowerUpManager:
+		PowerUpManager.invincibility_started.connect(_on_invincibility_started)
+		PowerUpManager.invincibility_ended.connect(_on_invincibility_ended)
 
 func take_damage(amount := 1):
+	# Check if player is invincible
+	if PowerUpManager and PowerUpManager.is_invincible():
+		print("DEBUG: Damage blocked by invincibility!")
+		return
+	
 	health -= amount
 	health_ui.update_health(health)
 	if health <= 0:
@@ -68,11 +85,16 @@ func take_damage(amount := 1):
 
 		# Reset modulate after a short time
 		await get_tree().create_timer(0.2).timeout
-		$Sprite2D.modulate = Color(1, 1, 1) # back to normal
+		$Sprite2D.modulate = original_modulate # back to normal (or rainbow if invincible)
 		is_invulnerable = false
 		invulnerable_timer = 0.0
 	
 func freeze():
+	# Check if player is invincible
+	if PowerUpManager and PowerUpManager.is_invincible():
+		print("DEBUG: Freeze blocked by invincibility!")
+		return
+	
 	is_frozen = true
 	frozen_timer = 2.0 # seconds
 	$Sprite2D.modulate = Color(0.5, 0.5, 1.0) # light blue
@@ -102,7 +124,46 @@ func freeze():
 			await get_tree().process_frame
 		audio.pitch_scale = 1.0 # reset pitch
 
-	$Sprite2D.modulate = Color(1, 1, 1) # back to normal
+	$Sprite2D.modulate = original_modulate # back to normal (or rainbow if invincible)
+
+func _on_invincibility_started():
+	print("DEBUG: Player invincibility started - starting rainbow effect!")
+	start_rainbow_effect()
+
+func _on_invincibility_ended():
+	print("DEBUG: Player invincibility ended - stopping rainbow effect!")
+	stop_rainbow_effect()
+
+func start_rainbow_effect():
+	# Create rainbow color cycling effect
+	if rainbow_tween:
+		rainbow_tween.kill()
+	
+	rainbow_tween = create_tween()
+	rainbow_tween.set_loops() # Loop infinitely
+	
+	# Define rainbow colors (like Mario star power)
+	var rainbow_colors = [
+		Color(1.0, 0.0, 0.0), # Red
+		Color(1.0, 0.5, 0.0), # Orange
+		Color(1.0, 1.0, 0.0), # Yellow
+		Color(0.0, 1.0, 0.0), # Green
+		Color(0.0, 0.0, 1.0), # Blue
+		Color(0.5, 0.0, 1.0), # Purple
+		Color(1.0, 0.0, 1.0) # Magenta
+	]
+	
+	# Cycle through rainbow colors quickly
+	for color in rainbow_colors:
+		rainbow_tween.tween_property($Sprite2D, "modulate", color, 0.15)
+
+func stop_rainbow_effect():
+	# Stop rainbow effect and return to normal
+	if rainbow_tween:
+		rainbow_tween.kill()
+		rainbow_tween = null
+	
+	$Sprite2D.modulate = original_modulate
 
 	
 func bounce_back_from_wall(wall_pos):
@@ -119,12 +180,22 @@ func disable_puck_shooting():
 	can_shoot_puck = false
 	
 func shoot_puck():
-	if not can_shoot_puck or active_pucks >= max_active_pucks:
-		return # Can't shoot if puck shooting is disabled or max pucks active
+	# Check if unlimited pucks powerup is active
+	var has_unlimited = PowerUpManager and PowerUpManager.has_unlimited_pucks()
+	
+	if not can_shoot_puck or (not has_unlimited and active_pucks >= max_active_pucks):
+		return # Can't shoot if puck shooting is disabled or max pucks active (unless unlimited)
 	
 	var puck = puck_scene.instantiate()
 	get_parent().add_child(puck)
 	puck.global_position = $Stick.global_position
+	
+	# Check if fire pucks powerup is active
+	if PowerUpManager and PowerUpManager.has_fire_pucks():
+		# Make this puck a fire puck (assuming puck has a method for this)
+		if puck.has_method("set_fire_mode"):
+			puck.set_fire_mode(true)
+		PowerUpManager.consume_fire_puck()
 	
 	active_pucks += 1
 	if puck_counter:
@@ -138,7 +209,7 @@ func _physics_process(delta):
 		frozen_timer -= delta
 		if frozen_timer <= 0:
 			is_frozen = false
-			$Sprite2D.modulate = Color(1, 1, 1) # back to normal
+			$Sprite2D.modulate = original_modulate # back to normal (or rainbow if invincible)
 		return # skip movement while frozen
 		
 	var input_direction = Vector2.ZERO
@@ -152,11 +223,16 @@ func _physics_process(delta):
 		if Input.is_action_pressed("ui_down"):
 			input_direction.y += 1
 
+	# Get speed multiplier from PowerUpManager
+	var speed_multiplier = 1.0
+	if PowerUpManager:
+		speed_multiplier = PowerUpManager.get_speed_multiplier()
+
 	# -- Movement Physics --
 	# Horizontal
 	if input_direction.x != 0:
 		last_direction = sign(input_direction.x)
-		velocity.x += input_direction.x * acceleration * delta
+		velocity.x += input_direction.x * acceleration * speed_multiplier * delta
 	else:
 		# Apply friction to gradually stop
 		if abs(velocity.x) < friction * delta:
@@ -164,20 +240,21 @@ func _physics_process(delta):
 		else:
 			velocity.x -= sign(velocity.x) * friction * delta
 			
-	# clamp max horizontal speed
-	velocity.x = clamp(velocity.x, -max_speed, max_speed)
+	# clamp max horizontal speed (with speed multiplier)
+	var current_max_speed = max_speed * speed_multiplier
+	velocity.x = clamp(velocity.x, -current_max_speed, current_max_speed)
 	
 	# Vertical
 	if can_move_up:
 		if input_direction.y != 0:
-			velocity.y += input_direction.y * acceleration * delta
+			velocity.y += input_direction.y * acceleration * speed_multiplier * delta
 		else:
 			if abs(velocity.y) < friction * delta:
 				velocity.y = 0
 			else:
 				velocity.y -= sign(velocity.y) * friction * delta
 				
-			velocity.y = clamp(velocity.y, -max_speed, max_speed)
+			velocity.y = clamp(velocity.y, -current_max_speed, current_max_speed)
 	else:
 		velocity.y = 0
 

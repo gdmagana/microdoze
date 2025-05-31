@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://binvinc001"]
+
+[ext_resource type="PackedScene" uid="uid://bpow3r5up0001" path="res://scenes/BasePowerUp.tscn" id="1_base"]
+[ext_resource type="Script" uid="uid://cv7a1fnqhhg04" path="res://scripts/invincibility_power_up.gd" id="2_script"]
+
+[node name="InvincibilityPowerUp" instance=ExtResource("1_base")]
+script = ExtResource("2_script")
+invincibility_duration = 5.0

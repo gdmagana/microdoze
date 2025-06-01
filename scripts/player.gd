@@ -22,6 +22,13 @@ var invulnerable_timer := 0.0
 var rainbow_tween: Tween
 var original_modulate: Color
 
+# Speed boost echo effect
+var echo_sprites = []
+var echo_timer := 0.0
+var echo_interval := 0.05 # Create echo every 0.05 seconds (faster)
+var speed_boost_echo_active := false
+var echo_color_index := 0 # Track current color in rainbow cycle
+
 # -- Stick --
 var last_direction := 1 # 1 = right, -1 = left
 var stick_push_timer := 0.0
@@ -63,6 +70,8 @@ func _ready():
 	if PowerUpManager:
 		PowerUpManager.invincibility_started.connect(_on_invincibility_started)
 		PowerUpManager.invincibility_ended.connect(_on_invincibility_ended)
+		PowerUpManager.speed_boost_started.connect(_on_speed_boost_started)
+		PowerUpManager.speed_boost_ended.connect(_on_speed_boost_ended)
 
 func take_damage(amount := 1):
 	# Check if player is invincible
@@ -134,6 +143,14 @@ func _on_invincibility_ended():
 	print("DEBUG: Player invincibility ended - stopping rainbow effect!")
 	stop_rainbow_effect()
 
+func _on_speed_boost_started():
+	print("DEBUG: Player speed boost started - starting echo effect!")
+	start_echo_effect()
+
+func _on_speed_boost_ended():
+	print("DEBUG: Player speed boost ended - stopping echo effect!")
+	stop_echo_effect()
+
 func start_rainbow_effect():
 	# Create rainbow color cycling effect
 	if rainbow_tween:
@@ -144,13 +161,13 @@ func start_rainbow_effect():
 	
 	# Define rainbow colors (like Mario star power)
 	var rainbow_colors = [
-		Color(1.0, 0.0, 0.0), # Red
-		Color(1.0, 0.5, 0.0), # Orange
-		Color(1.0, 1.0, 0.0), # Yellow
-		Color(0.0, 1.0, 0.0), # Green
-		Color(0.0, 0.0, 1.0), # Blue
-		Color(0.5, 0.0, 1.0), # Purple
-		Color(1.0, 0.0, 1.0) # Magenta
+		Color(1.0, 0.6, 0.6, 0.6), # Light Red/Pink
+		Color(1.0, 0.8, 0.4, 0.6), # Light Orange
+		Color(1.0, 1.0, 0.6, 0.6), # Light Yellow
+		Color(0.6, 1.0, 0.6, 0.6), # Light Green
+		Color(0.6, 0.8, 1.0, 0.6), # Light Blue
+		Color(0.8, 0.6, 1.0, 0.6), # Light Purple
+		Color(1.0, 0.6, 1.0, 0.6) # Light Magenta
 	]
 	
 	# Cycle through rainbow colors quickly
@@ -211,7 +228,15 @@ func _physics_process(delta):
 			is_frozen = false
 			$Sprite2D.modulate = original_modulate # back to normal (or rainbow if invincible)
 		return # skip movement while frozen
-		
+	
+	# Handle echo effect timer for speed boost
+	if speed_boost_echo_active:
+		echo_timer -= delta
+		if echo_timer <= 0:
+			print("DEBUG: Echo timer triggered! Velocity: ", velocity.length())
+			create_movement_echo()
+			echo_timer = echo_interval # Reset timer
+	
 	var input_direction = Vector2.ZERO
 	if Input.is_action_pressed("ui_left"):
 		input_direction.x -= 1
@@ -363,7 +388,82 @@ func show_game_over():
 	set_process(false)
 	set_physics_process(false)
 
-
 func _on_visible_on_screen_notifier_2d_screen_exited() -> void:
 	puck_destroyed()
 	pass # Replace with function body.
+
+func start_echo_effect():
+	speed_boost_echo_active = true
+	echo_timer = echo_interval # Start creating echoes immediately
+	echo_color_index = 0 # Reset to start with red
+	print("DEBUG: Echo effect started! Active: ", speed_boost_echo_active)
+
+func stop_echo_effect():
+	speed_boost_echo_active = false
+	echo_timer = 0.0
+	print("DEBUG: Echo effect stopped! Active: ", speed_boost_echo_active, " Cleaning up ", echo_sprites.size(), " echoes")
+	# Clean up any remaining echo sprites
+	cleanup_echo_sprites()
+
+func create_movement_echo():
+	# Only create echo if player is actually moving
+	if velocity.length() < 10.0: # Don't create echo if barely moving
+		return
+	
+	print("DEBUG: Creating movement echo at position: ", global_position)
+		
+	var echo = Sprite2D.new()
+	echo.texture = $Sprite2D.texture
+	echo.global_position = global_position
+	echo.scale = $Sprite2D.scale * 1.1 # Make echoes slightly larger for visibility
+	echo.rotation = $Sprite2D.rotation
+	
+	# Rainbow colors cycling like invincibility effect
+	var rainbow_colors = [
+		Color(1.0, 0.6, 0.6, 0.6), # Light Red/Pink
+		Color(1.0, 0.8, 0.4, 0.6), # Light Orange
+		Color(1.0, 1.0, 0.6, 0.6), # Light Yellow
+		Color(0.6, 1.0, 0.6, 0.6), # Light Green
+		Color(0.6, 0.8, 1.0, 0.6), # Light Blue
+		Color(0.8, 0.6, 1.0, 0.6), # Light Purple
+		Color(1.0, 0.6, 1.0, 0.6) # Light Magenta
+	]
+	
+	# Use the next color in the cycle (like invincibility rainbow)
+	echo.modulate = rainbow_colors[echo_color_index]
+	echo_color_index = (echo_color_index + 1) % rainbow_colors.size() # Cycle to next color
+	echo.z_index = 10 # Above most things but below UI (reduced from test value)
+	
+	# Add to parent (the scene) instead of player so it doesn't move with player
+	get_parent().add_child(echo)
+	echo_sprites.append(echo)
+	
+	print("DEBUG: Echo created with color: ", echo.modulate, " Total echoes: ", echo_sprites.size(), " z_index: ", echo.z_index)
+	
+	# Immediately move the echo to its static position since it's added to the scene
+	echo.global_position = global_position
+	
+	# Fade out the echo over time
+	var fade_tween = create_tween()
+	fade_tween.tween_property(echo, "modulate:a", 0.0, 1.2) # Fade over 1.2 seconds (longer)
+	fade_tween.tween_callback(func(): remove_echo_sprite(echo))
+	
+	# Clean up old echoes if we have too many
+	if echo_sprites.size() > 15: # Max 15 echoes at once (more echoes)
+		var old_echo = echo_sprites.pop_front()
+		if is_instance_valid(old_echo):
+			old_echo.queue_free()
+
+func remove_echo_sprite(echo_sprite: Sprite2D):
+	# Remove from our tracking array and free the sprite
+	if echo_sprite in echo_sprites:
+		echo_sprites.erase(echo_sprite)
+	if is_instance_valid(echo_sprite):
+		echo_sprite.queue_free()
+
+func cleanup_echo_sprites():
+	# Clean up all remaining echo sprites
+	for echo in echo_sprites:
+		if is_instance_valid(echo):
+			echo.queue_free()
+	echo_sprites.clear()

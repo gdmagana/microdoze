@@ -18,22 +18,33 @@ var can_move_up := false
 var is_invulnerable := false
 var invulnerable_timer := 0.0
 
+# Rainbow effect for invincibility
+var rainbow_tween: Tween
+var original_modulate: Color
+
+# Speed boost echo effect
+var echo_sprites = []
+var echo_timer := 0.0
+var echo_interval := 0.05 # Create echo every 0.05 seconds (faster)
+var speed_boost_echo_active := false
+var echo_color_index := 0 # Track current color in rainbow cycle
+
 # -- Stick --
-var last_direction := 1  # 1 = right, -1 = left
+var last_direction := 1 # 1 = right, -1 = left
 var stick_push_timer := 0.0
-var stick_push_duration := 0.15  # seconds
+var stick_push_duration := 0.15 # seconds
 var is_stick_pushing := false
 var stick_base_offset := Vector2(50, 0)
 var stick_extended_offset := Vector2(50, -25)
-var stick_rotation_max := -0.5  # Maximum rotation in radians
+var stick_rotation_max := -0.5 # Maximum rotation in radians
 
 # -- Puck --
 @export var puck_scene: PackedScene
 @export var puck_speed := 700.0
-@export var max_active_pucks := 5  # Maximum number of active pucks allowed
-@export var puck_cooldown := 0.5   # Time in seconds between puck shots
-var active_pucks := 0              # Current number of active pucks
-var puck_cooldown_timer := 0.0     # Timer for puck shooting cooldown
+@export var max_active_pucks := 5 # Maximum number of active pucks allowed
+@export var puck_cooldown := 0.5 # Time in seconds between puck shots
+var active_pucks := 0 # Current number of active pucks
+var puck_cooldown_timer := 0.0 # Timer for puck shooting cooldown
 var can_shoot_puck = true
 
 # -- Stage Bounds --
@@ -50,9 +61,24 @@ func _ready():
 	health_ui.update_health(health)
 	if puck_counter:
 		puck_counter.update_puck_count(max_active_pucks, active_pucks)
-	$Hitbox.connect("body_entered", Callable(self, "_on_hitbox_body_entered"))	
+	$Hitbox.connect("body_entered", Callable(self, "_on_hitbox_body_entered"))
+	
+	# Store original color for rainbow effect
+	original_modulate = $Sprite2D.modulate
+	
+	# Connect to PowerUpManager signals if available
+	if PowerUpManager:
+		PowerUpManager.invincibility_started.connect(_on_invincibility_started)
+		PowerUpManager.invincibility_ended.connect(_on_invincibility_ended)
+		PowerUpManager.speed_boost_started.connect(_on_speed_boost_started)
+		PowerUpManager.speed_boost_ended.connect(_on_speed_boost_ended)
 
 func take_damage(amount := 1):
+	# Check if player is invincible
+	if PowerUpManager and PowerUpManager.is_invincible():
+		print("DEBUG: Damage blocked by invincibility!")
+		return
+	
 	health -= amount
 	health_ui.update_health(health)
 	if health <= 0:
@@ -63,32 +89,37 @@ func take_damage(amount := 1):
 		# Flash red to indicate damage
 		$Sprite2D.modulate = Color(1, 0.5, 0.5)
 		is_invulnerable = true
-		invulnerable_timer = 1.0  # seconds
+		invulnerable_timer = 1.0 # seconds
 		$"../audio/Pain1".play()
 
 		# Reset modulate after a short time
 		await get_tree().create_timer(0.2).timeout
-		$Sprite2D.modulate = Color(1, 1, 1)  # back to normal
+		$Sprite2D.modulate = original_modulate # back to normal (or rainbow if invincible)
 		is_invulnerable = false
 		invulnerable_timer = 0.0
 	
 func freeze():
+	# Check if player is invincible
+	if PowerUpManager and PowerUpManager.is_invincible():
+		print("DEBUG: Freeze blocked by invincibility!")
+		return
+	
 	is_frozen = true
-	frozen_timer = 2.0  # seconds
-	$Sprite2D.modulate = Color(0.5, 0.5, 1.0)  # light blue
+	frozen_timer = 2.0 # seconds
+	$Sprite2D.modulate = Color(0.5, 0.5, 1.0) # light blue
 	# Smoothly slow down the background music, then restore it
 	var audio = $"../audio/BossMusic"
 	var start_pitch = audio.pitch_scale
 	if start_pitch > 0.6: # Avoid modulating music if scoop hits you after death
 		var target_pitch = 0.8
-		var transition_time = 0.5  # seconds for smooth transition
+		var transition_time = 0.5 # seconds for smooth transition
 
 		# Smoothly decrease pitch
 		var t := 0.0
 		while t < transition_time:
 			t += get_process_delta_time()
 			audio.pitch_scale = lerp(start_pitch, target_pitch, t / transition_time)
-			await get_tree().process_frame #TODO: fix crash when this occurs during game end
+			await get_tree().process_frame # TODO: fix crash when this occurs during game end
 		audio.pitch_scale = target_pitch
 
 		# Wait for frozen_timer duration
@@ -100,9 +131,56 @@ func freeze():
 			t += get_process_delta_time()
 			audio.pitch_scale = lerp(target_pitch, 1.0, t / transition_time)
 			await get_tree().process_frame
-		audio.pitch_scale = 1.0  # reset pitch
+		audio.pitch_scale = 1.0 # reset pitch
 
-	$Sprite2D.modulate = Color(1, 1, 1)  # back to normal
+	$Sprite2D.modulate = original_modulate # back to normal (or rainbow if invincible)
+
+func _on_invincibility_started():
+	print("DEBUG: Player invincibility started - starting rainbow effect!")
+	start_rainbow_effect()
+
+func _on_invincibility_ended():
+	print("DEBUG: Player invincibility ended - stopping rainbow effect!")
+	stop_rainbow_effect()
+
+func _on_speed_boost_started():
+	print("DEBUG: Player speed boost started - starting echo effect!")
+	start_echo_effect()
+
+func _on_speed_boost_ended():
+	print("DEBUG: Player speed boost ended - stopping echo effect!")
+	stop_echo_effect()
+
+func start_rainbow_effect():
+	# Create rainbow color cycling effect
+	if rainbow_tween:
+		rainbow_tween.kill()
+	
+	rainbow_tween = create_tween()
+	rainbow_tween.set_loops() # Loop infinitely
+	
+	# Define rainbow colors (like Mario star power)
+	var rainbow_colors = [
+		Color(1.0, 0.6, 0.6, 0.6), # Light Red/Pink
+		Color(1.0, 0.8, 0.4, 0.6), # Light Orange
+		Color(1.0, 1.0, 0.6, 0.6), # Light Yellow
+		Color(0.6, 1.0, 0.6, 0.6), # Light Green
+		Color(0.6, 0.8, 1.0, 0.6), # Light Blue
+		Color(0.8, 0.6, 1.0, 0.6), # Light Purple
+		Color(1.0, 0.6, 1.0, 0.6) # Light Magenta
+	]
+	
+	# Cycle through rainbow colors quickly
+	for color in rainbow_colors:
+		rainbow_tween.tween_property($Sprite2D, "modulate", color, 0.15)
+
+func stop_rainbow_effect():
+	# Stop rainbow effect and return to normal
+	if rainbow_tween:
+		rainbow_tween.kill()
+		rainbow_tween = null
+	
+	$Sprite2D.modulate = original_modulate
 
 	
 func bounce_back_from_wall(wall_pos):
@@ -119,28 +197,46 @@ func disable_puck_shooting():
 	can_shoot_puck = false
 	
 func shoot_puck():
-	if not can_shoot_puck or active_pucks >= max_active_pucks:
-		return  # Can't shoot if puck shooting is disabled or max pucks active
+	# Check if unlimited pucks powerup is active
+	var has_unlimited = PowerUpManager and PowerUpManager.has_unlimited_pucks()
+	
+	if not can_shoot_puck or (not has_unlimited and active_pucks >= max_active_pucks):
+		return # Can't shoot if puck shooting is disabled or max pucks active (unless unlimited)
 	
 	var puck = puck_scene.instantiate()
 	get_parent().add_child(puck)
 	puck.global_position = $Stick.global_position
+	
+	# Check if fire pucks powerup is active
+	if PowerUpManager and PowerUpManager.has_fire_pucks():
+		# Make this puck a fire puck (assuming puck has a method for this)
+		if puck.has_method("set_fire_mode"):
+			puck.set_fire_mode(true)
+		PowerUpManager.consume_fire_puck()
 	
 	active_pucks += 1
 	if puck_counter:
 		puck_counter.update_puck_count(max_active_pucks, active_pucks)
 	
 	can_shoot_puck = false
-	puck_cooldown_timer = puck_cooldown  # Reset cooldown timer
+	puck_cooldown_timer = puck_cooldown # Reset cooldown timer
 
 func _physics_process(delta):
 	if is_frozen:
 		frozen_timer -= delta
 		if frozen_timer <= 0:
 			is_frozen = false
-			$Sprite2D.modulate = Color(1, 1, 1)  # back to normal
-		return  # skip movement while frozen
-		
+			$Sprite2D.modulate = original_modulate # back to normal (or rainbow if invincible)
+		return # skip movement while frozen
+	
+	# Handle echo effect timer for speed boost
+	if speed_boost_echo_active:
+		echo_timer -= delta
+		if echo_timer <= 0:
+			print("DEBUG: Echo timer triggered! Velocity: ", velocity.length())
+			create_movement_echo()
+			echo_timer = echo_interval # Reset timer
+	
 	var input_direction = Vector2.ZERO
 	if Input.is_action_pressed("ui_left"):
 		input_direction.x -= 1
@@ -152,11 +248,16 @@ func _physics_process(delta):
 		if Input.is_action_pressed("ui_down"):
 			input_direction.y += 1
 
+	# Get speed multiplier from PowerUpManager
+	var speed_multiplier = 1.0
+	if PowerUpManager:
+		speed_multiplier = PowerUpManager.get_speed_multiplier()
+
 	# -- Movement Physics --
 	# Horizontal
 	if input_direction.x != 0:
 		last_direction = sign(input_direction.x)
-		velocity.x += input_direction.x * acceleration * delta
+		velocity.x += input_direction.x * acceleration * speed_multiplier * delta
 	else:
 		# Apply friction to gradually stop
 		if abs(velocity.x) < friction * delta:
@@ -164,28 +265,40 @@ func _physics_process(delta):
 		else:
 			velocity.x -= sign(velocity.x) * friction * delta
 			
-	# clamp max horizontal speed
-	velocity.x = clamp(velocity.x, -max_speed, max_speed)
+	# clamp max horizontal speed (with speed multiplier)
+	var current_max_speed = max_speed * speed_multiplier
+	velocity.x = clamp(velocity.x, -current_max_speed, current_max_speed)
 	
 	# Vertical
 	if can_move_up:
 		if input_direction.y != 0:
-			velocity.y += input_direction.y * acceleration * delta
+			velocity.y += input_direction.y * acceleration * speed_multiplier * delta
 		else:
 			if abs(velocity.y) < friction * delta:
 				velocity.y = 0
 			else:
 				velocity.y -= sign(velocity.y) * friction * delta
 				
-			velocity.y = clamp(velocity.y, -max_speed, max_speed)
+			velocity.y = clamp(velocity.y, -current_max_speed, current_max_speed)
 	else:
 		velocity.y = 0
 
 	move_and_slide()
 	
+	# Store position before clamping to detect edge collisions
+	var old_position = position
+	
 	# clamp player movement to screen bounds
 	position.x = clamp(position.x, 0, stage_width)
 	position.y = clamp(position.y, 0, stage_height)
+	
+	# Reset velocity if player hit the screen bounds
+	if old_position.x != position.x:
+		# Hit left or right edge, stop horizontal momentum
+		velocity.x = 0
+	if old_position.y != position.y:
+		# Hit top or bottom edge, stop vertical momentum
+		velocity.y = 0
 	
 	# -- Player Hitbox --
 	var hitbox = $CollisionShape2D.shape
@@ -211,7 +324,7 @@ func _physics_process(delta):
 	if is_stick_pushing:
 		# Calculate smooth progress (ease out)
 		progress = 1.0 - (stick_push_timer / stick_push_duration)
-		progress = ease(progress, 0.5)  # Smooth easing function
+		progress = ease(progress, 0.5) # Smooth easing function
 	
 	# Interpolate between base and extended position
 	var stick_offset = stick_base_offset.lerp(stick_extended_offset, progress)
@@ -222,13 +335,13 @@ func _physics_process(delta):
 	
 	$Stick.position = stick_offset
 	$Stick.rotation = stick_rotation
-	$Stick.scale.x = last_direction  # Flip the stick sprite to face correct side
+	$Stick.scale.x = last_direction # Flip the stick sprite to face correct side
 	
 	# -- Puck Shooting --
 	if not can_shoot_puck:
 		puck_cooldown_timer -= delta
 		if puck_cooldown_timer <= 0:
-			can_shoot_puck = true  # Re-enable puck shooting after cooldown
+			can_shoot_puck = true # Re-enable puck shooting after cooldown
 	else:
 		# Check if the player is trying to shoot a puck
 		if Input.is_action_just_pressed("shoot_puck"):
@@ -240,7 +353,7 @@ func _on_hitbox_body_entered(body):
 		
 func puck_destroyed():
 	# Called when a puck is destroyed or goes out of bounds
-	active_pucks = max(0, active_pucks - 1)  # Ensure it never goes below 0
+	active_pucks = max(0, active_pucks - 1) # Ensure it never goes below 0
 	if puck_counter:
 		puck_counter.update_puck_count(max_active_pucks, active_pucks)
 	
@@ -248,14 +361,14 @@ func show_game_over():
 	# Slow down background music
 	var audio = $"../audio/BossMusic"
 	if audio:
-		var target_pitch = 0.5  # Slow to half speed
+		var target_pitch = 0.5 # Slow to half speed
 		
 		# Immediately set half speed if we can't do smooth transition
 		if not is_inside_tree() or get_tree() == null:
 			audio.pitch_scale = target_pitch
 		else:
 			# Try to create a smooth transition for music slowdown
-			var transition_time = 1.0  # seconds for smooth transition
+			var transition_time = 1.0 # seconds for smooth transition
 			var tween = create_tween()
 			tween.tween_property(audio, "pitch_scale", target_pitch, transition_time)
 			# Wait for the tween to finish
@@ -271,11 +384,86 @@ func show_game_over():
 	get_tree().get_current_scene().add_child(game_over_instance)
 	
 	# Don't remove player yet - let the game over screen handle restarting
-	visible = false  # Hide the player
+	visible = false # Hide the player
 	set_process(false)
 	set_physics_process(false)
-
 
 func _on_visible_on_screen_notifier_2d_screen_exited() -> void:
 	puck_destroyed()
 	pass # Replace with function body.
+
+func start_echo_effect():
+	speed_boost_echo_active = true
+	echo_timer = echo_interval # Start creating echoes immediately
+	echo_color_index = 0 # Reset to start with red
+	print("DEBUG: Echo effect started! Active: ", speed_boost_echo_active)
+
+func stop_echo_effect():
+	speed_boost_echo_active = false
+	echo_timer = 0.0
+	print("DEBUG: Echo effect stopped! Active: ", speed_boost_echo_active, " Cleaning up ", echo_sprites.size(), " echoes")
+	# Clean up any remaining echo sprites
+	cleanup_echo_sprites()
+
+func create_movement_echo():
+	# Only create echo if player is actually moving
+	if velocity.length() < 10.0: # Don't create echo if barely moving
+		return
+	
+	print("DEBUG: Creating movement echo at position: ", global_position)
+		
+	var echo = Sprite2D.new()
+	echo.texture = $Sprite2D.texture
+	echo.global_position = global_position
+	echo.scale = $Sprite2D.scale * 1.1 # Make echoes slightly larger for visibility
+	echo.rotation = $Sprite2D.rotation
+	
+	# Rainbow colors cycling like invincibility effect
+	var rainbow_colors = [
+		Color(1.0, 0.6, 0.6, 0.6), # Light Red/Pink
+		Color(1.0, 0.8, 0.4, 0.6), # Light Orange
+		Color(1.0, 1.0, 0.6, 0.6), # Light Yellow
+		Color(0.6, 1.0, 0.6, 0.6), # Light Green
+		Color(0.6, 0.8, 1.0, 0.6), # Light Blue
+		Color(0.8, 0.6, 1.0, 0.6), # Light Purple
+		Color(1.0, 0.6, 1.0, 0.6) # Light Magenta
+	]
+	
+	# Use the next color in the cycle (like invincibility rainbow)
+	echo.modulate = rainbow_colors[echo_color_index]
+	echo_color_index = (echo_color_index + 1) % rainbow_colors.size() # Cycle to next color
+	echo.z_index = 10 # Above most things but below UI (reduced from test value)
+	
+	# Add to parent (the scene) instead of player so it doesn't move with player
+	get_parent().add_child(echo)
+	echo_sprites.append(echo)
+	
+	print("DEBUG: Echo created with color: ", echo.modulate, " Total echoes: ", echo_sprites.size(), " z_index: ", echo.z_index)
+	
+	# Immediately move the echo to its static position since it's added to the scene
+	echo.global_position = global_position
+	
+	# Fade out the echo over time
+	var fade_tween = create_tween()
+	fade_tween.tween_property(echo, "modulate:a", 0.0, 1.2) # Fade over 1.2 seconds (longer)
+	fade_tween.tween_callback(func(): remove_echo_sprite(echo))
+	
+	# Clean up old echoes if we have too many
+	if echo_sprites.size() > 15: # Max 15 echoes at once (more echoes)
+		var old_echo = echo_sprites.pop_front()
+		if is_instance_valid(old_echo):
+			old_echo.queue_free()
+
+func remove_echo_sprite(echo_sprite: Sprite2D):
+	# Remove from our tracking array and free the sprite
+	if echo_sprite in echo_sprites:
+		echo_sprites.erase(echo_sprite)
+	if is_instance_valid(echo_sprite):
+		echo_sprite.queue_free()
+
+func cleanup_echo_sprites():
+	# Clean up all remaining echo sprites
+	for echo in echo_sprites:
+		if is_instance_valid(echo):
+			echo.queue_free()
+	echo_sprites.clear()

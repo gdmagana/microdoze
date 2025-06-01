@@ -5,7 +5,7 @@
 
 [node name="FirePucksPowerUp" instance=ExtResource("1_base")]
 script = ExtResource("2_script")
-fire_puck_count = 3
+fire_duration = 3.0
 
 [node name="Sprite2D" parent="." index="0"]
 modulate = Color(1, 0.5, 0, 1)

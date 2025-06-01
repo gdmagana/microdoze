@@ -23,7 +23,7 @@ var unlimited_pucks_timer := 0.0
 
 # Fire pucks effect
 var fire_pucks_active := false
-var fire_pucks_remaining := 0
+var fire_pucks_timer := 0.0
 
 # Invincibility effect
 var invincibility_active := false
@@ -50,6 +50,12 @@ func _process(delta):
 		unlimited_pucks_timer -= delta
 		if unlimited_pucks_timer <= 0:
 			end_unlimited_pucks()
+	
+	# Handle fire pucks timer
+	if fire_pucks_active:
+		fire_pucks_timer -= delta
+		if fire_pucks_timer <= 0:
+			end_fire_pucks()
 	
 	# Handle invincibility timer
 	if invincibility_active:
@@ -86,27 +92,21 @@ func has_unlimited_pucks() -> bool:
 	return unlimited_pucks_active
 
 # Fire Pucks PowerUp
-func activate_fire_pucks(puck_count: int = 3):
+func activate_fire_pucks(duration: float = 3.0):
 	fire_pucks_active = true
-	fire_pucks_remaining = puck_count
+	fire_pucks_timer = duration
 	fire_pucks_started.emit()
-
-func consume_fire_puck():
-	if fire_pucks_active:
-		fire_pucks_remaining -= 1
-		if fire_pucks_remaining <= 0:
-			end_fire_pucks()
 
 func end_fire_pucks():
 	fire_pucks_active = false
-	fire_pucks_remaining = 0
+	fire_pucks_timer = 0.0
 	fire_pucks_ended.emit()
 
 func has_fire_pucks() -> bool:
-	return fire_pucks_active and fire_pucks_remaining > 0
+	return fire_pucks_active and fire_pucks_timer > 0
 
-func get_fire_pucks_remaining() -> int:
-	return fire_pucks_remaining
+func get_fire_pucks_remaining() -> float:
+	return fire_pucks_timer
 
 # Invincibility PowerUp
 func activate_invincibility(duration: float = 5.0):

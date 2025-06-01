@@ -105,7 +105,8 @@ func _on_body_entered(body):
 	if body.is_in_group("puck"):
 		# Use call_deferred to avoid changing physics state during physics processing
 		call_deferred("take_damage")
-		body.queue_free()
+		if body.has_method("destroy_puck"):
+			body.destroy_puck()
 		
 
 	if body.is_in_group("ice_cube"):

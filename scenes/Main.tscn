@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://b7mu1034wh12b" path="res://scenes/Player.tscn" id="1_glv2v"]
 [ext_resource type="Texture2D" uid="uid://du4d4rqryad3h" path="res://assets/freezer/snow_texture.jpg" id="1_vcsgt"]
-[ext_resource type="PackedScene" uid="uid://do281nd83ggn3" path="res://scenes/PuckCounter.tscn" id="3_q8u5g"]
+[ext_resource type="PackedScene" path="res://scenes/PuckCounter.tscn" id="3_q8u5g"]
 [ext_resource type="PackedScene" uid="uid://drb605l5hvpfw" path="res://scenes/ice_cream_boss.tscn" id="4_rarhs"]
 [ext_resource type="PackedScene" uid="uid://bsdi5day054n2" path="res://scenes/HealthUI.tscn" id="5_healthui"]
 [ext_resource type="AudioStream" uid="uid://dsuur5ttlumq7" path="res://assets/audio/microdozeTheme2.wav" id="7_nxtc6"]

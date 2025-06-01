@@ -63,6 +63,14 @@ func accelerate(multiplier: float):
 	
 	# Turn the puck red briefly to indicate acceleration
 	flash_red()
+	
+func destroy_puck():
+	# Notify player to remove a puck from the active count
+	var player = get_tree().get_current_scene().find_child("Player", true, false)
+	if player and player.has_method("puck_destroyed"):
+		player.puck_destroyed()
+	queue_free()
+	
 
 func flash_red():
 	var original_modulate = self.modulate
@@ -87,8 +95,4 @@ func _physics_process(_delta):
 	linear_velocity = linear_velocity.normalized() * max(speed, min_speed)
 
 func _on_screen_exited():
-	# Notify the player that this puck is being destroyed
-	var player = get_tree().get_current_scene().find_child("Player", true, false)
-	if player and player.has_method("puck_destroyed"):
-		player.puck_destroyed()
-	queue_free()
+	destroy_puck()

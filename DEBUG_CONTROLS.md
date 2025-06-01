@@ -21,7 +21,6 @@ For faster testing and debugging, you can skip the long narrative intro sequence
 3. Run the game - clicking "Start" will skip directly to the boss fight
 
 #### Option 2: Toggle During Gameplay
-- **F9**: Toggle narrative intro skip on/off
 - **F10**: Jump directly to game from anywhere (emergency debug)
 
 #### Option 3: In Inspector (After AutoLoad Setup)
@@ -38,15 +37,13 @@ DEBUG: Debug settings loaded
   Skip narrative intro: true
   Powerup debug UI: true
   Debug logs: true
-  Press F9 to toggle narrative skip during gameplay
 ```
 
 ### Quick Testing Workflow
 
 1. **First time setup**: Add DebugSettings to AutoLoad
 2. **For development**: Set `skip_narrative_intro := true` in the script
-3. **For testing**: Use F9 to toggle without code changes
-4. **Emergency**: Press F10 to jump to game from any scene
+3. **Emergency**: Press F10 to jump to game from any scene
 
 ### Other Debug Features
 
@@ -59,4 +56,4 @@ DEBUG: Debug settings loaded
 Before releasing the game:
 1. Set `skip_narrative_intro := false`
 2. Remove DebugSettings from AutoLoad (or keep it with skip disabled)
-3. Remove F9/F10 input handling if desired 
+3. Remove F10 input handling if desired 

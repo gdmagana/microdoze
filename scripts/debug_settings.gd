@@ -15,13 +15,8 @@ func _ready():
 	print("  Skip narrative intro: ", skip_narrative_intro)
 	print("  Powerup debug UI: ", enable_powerup_debug_ui)
 	print("  Debug logs: ", show_debug_logs)
-	print("  Press F9 to toggle narrative skip during gameplay")
 
 func _input(event):
-	# F9 to toggle narrative intro skip
-	if event is InputEventKey and event.pressed and event.keycode == KEY_F9:
-		toggle_narrative_skip()
-	
 	# F10 to go directly to game from anywhere (debug)
 	if event is InputEventKey and event.pressed and event.keycode == KEY_F10:
 		print("DEBUG: F10 pressed - jumping directly to game!")

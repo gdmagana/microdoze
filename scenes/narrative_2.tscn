@@ -1,0 +1,58 @@
+[gd_scene load_steps=6 format=3 uid="uid://1og8gmf0hxy2"]
+
+[ext_resource type="Texture2D" uid="uid://ctrc2aqacldld" path="res://assets/narrative/kitchen_wide.png" id="1_evbwb"]
+[ext_resource type="Script" uid="uid://cugy4p78xg4fc" path="res://scenes/narrative_2.gd" id="1_lw8mg"]
+[ext_resource type="Texture2D" uid="uid://b2fn5knoj3pmq" path="res://assets/narrative/characters/main_character_two.png" id="2_lw8mg"]
+[ext_resource type="Script" uid="uid://cjetl0qsi6j01" path="res://scenes/text_scene_2.gd" id="4_yw02q"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_lw8mg"]
+
+[node name="NarrativeTwo" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lw8mg")
+
+[node name="KitchenWide" type="Sprite2D" parent="."]
+position = Vector2(538.5, 639.5)
+scale = Vector2(1.05957, 0.832682)
+texture = ExtResource("1_evbwb")
+
+[node name="MainCharacter" type="Sprite2D" parent="."]
+position = Vector2(241, 970)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("2_lw8mg")
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="Control" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("4_yw02q")
+
+[node name="TextureRect2" type="TextureRect" parent="Control"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 324.0
+offset_right = 494.0
+offset_bottom = 522.0
+texture = SubResource("CanvasTexture_lw8mg")
+
+[node name="Label" type="Label" parent="Control"]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 0
+offset_left = 102.0
+offset_top = 337.0
+offset_right = 492.0
+offset_bottom = 504.0
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Timer" type="Timer" parent="Control"]
+
+[connection signal="timeout" from="Control/Timer" to="Control" method="_on_Timer_timeout"]

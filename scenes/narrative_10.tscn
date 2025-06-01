@@ -1,0 +1,66 @@
+[gd_scene load_steps=7 format=3 uid="uid://4cx12o5hds78"]
+
+[ext_resource type="Script" uid="uid://dq41n3ffk1glt" path="res://scenes/narrative_10.gd" id="1_pxlqj"]
+[ext_resource type="Texture2D" uid="uid://ctrc2aqacldld" path="res://assets/narrative/kitchen_wide.png" id="2_s0bn7"]
+[ext_resource type="Texture2D" uid="uid://b2fn5knoj3pmq" path="res://assets/narrative/characters/main_character_two.png" id="3_qsijs"]
+[ext_resource type="Texture2D" uid="uid://cwdfs7f2tflts" path="res://assets/narrative/characters/frat_bro_shocked.png" id="4_41jqj"]
+[ext_resource type="Script" uid="uid://cjetl0qsi6j01" path="res://scenes/text_scene_2.gd" id="5_41jqj"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_6l8a8"]
+
+[node name="NarrativeTen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_pxlqj")
+
+[node name="KitchenWide" type="Sprite2D" parent="."]
+position = Vector2(538.5, 638.5)
+scale = Vector2(1.05957, 0.833984)
+texture = ExtResource("2_s0bn7")
+
+[node name="MainCharacter" type="Sprite2D" parent="."]
+position = Vector2(241, 970)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("3_qsijs")
+
+[node name="FratBroShocked" type="Sprite2D" parent="."]
+position = Vector2(749, 959)
+scale = Vector2(0.65, 0.65)
+texture = ExtResource("4_41jqj")
+flip_h = true
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("5_41jqj")
+
+[node name="TextureRect2" type="TextureRect" parent="Control"]
+layout_mode = 0
+offset_left = 530.0
+offset_top = 336.0
+offset_right = 892.0
+offset_bottom = 512.0
+texture = SubResource("CanvasTexture_6l8a8")
+
+[node name="Label" type="Label" parent="Control"]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 0
+offset_left = 560.0
+offset_top = 349.0
+offset_right = 859.0
+offset_bottom = 494.0
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Timer" type="Timer" parent="Control"]
+
+[connection signal="timeout" from="Control/Timer" to="Control" method="_on_Timer_timeout"]

@@ -1,0 +1,72 @@
+[gd_scene load_steps=8 format=3 uid="uid://0ku1p68i15s6"]
+
+[ext_resource type="Texture2D" uid="uid://ctrc2aqacldld" path="res://assets/narrative/kitchen_wide.png" id="1_6lr15"]
+[ext_resource type="Script" uid="uid://eoa03n2r07un" path="res://scenes/narrative_7.gd" id="1_a7b67"]
+[ext_resource type="Texture2D" uid="uid://b2fn5knoj3pmq" path="res://assets/narrative/characters/main_character_two.png" id="2_a7b67"]
+[ext_resource type="Texture2D" uid="uid://x4utwuqk2014" path="res://assets/narrative/characters/frat_bro.png" id="3_cqi0c"]
+[ext_resource type="Texture2D" uid="uid://g5yvw20sy1ra" path="res://assets/narrative/items/mystical_object.png" id="4_6cluu"]
+[ext_resource type="Script" uid="uid://cjetl0qsi6j01" path="res://scenes/text_scene_2.gd" id="6_7i67u"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_1uuqs"]
+
+[node name="NarrativeSeven" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_a7b67")
+
+[node name="KitchenWide" type="Sprite2D" parent="."]
+position = Vector2(538.5, 638.5)
+scale = Vector2(1.05957, 0.833984)
+texture = ExtResource("1_6lr15")
+
+[node name="MainCharacter" type="Sprite2D" parent="."]
+position = Vector2(241, 970)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("2_a7b67")
+
+[node name="FratBro" type="Sprite2D" parent="."]
+position = Vector2(728, 973)
+scale = Vector2(0.65, 0.65)
+texture = ExtResource("3_cqi0c")
+flip_h = true
+
+[node name="MysticalObject" type="Sprite2D" parent="."]
+position = Vector2(357, 1138)
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("4_6cluu")
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("6_7i67u")
+
+[node name="TextureRect2" type="TextureRect" parent="Control"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 324.0
+offset_right = 494.0
+offset_bottom = 522.0
+texture = SubResource("CanvasTexture_1uuqs")
+
+[node name="Label" type="Label" parent="Control"]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 0
+offset_left = 102.0
+offset_top = 337.0
+offset_right = 492.0
+offset_bottom = 504.0
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Timer" type="Timer" parent="Control"]
+
+[connection signal="timeout" from="Control/Timer" to="Control" method="_on_Timer_timeout"]

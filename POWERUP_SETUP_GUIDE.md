@@ -41,10 +41,11 @@ This makes PowerUpManager globally accessible throughout your game.
 - **Default Weight**: 1.0
 
 #### Fire Pucks PowerUp (Orange colored)
-- **Effect**: Next 3 pucks deal double damage and have fire visual effect
-- **Count**: 3 pucks (configurable)  
+- **Effect**: All pucks shot have 1.4x speed for the next 3 seconds, plus pucks hit by stick get additional 1.4x speed boost, with fire visual effect on player's stick
+- **Duration**: 3 seconds (configurable)  
 - **Scene**: `scenes/FirePucksPowerUp.tscn`
-- **Visual**: Small orange puck icon inside ice cubes
+- **Visual**: Small orange puck icon inside ice cubes + flickering fire effect on player's stick when active + orange flash on accelerated pucks
+- **Speed Cap**: Pucks are capped at 2.5x base speed (750 units) for balanced gameplay
 - **Default Weight**: 1.0
 
 #### Invincibility PowerUp (White colored)

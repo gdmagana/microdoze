@@ -1,6 +1,6 @@
-[gd_scene load_steps=9 format=3 uid="uid://d0tpf610qaybv"]
+[gd_scene load_steps=9 format=3 uid="uid://dnv3i4cl0oxut"]
 
-[ext_resource type="Script" uid="uid://c0yua44easpeu" path="res://scenes/narrative_eight.gd" id="1_go085"]
+[ext_resource type="Script" path="res://scenes/narrative_eight.gd" id="1_go085"]
 [ext_resource type="Texture2D" uid="uid://ctrc2aqacldld" path="res://assets/narrative/kitchen_wide.png" id="2_ipro4"]
 [ext_resource type="Texture2D" uid="uid://garlhcligbug" path="res://assets/narrative/characters/main_character_eat.png" id="4_wiw72"]
 [ext_resource type="Texture2D" uid="uid://cwdfs7f2tflts" path="res://assets/narrative/characters/frat_bro_shocked.png" id="5_go085"]

@@ -75,7 +75,7 @@ func _process(_delta):
 		
 		# Fire pucks
 		if PowerUpManager.fire_pucks_active:
-			fire_label.text = "Fire Pucks: ON (%d left)" % PowerUpManager.fire_pucks_remaining
+			fire_label.text = "Fire Pucks: ON (%.1fs)" % PowerUpManager.fire_pucks_timer
 		else:
 			fire_label.text = "Fire Pucks: OFF"
 		

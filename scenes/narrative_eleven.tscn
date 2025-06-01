@@ -1,7 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://bvq2bv1jmsjwb"]
+[gd_scene load_steps=8 format=3 uid="uid://bjyeek41pmiv0"]
 
 [ext_resource type="Texture2D" uid="uid://ctrc2aqacldld" path="res://assets/narrative/kitchen_wide.png" id="1_t4g1w"]
-[ext_resource type="Script" uid="uid://b28nu71rh3oox" path="res://scenes/narrative_eleven.gd" id="1_tubme"]
+[ext_resource type="Script" path="res://scenes/narrative_eleven.gd" id="1_tubme"]
 [ext_resource type="Texture2D" uid="uid://b2fn5knoj3pmq" path="res://assets/narrative/characters/main_character_two.png" id="2_sn0ci"]
 [ext_resource type="Texture2D" uid="uid://ckk1rs0v8o008" path="res://assets/narrative/kitchen_trippy.png" id="2_tubme"]
 

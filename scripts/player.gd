@@ -29,6 +29,10 @@ var echo_interval := 0.05 # Create echo every 0.05 seconds (faster)
 var speed_boost_echo_active := false
 var echo_color_index := 0 # Track current color in rainbow cycle
 
+# Fire pucks stick effect
+var fire_stick_tween: Tween
+var stick_original_modulate: Color
+
 # -- Stick --
 var last_direction := 1 # 1 = right, -1 = left
 var stick_push_timer := 0.0
@@ -66,12 +70,17 @@ func _ready():
 	# Store original color for rainbow effect
 	original_modulate = $Sprite2D.modulate
 	
+	# Store original colors for effects
+	stick_original_modulate = $Stick.modulate
+	
 	# Connect to PowerUpManager signals if available
 	if PowerUpManager:
 		PowerUpManager.invincibility_started.connect(_on_invincibility_started)
 		PowerUpManager.invincibility_ended.connect(_on_invincibility_ended)
 		PowerUpManager.speed_boost_started.connect(_on_speed_boost_started)
 		PowerUpManager.speed_boost_ended.connect(_on_speed_boost_ended)
+		PowerUpManager.fire_pucks_started.connect(_on_fire_pucks_started)
+		PowerUpManager.fire_pucks_ended.connect(_on_fire_pucks_ended)
 
 func take_damage(amount := 1):
 	# Check if player is invincible
@@ -151,6 +160,14 @@ func _on_speed_boost_ended():
 	print("DEBUG: Player speed boost ended - stopping echo effect!")
 	stop_echo_effect()
 
+func _on_fire_pucks_started():
+	print("DEBUG: Player fire pucks started - starting fire stick effect!")
+	start_fire_stick_effect()
+
+func _on_fire_pucks_ended():
+	print("DEBUG: Player fire pucks ended - stopping fire stick effect!")
+	stop_fire_stick_effect()
+
 func start_rainbow_effect():
 	# Create rainbow color cycling effect
 	if rainbow_tween:
@@ -207,12 +224,14 @@ func shoot_puck():
 	get_parent().add_child(puck)
 	puck.global_position = $Stick.global_position
 	
-	# Check if fire pucks powerup is active
+	# Check if fire pucks powerup is active - increase the puck speed
 	if PowerUpManager and PowerUpManager.has_fire_pucks():
-		# Make this puck a fire puck (assuming puck has a method for this)
-		if puck.has_method("set_fire_mode"):
+		# 1.4x speed boost instead of setting fire mode
+		if puck.has_method("set_speed_multiplier"):
+			puck.set_speed_multiplier(1.4)
+		elif puck.has_method("set_fire_mode"):
+			# Fallback: use fire mode for visual effect if speed multiplier not available
 			puck.set_fire_mode(true)
-		PowerUpManager.consume_fire_puck()
 	
 	active_pucks += 1
 	if puck_counter:
@@ -467,3 +486,26 @@ func cleanup_echo_sprites():
 		if is_instance_valid(echo):
 			echo.queue_free()
 	echo_sprites.clear()
+
+func start_fire_stick_effect():
+	# Create fire effect on the stick
+	if fire_stick_tween:
+		fire_stick_tween.kill()
+	
+	fire_stick_tween = create_tween()
+	fire_stick_tween.set_loops() # Loop infinitely
+	
+	# Flicker between orange and red fire colors
+	var fire_orange = Color(1.0, 0.6, 0.0) # Orange fire
+	var fire_red = Color(1.0, 0.2, 0.0) # Red fire
+	
+	fire_stick_tween.tween_property($Stick, "modulate", fire_red, 0.1)
+	fire_stick_tween.tween_property($Stick, "modulate", fire_orange, 0.1)
+
+func stop_fire_stick_effect():
+	# Stop fire effect and restore original stick color
+	if fire_stick_tween:
+		fire_stick_tween.kill()
+		fire_stick_tween = null
+	
+	$Stick.modulate = stick_original_modulate

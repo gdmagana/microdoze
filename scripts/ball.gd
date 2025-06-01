@@ -4,7 +4,7 @@ extends RigidBody2D
 
 @export var initial_speed := 300.0
 @export var min_speed := 100.0
-@export var max_speed := 800.0 # Maximum allowed speed
+@export var max_speed := 750.0 # Maximum allowed speed (2.5x base speed)
 @export var max_lateral_speed := 400.0
 @export var min_lateral_speed := 80.0
 @export var lateral_damp := 0.98
@@ -13,13 +13,16 @@ extends RigidBody2D
 # Fire mode properties
 var is_fire_mode := false
 var fire_damage_multiplier := 2.0
+var speed_multiplier := 1.0 # For fire pucks speed boost
 
 func _ready():
 	add_to_group("puck")
 	gravity_scale = 0
 	# Launch in a random direction
 	var angle = randf_range(-PI / 4, -3 * PI / 4) # upward
-	linear_velocity = Vector2(cos(angle), sin(angle)) * initial_speed
+	var launch_speed = initial_speed * speed_multiplier # Apply speed multiplier
+	linear_velocity = Vector2(cos(angle), sin(angle)) * launch_speed
+	speed = launch_speed # Update the speed variable too
 	$VisibleOnScreenNotifier2D.connect("screen_exited", Callable(self, "_on_screen_exited"))
 
 func set_fire_mode(enabled: bool):
@@ -55,15 +58,26 @@ func _on_body_entered(body):
 		
 
 func accelerate(multiplier: float):
-	# Update the ball's speed with the multiplier
-	speed = min(speed * multiplier, max_speed)
+	# Check if fire pucks powerup is active for additional speed boost
+	var fire_boost = 1.0
+	if PowerUpManager and PowerUpManager.has_fire_pucks():
+		fire_boost = 1.4
+		print("DEBUG: Fire pucks active! Applying 1.4x speed boost to accelerated puck")
+	
+	# Update the ball's speed with the multiplier and fire boost
+	var total_multiplier = multiplier * fire_boost
+	speed = min(speed * total_multiplier, max_speed)
 	$"../audio/Yay1".play()
+	
 	# Immediately apply the new speed while maintaining direction
 	linear_velocity = linear_velocity.normalized() * speed
 	
-	# Turn the puck red briefly to indicate acceleration
-	flash_red()
-	
+	# Turn the puck red briefly to indicate acceleration, or orange if fire boosted
+	if fire_boost > 1.0:
+		flash_orange() # Fire effect
+	else:
+		flash_red() # Normal acceleration
+
 func destroy_puck():
 	# Notify player to remove a puck from the active count
 	var player = get_tree().get_current_scene().find_child("Player", true, false)
@@ -75,6 +89,12 @@ func destroy_puck():
 func flash_red():
 	var original_modulate = self.modulate
 	self.modulate = Color(1, 0, 0) # Red
+	await get_tree().create_timer(0.3).timeout
+	self.modulate = original_modulate
+
+func flash_orange():
+	var original_modulate = self.modulate
+	self.modulate = Color(1.0, 0.6, 0.0) # Orange fire color
 	await get_tree().create_timer(0.3).timeout
 	self.modulate = original_modulate
 
@@ -96,3 +116,11 @@ func _physics_process(_delta):
 
 func _on_screen_exited():
 	destroy_puck()
+
+func set_speed_multiplier(multiplier: float):
+	speed_multiplier = multiplier
+	# If already launched, apply speed boost immediately
+	if linear_velocity.length() > 0:
+		speed *= multiplier
+		linear_velocity = linear_velocity.normalized() * speed
+		print("DEBUG: Puck speed boosted to: ", speed)

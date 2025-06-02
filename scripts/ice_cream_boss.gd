@@ -49,6 +49,9 @@ func _ready():
 	
 	# Load powerup scenes
 	_load_powerup_scenes()
+	
+	# Hide dialog panel initially
+	$BossDialog1.visible = false
 
 func _load_powerup_scenes():
 	# Load all available powerup scenes with their corresponding weights
@@ -139,25 +142,6 @@ func _on_Timer_timeout():
 		projectile.global_position = global_position
 		projectile.velocity = direction * throw_speed
 
-func take_damage(amount := 1):
-	hits_to_ice_wall_rage -= amount
-	# Play damage sound if we can find one
-	# if get_node_or_null("../audio/Pain1") != null:
-	
-	# Update sprite for new health state
-	update_sprite_for_health_state()
-	
-	# Flash red
-	damage_flash()
-	
-	# Do wave that kills nearby pucks??
-	
-	if not is_raging and hits_to_ice_wall_rage == 0:
-		rage()
-	else:
-		throw_ice_wall(-200)
-
-# Update the boss sprite based on current health state
 func update_sprite_for_health_state():
 	var current_texture: Texture2D = null
 	
@@ -178,6 +162,132 @@ func update_sprite_for_health_state():
 	if current_texture != null:
 		$Sprite2D.texture = current_texture
 
+func take_damage(amount := 1):
+	hits_to_ice_wall_rage -= amount
+	
+	# Play damage sound if we can find one
+	# if get_node_or_null("../audio/Pain1") != null:
+	
+	# Update sprite for new health state
+	update_sprite_for_health_state()
+	
+	# Flash red
+	damage_flash()
+
+	# Dramatic pause, zoom, and dialog sequence
+	call_deferred("dramatic_damage_sequence")
+	
+	# Do wave that kills nearby pucks??
+	
+	if not is_raging and hits_to_ice_wall_rage == 0:
+		rage()
+	else:
+		throw_ice_wall(-200)
+
+func dramatic_damage_sequence():
+# Sequence: pause, zoom, dialog, unzoom, resume
+	# Ensure this function is called in a deferred manner to avoid issues with physics processing
+	await get_tree().create_timer(0.1).timeout
+	
+	# If the boss is already raging, just flash and return
+	if is_raging:
+		damage_flash()
+		return
+	
+	# Start the dramatic damage sequence
+	await _dramatic_damage_sequence()
+
+
+func _dramatic_damage_sequence():
+	# Make ourselves immune to pausing temporarily
+	var _original_process_mode = process_mode
+	process_mode = Node.PROCESS_MODE_ALWAYS
+
+	# Store current scene elements
+	var camera = get_viewport().get_camera_2d()
+	var original_zoom = camera.zoom if camera else Vector2(1, 1)
+	var original_camera_pos = camera.global_position if camera else Vector2.ZERO
+	
+	var dialog_panel = $BossDialog1
+	var dialog_label = $BossDialog1/BossDialog1Label
+
+	# Update the label properties and text
+	dialog_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	dialog_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	dialog_label.add_theme_font_size_override("font_size", 24)
+	dialog_label.add_theme_color_override("font_color", Color(1, 1, 1))
+	dialog_label.text = "Your mom never loved you!"
+	
+	# Set process mode for dialog components
+	dialog_panel.process_mode = Node.PROCESS_MODE_ALWAYS
+	dialog_label.process_mode = Node.PROCESS_MODE_ALWAYS
+
+	# Keep audio playing during pause by setting audio nodes to PROCESS_MODE_ALWAYS
+	var audio_nodes = get_tree().get_nodes_in_group("audio")
+	for audio_node in audio_nodes:
+		audio_node.process_mode = Node.PROCESS_MODE_ALWAYS
+
+	# Pause the game
+	get_tree().paused = true
+
+	if camera:
+		# Get boss position as our reference point
+		var viewport_size = get_viewport().get_visible_rect().size
+		var zoom_target = Vector2(1.3, 1.3)  # Zoom in for dramatic effect
+		
+		# Position dialog box relative to boss to ensure it's visible in zoomed view
+		dialog_panel.position = Vector2(250, -150)  # To the right of the boss
+		
+		# Calculate camera offset to show top-right area
+		# Move camera up and right from current position to focus on top-right area
+		var offset_factor = 0.3  # How much to offset (30% of current view)
+		var camera_offset = Vector2(
+			viewport_size.x * offset_factor / original_zoom.x,   # Move right
+			-viewport_size.y * offset_factor / original_zoom.y   # Move up (negative Y)
+		)
+		var target_camera_pos = original_camera_pos + camera_offset
+
+		# Show dialog and create zoom-in tween to top-right area around boss
+		dialog_panel.visible = true
+		var zoom_tween = create_tween()
+		zoom_tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
+		zoom_tween.parallel().tween_property(camera, "zoom", zoom_target, 0.4)
+		zoom_tween.parallel().tween_property(camera, "global_position", target_camera_pos, 0.4)
+		await zoom_tween.finished
+
+		# Wait using a proper timer
+		await get_tree().create_timer(1.2, true).timeout
+
+		# Unzoom and move camera back concurrently
+		var unzoom_tween = create_tween()
+		unzoom_tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
+		unzoom_tween.parallel().tween_property(camera, "zoom", original_zoom, 0.4)
+		unzoom_tween.parallel().tween_property(camera, "global_position", original_camera_pos, 0.4)
+		await unzoom_tween.finished
+	else:
+		# No camera case - just show dialog and wait
+		dialog_panel.visible = true
+		await get_tree().create_timer(1.2, true).timeout
+
+	# Hide dialog and reset its position
+	dialog_panel.visible = false
+	dialog_panel.position = Vector2(248, -139)  # Reset to original scene position
+
+	# Restore original process mode and unpause
+	process_mode = _original_process_mode
+	resume_game()
+
+# Show a dialog line from the boss
+# Note: We're now handling the actual dialog creation in _dramatic_damage_sequence
+func show_boss_dialog():
+	# This method is now just for sound effects or additional effects
+	print("Boss: You'll never defeat me!")
+
+# Resume the game after the sequence
+func resume_game():
+	get_tree().paused = false
+
+# Flash the boss red when taking damage
 func damage_flash():
 	# Set sprite to red
 	$Sprite2D.modulate = Color(1, 0, 0)
@@ -207,7 +317,7 @@ func throw_ice_wall(y_offset = null):
 		y_pos = global_position.y - y_offset
 	
 	for x in range(0, screen_width, ice_cube_width):
-		var ice_cube_x = x + ice_cube_width / 2
+		var ice_cube_x = x + ice_cube_width/2.0
 		var position_key = get_position_key(ice_cube_x, y_pos)
 		
 		# Only create ice cube if position is not occupied

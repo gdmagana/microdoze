@@ -26,6 +26,11 @@ var invulnerable_timer := 0.0
 var rainbow_tween: Tween
 var original_modulate: Color
 
+# Character rotation for movement
+var rotation_tween: Tween
+var movement_rotation_angle := 60.0 # degrees
+var rotation_speed := 0.2 # seconds to complete rotation
+
 # Speed boost echo effect
 var echo_sprites = []
 var echo_timer := 0.0
@@ -148,12 +153,18 @@ func _physics_process(delta):
 		last_direction = sign(input_direction.x)
 		if can_move_horizontally:
 			velocity.x += input_direction.x * acceleration * speed_multiplier * delta
+			
+		# Apply character rotation based on movement direction
+		apply_movement_rotation(input_direction.x)
 	else:
 		# Apply friction to gradually stop
 		if abs(velocity.x) < friction * delta:
 			velocity.x = 0
 		else:
 			velocity.x -= sign(velocity.x) * friction * delta
+		
+		# Return to neutral rotation when not moving horizontally
+		apply_movement_rotation(0.0)
 			
 	# clamp max horizontal speed (with speed multiplier)
 	var current_max_speed = max_speed * speed_multiplier
@@ -230,6 +241,26 @@ func _physics_process(delta):
 # NEW THING
 func _on_intro_finished():
 	is_frozen = false
+
+func apply_movement_rotation(horizontal_input: float):
+	"""Apply rotation to character sprite based on horizontal movement"""
+	if rotation_tween:
+		rotation_tween.kill()
+	
+	var target_rotation: float
+	if horizontal_input > 0:
+		# Moving right - tilt right (positive rotation)
+		target_rotation = deg_to_rad(movement_rotation_angle)
+	elif horizontal_input < 0:
+		# Moving left - tilt left (negative rotation)  
+		target_rotation = deg_to_rad(-movement_rotation_angle)
+	else:
+		# Not moving horizontally - return to neutral
+		target_rotation = 0.0
+	
+	# Smoothly tween to target rotation
+	rotation_tween = create_tween()
+	rotation_tween.tween_property($Sprite2D, "rotation", target_rotation, rotation_speed)
 
 func _process(_delta):
 	if is_level_zero:

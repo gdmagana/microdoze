@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://drb605l5hvpfw"]
+[gd_scene load_steps=12 format=3 uid="uid://drb605l5hvpfw"]
 
 [ext_resource type="Script" uid="uid://bh2kvdma1guj7" path="res://scripts/ice_cream_boss.gd" id="1_q3t3g"]
 [ext_resource type="PackedScene" uid="uid://chkrln0i73kui" path="res://scenes/projectile_ice_cube.tscn" id="2_rmwav"]
@@ -23,8 +23,6 @@ border_color = Color(0.8, 0, 0, 1)
 corner_radius_top_left = 40
 corner_radius_top_right = 40
 corner_radius_bottom_right = 40
-
-[sub_resource type="StyleBoxLine" id="StyleBoxLine_qtmpm"]
 
 [node name="IceCreamBoss" type="Area2D"]
 collision_layer = 4
@@ -62,12 +60,12 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_qtmpm")
 
 [node name="BossDialog1Label" type="Label" parent="BossDialog1"]
 layout_mode = 0
-offset_left = 27.0
-offset_top = 25.0
-offset_right = 291.0
-offset_bottom = 108.0
+offset_left = 26.0
+offset_top = 28.0
+offset_right = 290.0
+offset_bottom = 111.0
 theme_override_fonts/font = ExtResource("9_rocre")
-theme_override_styles/normal = SubResource("StyleBoxLine_qtmpm")
+theme_override_font_sizes/font_size = 36
 text = "Your mom never loved you!"
 horizontal_alignment = 1
 vertical_alignment = 1

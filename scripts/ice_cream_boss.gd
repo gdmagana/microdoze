@@ -211,14 +211,15 @@ func _dramatic_damage_sequence():
 	var dialog_panel = $BossDialog1
 	var dialog_label = $BossDialog1/BossDialog1Label
 	
+	
 	# Set process mode for dialog components
 	dialog_panel.process_mode = Node.PROCESS_MODE_ALWAYS
 	dialog_label.process_mode = Node.PROCESS_MODE_ALWAYS
-
-	# Keep audio playing during pause by setting audio nodes to PROCESS_MODE_ALWAYS
-	var audio_nodes = get_tree().get_nodes_in_group("audio")
-	for audio_node in audio_nodes:
-		audio_node.process_mode = Node.PROCESS_MODE_ALWAYS
+	
+	# ensure the boss music continues playing
+	var boss_music = get_tree().get_current_scene().get_node_or_null("audio/BossMusic")
+	if boss_music:
+		boss_music.process_mode = Node.PROCESS_MODE_ALWAYS
 
 	# Pause the game
 	get_tree().paused = true
@@ -240,12 +241,20 @@ func _dramatic_damage_sequence():
 		)
 		var target_camera_pos = original_camera_pos + camera_offset
 
-		# Show dialog and create zoom-in tween to top-right area around boss
+		# Show dialog panel and start zoom and typewriter effect concurrently
 		dialog_panel.visible = true
+		
+		# Start both zoom and typewriter effect at the same time
 		var zoom_tween = create_tween()
 		zoom_tween.set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
 		zoom_tween.parallel().tween_property(camera, "zoom", zoom_target, 0.4)
 		zoom_tween.parallel().tween_property(camera, "global_position", target_camera_pos, 0.4)
+		
+		# Start typewriter effect as a concurrent task
+		var typewriter_finished = false
+		_start_typewriter_concurrent(dialog_label, "Your mom never loved you!")
+		
+		# Wait for zoom to complete
 		await zoom_tween.finished
 
 		# Wait using a proper timer
@@ -258,8 +267,9 @@ func _dramatic_damage_sequence():
 		unzoom_tween.parallel().tween_property(camera, "global_position", original_camera_pos, 0.4)
 		await unzoom_tween.finished
 	else:
-		# No camera case - just show dialog and wait
+		# No camera case - just show dialog with typewriter effect and wait
 		dialog_panel.visible = true
+		await show_typewriter_text(dialog_label, "Your mom never loved you!")
 		await get_tree().create_timer(1.2, true).timeout
 
 	# Hide dialog and reset its position
@@ -269,6 +279,22 @@ func _dramatic_damage_sequence():
 	# Restore original process mode and unpause
 	process_mode = _original_process_mode
 	resume_game()
+
+# Typewriter effect for dialog text (similar to narrative scenes)
+func show_typewriter_text(label: Label, full_text: String):
+	label.text = ""
+	for i in range(full_text.length()):
+		label.text += full_text[i]
+		await get_tree().create_timer(0.05, true).timeout  # 0.05 seconds per character
+
+# Helper function to start typewriter effect concurrently
+func _start_typewriter_concurrent(label: Label, text: String):
+	# Use call_deferred to start the coroutine without blocking
+	call_deferred("_run_typewriter", label, text)
+
+# Internal function to run the typewriter effect
+func _run_typewriter(label: Label, text: String):
+	await show_typewriter_text(label, text)
 
 # Show a dialog line from the boss
 # Note: We're now handling the actual dialog creation in _dramatic_damage_sequence

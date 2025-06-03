@@ -44,8 +44,8 @@ func start_fire_pulse_effect():
 	tween.tween_property($Sprite2D, "modulate", Color(1.0, 0.3, 0.0), 0.3) # Darker orange
 	tween.tween_property($Sprite2D, "modulate", Color(1.0, 0.7, 0.0), 0.3) # Brighter orange
 
-func get_damage_amount() -> int:
-	return fire_damage_multiplier if is_fire_mode else 1
+func get_damage_amount() -> float:
+	return fire_damage_multiplier if is_fire_mode else 1.0
 
 func _on_body_entered(body):
 	if body.is_in_group("boss"):

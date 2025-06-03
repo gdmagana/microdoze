@@ -4,6 +4,7 @@ var velocity := Vector2.ZERO
 var canHurtBoss := false
 var is_static_wall := false
 var health := 3
+@export var damage_amount := 12.0 # Moderate damage for ice cubes
 
 # Powerup system integration
 @export var powerup_scene: PackedScene # Optional powerup to drop
@@ -77,12 +78,12 @@ func _on_body_entered(body):
 	# if the ice cube hits the player, hurt them
 	if body.is_in_group("player"):
 		if not is_static_wall:
-			body.take_damage()
+			body.take_damage(damage_amount)
 			# Drop powerup before destroying
 			drop_powerup()
 			queue_free()
 		else:
-			body.take_damage()
+			body.take_damage(damage_amount)
 			body.bounce_back_from_wall(global_position)
 	## if the ice cube is hit by the stick, be hit back
 	#if body.is_in_group("player_stick"):

@@ -4,7 +4,8 @@ extends CharacterBody2D
 @onready var puck_counter = get_tree().get_current_scene().get_node("HUD/PuckCounter")
 
 # -- Player Health --
-@export var health := 3
+@export var max_health := 100.0
+@export var health := 100.0
 
 # -- Player Movement --
 @export var acceleration := 800.0
@@ -62,7 +63,8 @@ func _ready():
 	stage_width = get_viewport_rect().size.x
 	stage_height = get_viewport_rect().size.y
 	
-	health_ui.update_health(health)
+	health_ui.update_health(health, max_health)
+	print("DEBUG: Player _ready - health initialized to ", health, "/", max_health)
 	if puck_counter:
 		puck_counter.update_puck_count(max_active_pucks, active_pucks)
 	$Hitbox.connect("body_entered", Callable(self, "_on_hitbox_body_entered"))
@@ -82,14 +84,25 @@ func _ready():
 		PowerUpManager.fire_pucks_started.connect(_on_fire_pucks_started)
 		PowerUpManager.fire_pucks_ended.connect(_on_fire_pucks_ended)
 
-func take_damage(amount := 1):
+func heal(amount := 10.0):
+	health += amount
+	# Ensure health doesn't exceed max_health
+	health = min(max_health, health)
+	health_ui.update_health(health, max_health)
+	print("DEBUG: Player healed for ", amount, " - Current health: ", health, "/", max_health)
+
+func take_damage(amount := 1.0):
 	# Check if player is invincible
 	if PowerUpManager and PowerUpManager.is_invincible():
 		print("DEBUG: Damage blocked by invincibility!")
 		return
 	
+	print("DEBUG: Player taking ", amount, " damage. Health before: ", health)
 	health -= amount
-	health_ui.update_health(health)
+	# Ensure health doesn't go below 0
+	health = max(0.0, health)
+	print("DEBUG: Player health after damage: ", health, "/", max_health)
+	health_ui.update_health(health, max_health)
 	if health <= 0:
 		# Player is dead, show game over screen
 		show_game_over()
@@ -106,7 +119,7 @@ func take_damage(amount := 1):
 		$Sprite2D.modulate = original_modulate # back to normal (or rainbow if invincible)
 		is_invulnerable = false
 		invulnerable_timer = 0.0
-	
+
 func freeze():
 	# Check if player is invincible
 	if PowerUpManager and PowerUpManager.is_invincible():

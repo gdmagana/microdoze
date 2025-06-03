@@ -2,21 +2,21 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://mtien7aag3t"
-path="res://.godot/imported/arcadeclassic.regular.ttf-dcd220476f10e04e1fb507558abeb7ff.fontdata"
+uid="uid://cwrp8r743gy5"
+path="res://.godot/imported/arcade.ttf-cc7828c3e4ec8b13872149eb9ac62808.fontdata"
 
 [deps]
 
-source_file="res://assets/fonts/arcadeclassic.regular.ttf"
-dest_files=["res://.godot/imported/arcadeclassic.regular.ttf-dcd220476f10e04e1fb507558abeb7ff.fontdata"]
+source_file="res://assets/fonts/arcade.ttf"
+dest_files=["res://.godot/imported/arcade.ttf-cc7828c3e4ec8b13872149eb9ac62808.fontdata"]
 
 [params]
 
 Rendering=null
 antialiasing=1
-generate_mipmaps=false
+generate_mipmaps=true
 disable_embedded_bitmaps=true
-multichannel_signed_distance_field=false
+multichannel_signed_distance_field=true
 msdf_pixel_range=8
 msdf_size=48
 allow_system_fallback=true
@@ -29,7 +29,12 @@ Fallbacks=null
 fallbacks=[]
 Compress=null
 compress=true
-preload=[]
+preload=[{
+"chars": [],
+"glyphs": [],
+"name": "New Configuration",
+"size": Vector2i(16, 0)
+}]
 language_support={}
 script_support={}
 opentype_features={}

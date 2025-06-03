@@ -2,6 +2,7 @@ extends CharacterBody2D
 
 @onready var health_ui = get_tree().get_current_scene().get_node("HUD/HealthUI")
 @onready var puck_counter = get_tree().get_current_scene().get_node("HUD/PuckCounter")
+@onready var ouch_label: Label = $Ouch
 
 # -- Player Health --
 @export var max_health := 100.0
@@ -56,13 +57,31 @@ var can_shoot_puck = true
 var stage_width
 var stage_height
 
+# -- Using this for scene changes
+var scene_change_triggered := false  # prevents switching multiple times
+
 func _ready():
+	GameState.current_level_path = get_tree().current_scene.scene_file_path
 	add_to_group("player")
 	$Stick.add_to_group("player_stick")
 	
 	stage_width = get_viewport_rect().size.x
 	stage_height = get_viewport_rect().size.y
 	
+	var center_x = stage_width / 2
+	var start_position = Vector2(center_x, stage_height - 150)
+	var entry_position = Vector2(center_x, stage_height + 100)
+	# Set entry position and freeze
+	global_position = entry_position
+	is_frozen = true
+	can_move_up = false  # no movement until intro done
+	
+	# Start entry animation
+	var tween = create_tween()
+	tween.tween_property(self, "global_position", start_position, 1.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_callback(Callable(self, "_on_intro_finished"))
+	
+	# Player health
 	health_ui.update_health(health, max_health)
 	print("DEBUG: Player _ready - health initialized to ", health, "/", max_health)
 	if puck_counter:
@@ -84,6 +103,25 @@ func _ready():
 		PowerUpManager.fire_pucks_started.connect(_on_fire_pucks_started)
 		PowerUpManager.fire_pucks_ended.connect(_on_fire_pucks_ended)
 
+# NEW THING
+func _on_intro_finished():
+	is_frozen = false
+	can_move_up = false
+
+func _process(delta):
+	if not scene_change_triggered and global_position.y <= 0:
+		scene_change_triggered = true
+		print("hi shayla")
+		var current_scene_name = get_tree().current_scene.name
+		print(current_scene_name)
+		if current_scene_name == "LevelTwo":
+			print("got to the end! u win shayla rawrrrr")
+		else:
+			change_to_level_2()
+
+func change_to_level_2():
+	get_tree().change_scene_to_file("res://scenes/LevelTwo.tscn")
+
 func heal(amount := 10.0):
 	health += amount
 	# Ensure health doesn't exceed max_health
@@ -98,7 +136,16 @@ func take_damage(amount := 1.0):
 		return
 	
 	print("DEBUG: Player taking ", amount, " damage. Health before: ", health)
-	health -= amount
+	health -= amount	
+	# Show "Ouch!" sign
+	ouch_label.visible = true
+	ouch_label.modulate = Color(1, 1, 1, 1)  # full opacity
+
+	# Fade out after 2 seconds
+	var tween = create_tween()
+	tween.tween_property(ouch_label, "modulate:a", 0.0, 1.0).set_delay(1.0)
+	tween.tween_callback(Callable(ouch_label, "hide"))
+	
 	# Ensure health doesn't go below 0
 	health = max(0.0, health)
 	print("DEBUG: Player health after damage: ", health, "/", max_health)
@@ -129,33 +176,45 @@ func freeze():
 	is_frozen = true
 	frozen_timer = 2.0 # seconds
 	$Sprite2D.modulate = Color(0.5, 0.5, 1.0) # light blue
-	# Smoothly slow down the background music, then restore it
+	
+	# Switch background music to "Light" bus for underwater effect (has low pass filter)
 	var audio = $"../audio/BossMusic"
+	var original_bus = audio.bus
+	audio.bus = "Light" # Switch to Light bus which has low pass filter
+	
 	var start_pitch = audio.pitch_scale
 	if start_pitch > 0.6: # Avoid modulating music if scoop hits you after death
 		var target_pitch = 0.8
 		var transition_time = 0.5 # seconds for smooth transition
 
-		# Smoothly decrease pitch
-		var t := 0.0
-		while t < transition_time:
-			t += get_process_delta_time()
-			audio.pitch_scale = lerp(start_pitch, target_pitch, t / transition_time)
-			await get_tree().process_frame # TODO: fix crash when this occurs during game end
-		audio.pitch_scale = target_pitch
+		# Use tween for smooth pitch transition instead of manual loop
+		var pitch_tween = create_tween()
+		pitch_tween.tween_property(audio, "pitch_scale", target_pitch, transition_time)
+		await pitch_tween.finished
+		
+		# Ensure we're still valid before continuing
+		if not is_inside_tree() or audio == null:
+			return
 
 		# Wait for frozen_timer duration
 		await get_tree().create_timer(frozen_timer).timeout
 
-		# Smoothly restore pitch
-		t = 0.0
-		while t < transition_time:
-			t += get_process_delta_time()
-			audio.pitch_scale = lerp(target_pitch, 1.0, t / transition_time)
-			await get_tree().process_frame
-		audio.pitch_scale = 1.0 # reset pitch
+		# Ensure we're still valid before restoring
+		if not is_inside_tree() or audio == null:
+			return
+			
+		# Smoothly restore pitch and bus
+		var restore_tween = create_tween()
+		restore_tween.tween_property(audio, "pitch_scale", 1.0, transition_time)
+		await restore_tween.finished
+		
+		# Final safety check before restoring bus
+		if is_inside_tree() and audio != null:
+			audio.bus = original_bus # Restore original bus (Master)
 
-	$Sprite2D.modulate = original_modulate # back to normal (or rainbow if invincible)
+	# Final safety check before restoring visual
+	if is_inside_tree():
+		$Sprite2D.modulate = original_modulate # back to normal (or rainbow if invincible)
 
 func _on_invincibility_started():
 	print("DEBUG: Player invincibility started - starting rainbow effect!")
@@ -390,33 +449,27 @@ func puck_destroyed():
 		puck_counter.update_puck_count(max_active_pucks, active_pucks)
 	
 func show_game_over():
-	# Slow down background music
+	# Optional: Slow down background music
 	var audio = $"../audio/BossMusic"
 	if audio:
-		var target_pitch = 0.5 # Slow to half speed
-		
-		# Immediately set half speed if we can't do smooth transition
-		if not is_inside_tree() or get_tree() == null:
-			audio.pitch_scale = target_pitch
-		else:
-			# Try to create a smooth transition for music slowdown
-			var transition_time = 1.0 # seconds for smooth transition
-			var tween = create_tween()
-			tween.tween_property(audio, "pitch_scale", target_pitch, transition_time)
-			# Wait for the tween to finish
-			await tween.finished
-	
-	# Make sure we're still valid before continuing
-	if not is_inside_tree():
-		return
-		
-	# Create and display the game over screen
-	var game_over_scene = load("res://scenes/GameOver.tscn")
-	var game_over_instance = game_over_scene.instantiate()
-	get_tree().get_current_scene().add_child(game_over_instance)
-	
-	# Don't remove player yet - let the game over screen handle restarting
-	visible = false # Hide the player
+		var target_pitch = 0.5
+		var tween = create_tween()
+		tween.tween_property(audio, "pitch_scale", target_pitch, 1.0)
+		await tween.finished
+
+	# Show the GameOver screen
+	var game_over = get_parent().get_node("GameOver")
+	game_over.visible = true
+	game_over.process_mode = Node.PROCESS_MODE_ALWAYS  # just in case
+
+	# Give focus to the first button
+	game_over.get_node("VBoxContainer/RestartLevelButton").grab_focus()
+
+	# Optional: Pause the game to freeze other input/movement
+	# get_tree().paused = true
+
+	# Hide this player node (or just disable processing)
+	visible = false
 	set_process(false)
 	set_physics_process(false)
 

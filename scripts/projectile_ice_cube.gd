@@ -14,9 +14,9 @@ var health := 3
 var powerup_preview_sprite: Sprite2D
 
 # Preload the textures for different health states
-var texture_normal = preload("res://assets/sprites/ice_cube.png")
-var texture_blue = preload("res://assets/sprites/ice_cube_blue.png")
-var texture_damaged = preload("res://assets/sprites/ice_cube_weak.png")
+var texture_normal = preload("res://assets/sprites/ice_cube_weak.png")
+var texture_blue = preload("res://assets/sprites/ice_cube_fresh.png")
+var texture_damaged = preload("res://assets/sprites/ice_cube_weaker.png")
 
 func _ready():
 	add_to_group("ice_cube")

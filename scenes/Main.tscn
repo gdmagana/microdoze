@@ -1,13 +1,15 @@
-[gd_scene load_steps=12 format=3 uid="uid://bhbf48fir0ikx"]
+[gd_scene load_steps=14 format=3 uid="uid://bhbf48fir0ikx"]
 
 [ext_resource type="PackedScene" uid="uid://b7mu1034wh12b" path="res://scenes/Player.tscn" id="1_glv2v"]
-[ext_resource type="Texture2D" uid="uid://du4d4rqryad3h" path="res://assets/freezer/snow_texture.jpg" id="1_vcsgt"]
 [ext_resource type="PackedScene" uid="uid://do281nd83ggn3" path="res://scenes/PuckCounter.tscn" id="3_q8u5g"]
 [ext_resource type="PackedScene" uid="uid://drb605l5hvpfw" path="res://scenes/ice_cream_boss.tscn" id="4_rarhs"]
 [ext_resource type="PackedScene" uid="uid://bsdi5day054n2" path="res://scenes/HealthUI.tscn" id="5_healthui"]
+[ext_resource type="Texture2D" uid="uid://boc8ehd6ycmpn" path="res://assets/sprites/evillactosefree.png" id="6_wp0k4"]
 [ext_resource type="AudioStream" uid="uid://dsuur5ttlumq7" path="res://assets/audio/microdozeTheme2.wav" id="7_nxtc6"]
+[ext_resource type="Texture2D" uid="uid://b2v2alfch3m20" path="res://assets/freezer/snow.png" id="8_jlsqs"]
 [ext_resource type="AudioStream" uid="uid://cuxhgawi0egl5" path="res://assets/audio/pain_1.wav" id="8_q8u5g"]
 [ext_resource type="AudioStream" uid="uid://dppr47m42qmx5" path="res://assets/audio/yay_1.wav" id="9_lhr70"]
+[ext_resource type="PackedScene" uid="uid://b18aa8ui7s5jr" path="res://scenes/GameOver.tscn" id="9_q8u5g"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_uu6xs"]
 friction = 0.0
@@ -21,10 +23,10 @@ size = Vector2(1254.75, 89.5)
 
 [node name="Node2D" type="Node2D"]
 
-[node name="SnowTexture" type="Sprite2D" parent="."]
-position = Vector2(416, -2778)
-scale = Vector2(1.86688, 3.52576)
-texture = ExtResource("1_vcsgt")
+[node name="Snow" type="Sprite2D" parent="."]
+position = Vector2(570.5, 638)
+scale = Vector2(1.29004, 1.32617)
+texture = ExtResource("8_jlsqs")
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
@@ -82,8 +84,14 @@ physics_material_override = SubResource("PhysicsMaterial_uu6xs")
 position = Vector2(1124, 645)
 shape = SubResource("RectangleShape2D_r0du0")
 
+[node name="GameOver" parent="." instance=ExtResource("9_q8u5g")]
+process_mode = 3
+visible = false
+
 [node name="IceCreamBoss" parent="." instance=ExtResource("4_rarhs")]
 position = Vector2(534, 268)
+sprite_damaged_once = ExtResource("6_wp0k4")
+sprite_damaged_twice = ExtResource("6_wp0k4")
 
 [node name="audio" type="Node" parent="."]
 
@@ -99,3 +107,6 @@ volume_db = -11.022
 [node name="Yay1" type="AudioStreamPlayer" parent="audio"]
 stream = ExtResource("9_lhr70")
 volume_db = -9.546
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(539, 640)

@@ -1,0 +1,120 @@
+[gd_scene load_steps=11 format=3 uid="uid://b8031r7ess33k"]
+
+[ext_resource type="Script" uid="uid://dsm5ftrt306io" path="res://scripts/level_zero.gd" id="1_a0gos"]
+[ext_resource type="PackedScene" uid="uid://b7mu1034wh12b" path="res://scenes/Player.tscn" id="2_buf0d"]
+[ext_resource type="PackedScene" uid="uid://cbb2ytbvuoo7c" path="res://scenes/Icicle.tscn" id="2_qnx47"]
+[ext_resource type="Texture2D" uid="uid://b2v2alfch3m20" path="res://assets/freezer/snow.png" id="3_7dtwl"]
+[ext_resource type="PackedScene" uid="uid://chkrln0i73kui" path="res://scenes/projectile_ice_cube.tscn" id="4_6oe1b"]
+[ext_resource type="PackedScene" uid="uid://bsdi5day054n2" path="res://scenes/HealthUI.tscn" id="5_6ip7e"]
+[ext_resource type="PackedScene" uid="uid://cbp45nyhyledd" path="res://scenes/HealthPowerUp.tscn" id="6_7dtwl"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qnx47"]
+size = Vector2(407, 3072)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7dtwl"]
+size = Vector2(419, 3063)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0lbt8"]
+size = Vector2(1108, 295.5)
+
+[node name="LevelZero" type="Node2D"]
+script = ExtResource("1_a0gos")
+projectile_icicle = ExtResource("2_qnx47")
+
+[node name="FloorSprite" type="Sprite2D" parent="."]
+position = Vector2(519.5, 63.5)
+scale = Vector2(1.61621, 3.47754)
+texture = ExtResource("3_7dtwl")
+
+[node name="Player" parent="." instance=ExtResource("2_buf0d")]
+position = Vector2(528, 900)
+collision_mask = 1
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+
+[node name="OnBounceLabel" type="Label" parent="Player"]
+offset_left = -137.0
+offset_top = 66.0
+offset_right = 154.0
+offset_bottom = 616.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 75
+text = "press shift"
+horizontal_alignment = 1
+autowrap_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="HealthUI" parent="HUD" instance=ExtResource("5_6ip7e")]
+anchors_preset = -1
+anchor_top = 1.0
+offset_left = 10.0
+offset_top = -110.0
+offset_right = 10.0
+offset_bottom = -110.0
+grow_vertical = 0
+scale = Vector2(0.051317, 0.051317)
+metadata/_edit_use_anchors_ = true
+
+[node name="LeftWall" type="StaticBody2D" parent="."]
+collision_mask = 10
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
+position = Vector2(190.5, 8)
+shape = SubResource("RectangleShape2D_qnx47")
+
+[node name="RightWall" type="StaticBody2D" parent="."]
+collision_mask = 10
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
+position = Vector2(889.5, 12.5)
+shape = SubResource("RectangleShape2D_7dtwl")
+
+[node name="Floor" type="StaticBody2D" parent="."]
+position = Vector2(540, 1400)
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
+shape = SubResource("RectangleShape2D_0lbt8")
+
+[node name="IceCubeBarrier1" type="Node2D" parent="."]
+
+[node name="ProjectileIceCube4" parent="IceCubeBarrier1" instance=ExtResource("4_6oe1b")]
+position = Vector2(441, 60)
+
+[node name="ProjectileIceCube5" parent="IceCubeBarrier1" instance=ExtResource("4_6oe1b")]
+position = Vector2(535, 60)
+
+[node name="ProjectileIceCube6" parent="IceCubeBarrier1" instance=ExtResource("4_6oe1b")]
+position = Vector2(630, 60)
+
+[node name="IceCubeBarrier2" type="Node2D" parent="."]
+
+[node name="ProjectileIceCube4" parent="IceCubeBarrier2" instance=ExtResource("4_6oe1b")]
+position = Vector2(441, -1000)
+
+[node name="ProjectileIceCube5" parent="IceCubeBarrier2" instance=ExtResource("4_6oe1b")]
+position = Vector2(535, -1000)
+powerup_scene = ExtResource("6_7dtwl")
+powerup_drop_chance = 1.0
+
+[node name="ProjectileIceCube6" parent="IceCubeBarrier2" instance=ExtResource("4_6oe1b")]
+position = Vector2(630, -1000)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+clip_contents = false
+offset_left = 385.0
+offset_top = 1246.0
+offset_right = 685.0
+offset_bottom = 1896.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 75
+bbcode_enabled = true
+text = "use
+[img=200]res://assets/ui/arrow_keys.png[/img] 
+to move"
+fit_content = true
+scroll_active = false
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true

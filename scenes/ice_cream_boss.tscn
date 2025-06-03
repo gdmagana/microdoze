@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://by8xod6wb7ohy" path="res://assets/sprites/ice cream.png" id="6_qtmpm"]
 [ext_resource type="Texture2D" uid="uid://cw2vioxjrvrik" path="res://assets/sprites/lactosefree.png" id="7_rocre"]
 [ext_resource type="Texture2D" uid="uid://b51myk12ckyl5" path="res://icon.svg" id="8_1pu0b"]
-[ext_resource type="FontFile" uid="uid://mtien7aag3t" path="res://assets/fonts/arcadeclassic.regular.ttf" id="9_rocre"]
+[ext_resource type="FontFile" uid="uid://cwrp8r743gy5" path="res://assets/fonts/arcade.ttf" id="9_rocre"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1vifr"]
 size = Vector2(419, 293)

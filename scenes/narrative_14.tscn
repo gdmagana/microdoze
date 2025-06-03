@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://dhv0lolwyieu"]
 
-[ext_resource type="Script" uid="uid://t2t7u22ewo2s" path="res://scenes/narrative_14.gd" id="1_ll56k"]
+[ext_resource type="Script" path="res://scenes/narrative_14.gd" id="1_ll56k"]
 [ext_resource type="Texture2D" uid="uid://dgbiff3ayt8v3" path="res://assets/narrative/kitchen_zoomed_trippy.png" id="1_m6ypi"]
 [ext_resource type="Texture2D" uid="uid://b8ul3q8rpb3gd" path="res://assets/narrative/kitchen_zoomed.png" id="2_ll56k"]
 [ext_resource type="Script" uid="uid://cjetl0qsi6j01" path="res://scenes/text_scene_2.gd" id="4_agwjl"]

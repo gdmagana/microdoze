@@ -1,8 +1,6 @@
-[gd_scene load_steps=15 format=3 uid="uid://bhbf48fir0ikx"]
+[gd_scene load_steps=14 format=3 uid="uid://bhbf48fir0ikx"]
 
 [ext_resource type="PackedScene" uid="uid://b7mu1034wh12b" path="res://scenes/Player.tscn" id="1_glv2v"]
-[ext_resource type="Script" path="res://scripts/audio_manager.gd" id="2_audioMgr"]
-[ext_resource type="Script" path="res://scripts/audio_debug_ui.gd" id="2_debugUI"]
 [ext_resource type="PackedScene" uid="uid://do281nd83ggn3" path="res://scenes/PuckCounter.tscn" id="3_q8u5g"]
 [ext_resource type="PackedScene" uid="uid://drb605l5hvpfw" path="res://scenes/ice_cream_boss.tscn" id="4_rarhs"]
 [ext_resource type="PackedScene" uid="uid://bsdi5day054n2" path="res://scenes/HealthUI.tscn" id="5_healthui"]
@@ -101,9 +99,6 @@ sprite_damaged_once = ExtResource("6_wp0k4")
 sprite_damaged_twice = ExtResource("6_wp0k4")
 
 [node name="audio" type="Node" parent="."]
-
-[node name="AudioManager" type="Node" parent="audio"]
-script = ExtResource("2_audioMgr")
 
 [node name="BossMusic" type="AudioStreamPlayer2D" parent="audio"]
 stream = ExtResource("7_nxtc6")

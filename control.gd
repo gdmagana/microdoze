@@ -11,14 +11,14 @@ func _process(_delta):
 	
 func _input(event):
 	if event.is_action_pressed("start_game"):
-		get_tree().change_scene_to_file("res://scenes/narrative/intro/narrative_1.tscn")
+		get_tree().change_scene_to_file("res://scenes/narrative/intro/narrative_2.tscn")
 
 func _on_quit_button_pressed():
 	get_tree().quit()
 
 func _on_new_game_pressed() -> void:
 	GameState.show_continue_button = true
-	get_tree().change_scene_to_file("res://scenes/narrative/intro/narrative_1.tscn")
+	get_tree().change_scene_to_file("res://scenes/narrative/intro/narrative_2.tscn")
 
 func _on_continue_old_game_pressed() -> void:
 	get_tree().change_scene_to_file(GameState.current_level_path)

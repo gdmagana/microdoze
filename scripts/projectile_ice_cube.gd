@@ -94,7 +94,6 @@ func drop_powerup():
 		var powerup = powerup_scene.instantiate()
 		get_parent().add_child(powerup)
 		powerup.global_position = global_position
-		print("Powerup dropped at: ", global_position)
 
 # Method to set powerup (useful for boss or other systems)
 func set_powerup(scene: PackedScene, drop_chance: float = 1.0):

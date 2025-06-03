@@ -80,7 +80,6 @@ func _load_powerup_scenes():
 		invincibility_weight
 	]
 	
-	print("DEBUG: Powerup weights loaded:")
 	print("  Speed Boost: ", speed_boost_weight)
 	print("  Unlimited Pucks: ", unlimited_pucks_weight)
 	print("  Fire Pucks: ", fire_pucks_weight)
@@ -107,7 +106,6 @@ func get_weighted_random_powerup() -> PackedScene:
 			current_weight += powerup_weights[i]
 			if random_value <= current_weight:
 				var selected_powerup = powerup_scenes[i]
-				print("DEBUG: Selected powerup: ", selected_powerup.resource_path, " (weight: ", powerup_weights[i], ")")
 				return selected_powerup
 	
 	# Fallback (shouldn't happen with proper weights)
@@ -225,7 +223,6 @@ func _dramatic_damage_sequence():
 	
 	var dialog_panel = $BossDialog1
 	var dialog_label = $BossDialog1/BossDialog1Label
-	
 	
 	# Set process mode for dialog components
 	dialog_panel.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -362,7 +359,6 @@ func throw_ice_wall(y_offset = null):
 				var selected_powerup = get_weighted_random_powerup()
 				if selected_powerup:
 					ice_cube.set_powerup(selected_powerup, 1.0) # 100% drop chance if selected
-					print("Ice cube created with weighted powerup: ", selected_powerup.resource_path)
 			
 			get_parent().add_child(ice_cube)
 			ice_cube.global_position = Vector2(ice_cube_x, y_pos)

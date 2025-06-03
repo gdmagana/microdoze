@@ -1,8 +1,8 @@
-[gd_scene load_steps=16 format=3 uid="uid://q15mae8m6oln"]
+[gd_scene load_steps=16 format=3 uid="uid://cardie8r2ie3n"]
 
 [ext_resource type="Texture2D" uid="uid://b2v2alfch3m20" path="res://assets/freezer/snow.png" id="1_0jmjk"]
-[ext_resource type="Script" uid="uid://his2p5rb4rak" path="res://scenes/level_2.gd" id="1_v8268"]
-[ext_resource type="Shader" uid="uid://cwbavprnsxd7l" path="res://scenes/level2_shader.gdshader" id="2_rcugv"]
+[ext_resource type="Script" path="res://scenes/level_2.gd" id="1_v8268"]
+[ext_resource type="Shader" path="res://scenes/level2_shader.gdshader" id="2_rcugv"]
 [ext_resource type="PackedScene" uid="uid://bsdi5day054n2" path="res://scenes/HealthUI.tscn" id="2_v8268"]
 [ext_resource type="PackedScene" uid="uid://do281nd83ggn3" path="res://scenes/PuckCounter.tscn" id="3_rcugv"]
 [ext_resource type="PackedScene" uid="uid://b7mu1034wh12b" path="res://scenes/Player.tscn" id="4_3aekd"]
@@ -38,6 +38,10 @@ scale = Vector2(1.29004, 1.32617)
 texture = ExtResource("1_0jmjk")
 
 [node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="GameOver" parent="HUD" instance=ExtResource("5_khw7m")]
+process_mode = 3
+visible = false
 
 [node name="HealthUI" parent="HUD" instance=ExtResource("2_v8268")]
 anchors_preset = -1
@@ -96,10 +100,6 @@ physics_material_override = SubResource("PhysicsMaterial_uu6xs")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Node/WallRight"]
 position = Vector2(1124, 645)
 shape = SubResource("RectangleShape2D_r0du0")
-
-[node name="GameOver" parent="." instance=ExtResource("5_khw7m")]
-process_mode = 3
-visible = false
 
 [node name="IceCreamBoss" parent="." instance=ExtResource("6_wd6ad")]
 position = Vector2(534, 268)

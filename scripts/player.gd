@@ -5,16 +5,15 @@ extends CharacterBody2D
 @onready var ouch_label: Label = $Ouch
 
 # -- Player Health --
-@export var max_health := 100.0
-var can_lose_health := false
-@export var health := 100.0
+@export var max_health := 50.0
+@export var health := 50.0
 
 # -- Player Movement --
 @export var acceleration := 800.0
 @export var friction := 600.0
 @export var max_speed := 500.0
 
-var can_move_vertically := false
+var can_move_vertically := true
 var can_move_horizontally := true
 
 var is_frozen := false
@@ -81,7 +80,6 @@ func _ready():
 	# Set entry position and freeze
 	global_position = entry_position
 	is_frozen = true
-	can_move_vertically = false  # no movement until intro done
 	
 	# Start entry animation
 	var tween = create_tween()
@@ -90,7 +88,7 @@ func _ready():
 	
 	if GameState.current_level_path != "res://scenes/TheEnd.tscn":
 		# Player health
-		health_ui.update_health(health)
+		health_ui.update_health(health, max_health)
 		if puck_counter:
 			puck_counter.update_puck_count(max_active_pucks, active_pucks)
 		$Hitbox.connect("body_entered", Callable(self, "_on_hitbox_body_entered"))
@@ -126,7 +124,6 @@ func _physics_process(delta):
 	if speed_boost_echo_active:
 		echo_timer -= delta
 		if echo_timer <= 0:
-			print("DEBUG: Echo timer triggered! Velocity: ", velocity.length())
 			create_movement_echo()
 			echo_timer = echo_interval # Reset timer
 	
@@ -163,15 +160,18 @@ func _physics_process(delta):
 	velocity.x = clamp(velocity.x, -current_max_speed, current_max_speed)
 	
 	# Vertical
-	if input_direction.y != 0:
-		velocity.y += input_direction.y * acceleration * speed_multiplier * delta
-	else:
-		if abs(velocity.y) < friction * delta:
-			velocity.y = 0
+	if can_move_vertically:
+		if input_direction.y != 0:
+				velocity.y += input_direction.y * acceleration * speed_multiplier * delta
 		else:
-			velocity.y -= sign(velocity.y) * friction * delta
-			
-		velocity.y = clamp(velocity.y, -current_max_speed, current_max_speed)
+			if abs(velocity.y) < friction * delta:
+				velocity.y = 0
+			else:
+				velocity.y -= sign(velocity.y) * friction * delta
+				
+			velocity.y = clamp(velocity.y, -current_max_speed, current_max_speed)
+	else:
+		velocity.y = 0
 
 	move_and_slide()
 	
@@ -234,43 +234,40 @@ func _physics_process(delta):
 # NEW THING
 func _on_intro_finished():
 	is_frozen = false
-	can_move_vertically = false
 
 func _process(delta):
 	if is_level_zero:
 		return
-	
+
 	if not scene_change_triggered and global_position.y <= 0:
 		scene_change_triggered = true
 		var current_scene_name = get_tree().current_scene.name
-		print(current_scene_name)
 		if current_scene_name == "Level2":
-			print("got to the end! u win shayla rawrrrr")
+			change_to_the_end()
 		else:
 			change_to_level_2()
 
 func change_to_level_2():
 	get_tree().change_scene_to_file("res://scenes/Level2.tscn")
+	
+func change_to_the_end():
+	get_tree().change_scene_to_file("res://scenes/TheEnd.tscn")
 
 func heal(amount := 10.0):
 	health += amount
 	# Ensure health doesn't exceed max_health
 	health = min(max_health, health)
 	health_ui.update_health(health, max_health)
-	print("DEBUG: Player healed for ", amount, " - Current health: ", health, "/", max_health)
 
 func take_damage(amount := 1.0):
 	# Check if player is invincible
 	if PowerUpManager and PowerUpManager.is_invincible():
-		print("DEBUG: Damage blocked by invincibility!")
 		return
 		
-	if can_lose_health:
-		print("DEBUG: Player taking ", amount, " damage. Health before: ", health)
-		health -= amount
-		if health_ui:
-			health_ui.update_health(health)
-		
+	health -= amount
+	if health_ui:
+		health_ui.update_health(health, max_health)
+			
 	# Show "Ouch!" sign
 	ouch_label.visible = true
 	ouch_label.modulate = Color(1, 1, 1, 1)  # full opacity
@@ -282,9 +279,9 @@ func take_damage(amount := 1.0):
 	
 	# Ensure health doesn't go below 0
 	health = max(0.0, health)
-	print("DEBUG: Player health after damage: ", health, "/", max_health)
 	health_ui.update_health(health, max_health)
 	if health <= 0:
+		if not is_level_zero:
 			# Player is dead, show game over screen
 			show_game_over()
 
@@ -303,12 +300,11 @@ func take_damage(amount := 1.0):
 func add_health(amount: int):
 	health += amount
 	if health_ui:
-		health_ui.update_health(health)
+		health_ui.update_health(health, max_health)
 	
 func freeze():
 	# Check if player is invincible
 	if PowerUpManager and PowerUpManager.is_invincible():
-		print("DEBUG: Freeze blocked by invincibility!")
 		return
 	
 	is_frozen = true
@@ -355,27 +351,21 @@ func freeze():
 		$Sprite2D.modulate = original_modulate # back to normal (or rainbow if invincible)
 
 func _on_invincibility_started():
-	print("DEBUG: Player invincibility started - starting rainbow effect!")
 	start_rainbow_effect()
 
 func _on_invincibility_ended():
-	print("DEBUG: Player invincibility ended - stopping rainbow effect!")
 	stop_rainbow_effect()
 
 func _on_speed_boost_started():
-	print("DEBUG: Player speed boost started - starting echo effect!")
 	start_echo_effect()
 
 func _on_speed_boost_ended():
-	print("DEBUG: Player speed boost ended - stopping echo effect!")
 	stop_echo_effect()
 
 func _on_fire_pucks_started():
-	print("DEBUG: Player fire pucks started - starting fire stick effect!")
 	start_fire_stick_effect()
 
 func _on_fire_pucks_ended():
-	print("DEBUG: Player fire pucks ended - stopping fire stick effect!")
 	stop_fire_stick_effect()
 
 func start_rainbow_effect():
@@ -471,7 +461,7 @@ func show_game_over():
 		await tween.finished
 
 	# Show the GameOver screen
-	var game_over = get_parent().get_node("GameOver")
+	var game_over = get_parent().get_node("HUD/GameOver")
 	game_over.visible = true
 	game_over.process_mode = Node.PROCESS_MODE_ALWAYS  # just in case
 
@@ -494,12 +484,10 @@ func start_echo_effect():
 	speed_boost_echo_active = true
 	echo_timer = echo_interval # Start creating echoes immediately
 	echo_color_index = 0 # Reset to start with red
-	print("DEBUG: Echo effect started! Active: ", speed_boost_echo_active)
 
 func stop_echo_effect():
 	speed_boost_echo_active = false
 	echo_timer = 0.0
-	print("DEBUG: Echo effect stopped! Active: ", speed_boost_echo_active, " Cleaning up ", echo_sprites.size(), " echoes")
 	# Clean up any remaining echo sprites
 	cleanup_echo_sprites()
 
@@ -507,9 +495,7 @@ func create_movement_echo():
 	# Only create echo if player is actually moving
 	if velocity.length() < 10.0: # Don't create echo if barely moving
 		return
-	
-	print("DEBUG: Creating movement echo at position: ", global_position)
-		
+			
 	var echo = Sprite2D.new()
 	echo.texture = $Sprite2D.texture
 	echo.global_position = global_position
@@ -536,7 +522,6 @@ func create_movement_echo():
 	get_parent().add_child(echo)
 	echo_sprites.append(echo)
 	
-	print("DEBUG: Echo created with color: ", echo.modulate, " Total echoes: ", echo_sprites.size(), " z_index: ", echo.z_index)
 	
 	# Immediately move the echo to its static position since it's added to the scene
 	echo.global_position = global_position

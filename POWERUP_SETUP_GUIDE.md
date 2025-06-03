@@ -165,7 +165,6 @@ func _ready():
 
 func activate_effect():
 	# Add your custom effect here
-	print("Custom powerup activated!")
 	# You can access PowerUpManager for complex effects
 	if PowerUpManager:
 		# Add custom logic to PowerUpManager if needed

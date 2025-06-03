@@ -8,10 +8,13 @@ var low_health_tween: Tween
 var rainbow_tween: Tween
 var current_health_percentage: float = 1.0
 
-# Rainbow effect timing - ADJUST THESE TO CHANGE SPEED
-var rainbow_transition_time := 0.3 # Seconds per color transition (LOWER = FASTER, HIGHER = SLOWER)
-var medium_health_pulse_time := 0.4 # Medium health pulse speed
-var low_health_pulse_time := 0.2 # Low health pulse speed
+# Shader effect variables - CUSTOMIZE THESE FOR DIFFERENT EFFECTS
+var rainbow_scroll_speed := 1.0 # How fast the rainbow scrolls (higher = faster)
+var wiggle_intensity := 0.3 # How much the rainbow wiggles (0.0 = no wiggle, 1.0 = intense)
+var wiggle_frequency := 8.0 # How many wiggle waves across the bar (higher = more waves)
+var rainbow_intensity := 1.0 # How bright/saturated the colors are
+
+var shader_material: ShaderMaterial
 
 func _ready():
 	print("DEBUG: HealthUI _ready called")
@@ -23,61 +26,83 @@ func _ready():
 	else:
 		print("ERROR: Health frame not found!")
 	
-	# Set up the health bar - start with rainbow effect
+	# Set up the health bar with trippy rainbow shader
 	if health_bar:
 		health_bar.visible = true
-		start_rainbow_effect() # Start with rainbow by default
-		print("DEBUG: Health bar setup complete")
+		print("DEBUG: Health bar setup complete - using ColorRect with shader")
 		print("DEBUG: Health bar visible: ", health_bar.visible)
+		print("DEBUG: Health bar type: ", health_bar.get_class())
+		create_rainbow_shader() # Create the trippy shader effect
 	else:
 		print("ERROR: Health bar not found!")
 		
 	print("DEBUG: HealthUI _ready completed")
 
-func start_rainbow_effect():
-	print("DEBUG: Starting TRIPPY rainbow effect for health bar")
+func create_rainbow_shader():
+	print("DEBUG: Creating trippy scrolling rainbow shader")
 	
-	# Stop any existing effects
-	if rainbow_tween:
-		rainbow_tween.kill()
-	if low_health_tween:
-		low_health_tween.kill()
-		low_health_tween = null
+	# Create a new shader
+	var shader = Shader.new()
 	
-	# Create super trippy rainbow animation - much faster and more vibrant
-	rainbow_tween = create_tween()
-	rainbow_tween.set_loops() # Loop infinitely
-	
-	# Super vibrant rainbow colors - make them REALLY pop
-	var rainbow_colors = [
-		Color(1.0, 0.0, 1.0, 1.0), # Magenta - start with trippy color
-		Color(0.0, 1.0, 1.0, 1.0), # Cyan
-		Color(0.0, 1.0, 0.0, 1.0), # Green
-		Color(1.0, 1.0, 0.0, 1.0), # Yellow
-		Color(1.0, 0.5, 0.0, 1.0), # Orange
-		Color(1.0, 0.0, 0.0, 1.0), # Red
-		Color(0.5, 0.0, 1.0, 1.0), # Purple
-		Color(1.0, 0.0, 0.5, 1.0), # Hot pink
-		Color(0.0, 0.5, 1.0, 1.0), # Light blue
-		Color(0.5, 1.0, 0.0, 1.0), # Lime green
-	]
-	
-	# Cycle through rainbow colors - use the adjustable timing variable
-	for color in rainbow_colors:
-		rainbow_tween.tween_property(health_bar, "color", color, rainbow_transition_time)
-	
-	print("DEBUG: TRIPPY Rainbow tween created and started with ColorRect")
+	# This is the magic! GLSL shader code for scrolling wiggly rainbow
+	shader.code = """
+	shader_type canvas_item;
 
-func set_health_bar_color(color: Color):
-	if health_bar:
-		health_bar.add_theme_color_override("bg_color", color)
-		health_bar.modulate = Color(1, 1, 1, 1) # Ensure full visibility
+	// Uniforms - these let us control the effect from GDScript
+	uniform float scroll_speed : hint_range(0.0, 5.0) = 1.0;
+	uniform float wiggle_intensity : hint_range(0.0, 1.0) = 0.3;
+	uniform float wiggle_frequency : hint_range(1.0, 20.0) = 8.0;
+	uniform float rainbow_intensity : hint_range(0.1, 2.0) = 1.0;
 
-func stop_rainbow_effect():
-	print("DEBUG: Stopping rainbow effect")
-	if rainbow_tween:
-		rainbow_tween.kill()
-		rainbow_tween = null
+	// Function to convert HSV to RGB (for smooth rainbow colors)
+	vec3 hsv_to_rgb(vec3 c) {
+		vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+		vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+		return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+	}
+
+	void fragment() {
+		// Get the current pixel position
+		vec2 uv = UV;
+		
+		// Add wiggle effect using sine waves
+		float wiggle_offset = sin(uv.x * wiggle_frequency + TIME * 2.0) * wiggle_intensity * 0.1;
+		uv.y += wiggle_offset;
+		
+		// Create scrolling rainbow effect
+		float rainbow_position = uv.x + TIME * scroll_speed;
+		
+		// Generate smooth rainbow colors using HSV
+		float hue = fract(rainbow_position * 2.0); // 2.0 makes the rainbow repeat across the bar
+		vec3 rainbow_color = hsv_to_rgb(vec3(hue, 1.0, rainbow_intensity));
+		
+		// Add some extra trippy effects
+		float pulse = sin(TIME * 3.0) * 0.2 + 0.8; // Subtle pulsing brightness
+		rainbow_color *= pulse;
+		
+		// Output the final color
+		COLOR = vec4(rainbow_color, 1.0);
+	}
+	"""
+	
+	# Create shader material and apply it
+	shader_material = ShaderMaterial.new()
+	shader_material.shader = shader
+	
+	# Set initial shader parameters
+	update_shader_parameters()
+	
+	# Apply the shader to the health bar
+	health_bar.material = shader_material
+	
+	print("DEBUG: Trippy scrolling rainbow shader created and applied!")
+
+func update_shader_parameters():
+	if shader_material:
+		shader_material.set_shader_parameter("scroll_speed", rainbow_scroll_speed)
+		shader_material.set_shader_parameter("wiggle_intensity", wiggle_intensity)
+		shader_material.set_shader_parameter("wiggle_frequency", wiggle_frequency)
+		shader_material.set_shader_parameter("rainbow_intensity", rainbow_intensity)
 
 func update_health(current_health: float, max_health: float = 100.0):
 	print("DEBUG: update_health called with ", current_health, "/", max_health)
@@ -95,46 +120,25 @@ func update_health(current_health: float, max_health: float = 100.0):
 	health_bar.anchor_right = health_percentage
 	print("DEBUG: Set anchor_right to: ", health_percentage)
 	
-	# Add color effects based on health level
+	# Adjust shader effects based on health level
 	if health_percentage > 0.6:
-		# High health - rainbow effect
-		print("DEBUG: Set high health colors (rainbow)")
-		start_rainbow_effect()
+		# High health - smooth, pleasant rainbow
+		rainbow_scroll_speed = 1.0
+		wiggle_intensity = 0.3
+		rainbow_intensity = 1.0
+		print("DEBUG: High health - smooth rainbow")
 	elif health_percentage > 0.3:
-		# Medium health - yellow/orange
-		stop_rainbow_effect()
-		health_bar.add_theme_color_override("bg_color", Color(1.0, 0.8, 0.0, 1.0))
-		health_bar.modulate = Color(1, 1, 1, 1)
-		print("DEBUG: Set medium health colors (yellow)")
+		# Medium health - faster, more intense
+		rainbow_scroll_speed = 1.5
+		wiggle_intensity = 0.5
+		rainbow_intensity = 1.2
+		print("DEBUG: Medium health - intense rainbow")
 	else:
-		# Low health - red and pulsing effect
-		stop_rainbow_effect()
-		health_bar.add_theme_color_override("bg_color", Color(1.0, 0.0, 0.0, 1.0))
-		health_bar.modulate = Color(1, 1, 1, 1)
-		print("DEBUG: Set low health colors (red)")
-		if health_percentage > 0:
-			start_low_health_pulse()
-
-func start_medium_health_pulse():
-	# Stop any existing effects
-	if low_health_tween:
-		low_health_tween.kill()
+		# Low health - crazy fast and wiggly
+		rainbow_scroll_speed = 2.5
+		wiggle_intensity = 0.8
+		rainbow_intensity = 1.5
+		print("DEBUG: Low health - CRAZY rainbow")
 	
-	low_health_tween = create_tween()
-	low_health_tween.set_loops()
-	
-	# Pulse between yellow and orange - use adjustable timing
-	low_health_tween.tween_property(health_bar, "color", Color(1.0, 1.0, 0.0, 1.0), medium_health_pulse_time) # Yellow
-	low_health_tween.tween_property(health_bar, "color", Color(1.0, 0.6, 0.0, 1.0), medium_health_pulse_time) # Orange
-
-func start_low_health_pulse():
-	# Create an intense pulsing effect for low health
-	if low_health_tween:
-		low_health_tween.kill()
-	
-	low_health_tween = create_tween()
-	low_health_tween.set_loops()
-	
-	# Fast, intense red pulsing - use adjustable timing
-	low_health_tween.tween_property(health_bar, "color", Color(1.0, 0.0, 0.0, 1.0), low_health_pulse_time) # Bright red
-	low_health_tween.tween_property(health_bar, "color", Color(0.8, 0.0, 0.0, 0.7), low_health_pulse_time) # Darker red, slight transparency
+	# Apply the new parameters to the shader
+	update_shader_parameters()

@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cevktclg1pfkk"]
 
-[ext_resource type="Texture2D" uid="uid://bfphk3rlbbn1m" path="res://assets/sprites/IceCreamScoop.png" id="1_5lxnu"]
 [ext_resource type="Script" uid="uid://bqblcgo3q7eb8" path="res://scripts/ice_cream_scoop.gd" id="1_adysj"]
+[ext_resource type="Texture2D" uid="uid://dplj166p27yij" path="res://assets/sprites/snowflake_blue.png" id="2_adysj"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_adysj"]
 
@@ -14,6 +14,6 @@ script = ExtResource("1_adysj")
 shape = SubResource("CircleShape2D_adysj")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-0.249946, -0.499944)
-scale = Vector2(0.0766272, 0.0823975)
-texture = ExtResource("1_5lxnu")
+position = Vector2(2, 2)
+scale = Vector2(0.1, 0.088)
+texture = ExtResource("2_adysj")

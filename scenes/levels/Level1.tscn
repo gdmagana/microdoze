@@ -22,8 +22,8 @@ size = Vector2(1254.75, 89.5)
 [node name="Node2D" type="Node2D"]
 
 [node name="Snow" type="Sprite2D" parent="."]
-position = Vector2(570.5, 638)
-scale = Vector2(1.29004, 1.32617)
+position = Vector2(657, 531)
+scale = Vector2(1.57031, 1.53516)
 texture = ExtResource("1_brv20")
 
 [node name="HUD" type="CanvasLayer" parent="."]

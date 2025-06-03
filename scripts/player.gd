@@ -280,8 +280,9 @@ func take_damage(amount := 1.0):
 		if not is_level_zero:
 			# Player is dead, show game over screen
 			show_game_over()
+		return # Don't play sound effects or continue damage processing if dead
 
-	# Flash red to indicate damage
+	# Flash red to indicate damage (only if still alive)
 	$Sprite2D.modulate = Color(1, 0.5, 0.5)
 	is_invulnerable = true
 	invulnerable_timer = 1.0 # seconds

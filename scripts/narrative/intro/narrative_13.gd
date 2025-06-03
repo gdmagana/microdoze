@@ -6,6 +6,17 @@ var ready_to_continue := false
 func _ready():
 	timer = $Timer  # Make sure this matches your node structure
 	start_timer()
+	
+	# Switch to Heavy bus for scene 13
+	switch_to_heavy_bus()
+
+func switch_to_heavy_bus():
+	# Access the autoload using get_node
+	var audio_manager = get_node("/root/NarrativeAudioManager")
+	if audio_manager:
+		audio_manager.switch_to_heavy_bus()
+	else:
+		print("Warning: NarrativeAudioManager not found")
 
 func start_timer():
 	timer.start(1.0)  # Duration in seconds

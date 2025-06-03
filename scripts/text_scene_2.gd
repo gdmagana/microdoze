@@ -55,7 +55,7 @@ func _ready():
 			current_speaker = "main_character"
 		"NarrativeNine":
 			full_text = "Fuck..."
-			current_speaker = "main_character"
+			current_speaker = "frat_bro"
 		"NarrativeTen":
 			full_text = "Uhh imma go..."
 			current_speaker = "frat_bro"

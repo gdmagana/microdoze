@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://cwdfs7f2tflts" path="res://assets/narrative/characters/frat_bro_shocked.png" id="4_o5h0g"]
 [ext_resource type="AudioStream" uid="uid://d1y3pjjws6et5" path="res://assets/audio/voice/telandSample.wav" id="4_whqiu"]
 [ext_resource type="Script" uid="uid://cjetl0qsi6j01" path="res://scripts/text_scene_2.gd" id="5_o5h0g"]
-[ext_resource type="Script" path="res://scripts/dialog_audio.gd" id="5_tah5w"]
+[ext_resource type="Script" uid="uid://e70exscs0nxt" path="res://scripts/dialog_audio.gd" id="5_tah5w"]
 [ext_resource type="AudioStream" uid="uid://cbtbt0kcujk3l" path="res://assets/audio/voice/gabeSample.wav" id="7_ytc6k"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_wckkr"]

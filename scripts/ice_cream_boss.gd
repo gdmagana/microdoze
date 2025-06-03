@@ -263,7 +263,10 @@ func _dramatic_damage_sequence():
 		zoom_tween.parallel().tween_property(camera, "global_position", target_camera_pos, 0.4)
 		
 		# Start typewriter effect as a concurrent task
-		_start_typewriter_concurrent(dialog_label, "Your mom never loved you!")
+		var dialog_text = "Your mom never loved you!"
+		if hits_to_ice_wall_rage == 1:
+			dialog_text = "You lactose intolerant slut"
+		_start_typewriter_concurrent(dialog_label, dialog_text)
 		
 		# Wait for zoom to complete
 		await zoom_tween.finished
@@ -307,12 +310,6 @@ func _start_typewriter_concurrent(label: Label, text: String):
 func _run_typewriter(label: Label, text: String):
 	await show_typewriter_text(label, text)
 
-# Show a dialog line from the boss
-# Note: We're now handling the actual dialog creation in _dramatic_damage_sequence
-func show_boss_dialog():
-	# This method is now just for sound effects or additional effects
-	print("Boss: You'll never defeat me!")
-
 # Resume the game after the sequence
 func resume_game():
 	get_tree().paused = false
@@ -334,7 +331,6 @@ func rage():
 	if player:
 		player.enable_puck_shooting()
 	call_deferred("throw_ice_wall")
-	call_deferred("throw_ice_wall", -100)
 	
 func throw_ice_wall(y_offset = null):
 	var screen_width = get_viewport_rect().size.x

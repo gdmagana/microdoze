@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 PowerUpManager="*res://scripts/power_ups/power_up_manager.gd"
 DebugSettings="*res://scripts/debug_settings.gd"
 GameState="*res://scripts/GameState.gd"
+NarrativeAudioManager="*res://scripts/NarrativeAudioManager.gd"
 
 [display]
 

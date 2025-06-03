@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://cardie8r2ie3n"]
+[gd_scene load_steps=14 format=3 uid="uid://cardie8r2ie3n"]
 
 [ext_resource type="Script" uid="uid://his2p5rb4rak" path="res://scripts/levels/level_2.gd" id="1_mcssb"]
 [ext_resource type="Shader" uid="uid://cwbavprnsxd7l" path="res://scripts/levels/level2_shader.gdshader" id="2_dwyyt"]
@@ -8,9 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://do281nd83ggn3" path="res://scenes/PuckCounter.tscn" id="6_o6ptl"]
 [ext_resource type="PackedScene" uid="uid://b7mu1034wh12b" path="res://scenes/Player.tscn" id="7_mctl7"]
 [ext_resource type="PackedScene" uid="uid://drb605l5hvpfw" path="res://scenes/ice_cream_boss.tscn" id="8_fpd7d"]
-[ext_resource type="AudioStream" uid="uid://dsuur5ttlumq7" path="res://assets/audio/microdozeTheme2.wav" id="9_nkm7c"]
-[ext_resource type="AudioStream" uid="uid://cuxhgawi0egl5" path="res://assets/audio/pain_1.wav" id="10_uh3oe"]
-[ext_resource type="AudioStream" uid="uid://dppr47m42qmx5" path="res://assets/audio/yay_1.wav" id="11_4p5gg"]
+[ext_resource type="AudioStream" uid="uid://d4f60iyp70eg3" path="res://assets/audio/microdozeTheme3.wav" id="9_mcssb"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3aekd"]
 shader = ExtResource("2_dwyyt")
@@ -106,14 +104,6 @@ position = Vector2(534, 268)
 [node name="audio" type="Node" parent="."]
 
 [node name="BossMusic" type="AudioStreamPlayer2D" parent="audio"]
-stream = ExtResource("9_nkm7c")
+stream = ExtResource("9_mcssb")
 volume_db = -5.354
 autoplay = true
-
-[node name="Pain1" type="AudioStreamPlayer" parent="audio"]
-stream = ExtResource("10_uh3oe")
-volume_db = -11.022
-
-[node name="Yay1" type="AudioStreamPlayer" parent="audio"]
-stream = ExtResource("11_4p5gg")
-volume_db = -9.546

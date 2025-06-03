@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://x4utwuqk2014" path="res://assets/narrative/characters/frat_bro.png" id="4_0xxwi"]
 [ext_resource type="Texture2D" uid="uid://g5yvw20sy1ra" path="res://assets/narrative/items/mystical_object.png" id="4_8ggqk"]
 [ext_resource type="AudioStream" uid="uid://cbtbt0kcujk3l" path="res://assets/audio/voice/gabeSample.wav" id="5_ix4d7"]
-[ext_resource type="Script" path="res://scripts/dialog_audio.gd" id="6_jjn70"]
+[ext_resource type="Script" uid="uid://e70exscs0nxt" path="res://scripts/dialog_audio.gd" id="6_jjn70"]
 [ext_resource type="Script" uid="uid://cjetl0qsi6j01" path="res://scripts/text_scene_2.gd" id="6_tbgqo"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_8v6y4"]

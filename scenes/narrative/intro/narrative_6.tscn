@@ -1,12 +1,13 @@
-[gd_scene load_steps=10 format=3 uid="uid://btrr805devtt7"]
+[gd_scene load_steps=11 format=3 uid="uid://btrr805devtt7"]
 
 [ext_resource type="Script" uid="uid://dsij18ex0qb4x" path="res://scripts/narrative/intro/narrative_6.gd" id="1_0o575"]
 [ext_resource type="Texture2D" uid="uid://ctrc2aqacldld" path="res://assets/narrative/kitchen_wide.png" id="2_s88ms"]
 [ext_resource type="Texture2D" uid="uid://x4utwuqk2014" path="res://assets/narrative/characters/frat_bro.png" id="3_2xkia"]
+[ext_resource type="AudioStream" uid="uid://cbtbt0kcujk3l" path="res://assets/audio/voice/gabeSample.wav" id="4_obct2"]
 [ext_resource type="Texture2D" uid="uid://garlhcligbug" path="res://assets/narrative/characters/main_character_eat.png" id="4_ovjjm"]
 [ext_resource type="Texture2D" uid="uid://g5yvw20sy1ra" path="res://assets/narrative/items/mystical_object.png" id="5_mwmus"]
 [ext_resource type="AudioStream" uid="uid://d1y3pjjws6et5" path="res://assets/audio/voice/telandSample.wav" id="5_ovjjm"]
-[ext_resource type="Script" path="res://scripts/dialog_audio.gd" id="6_mwmus"]
+[ext_resource type="Script" uid="uid://e70exscs0nxt" path="res://scripts/dialog_audio.gd" id="6_mwmus"]
 [ext_resource type="Script" uid="uid://cjetl0qsi6j01" path="res://scripts/text_scene_2.gd" id="6_s88ms"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_2xkia"]
@@ -30,6 +31,11 @@ position = Vector2(728, 973)
 scale = Vector2(0.65, 0.65)
 texture = ExtResource("3_2xkia")
 flip_h = true
+
+[node name="DialogAudio" type="AudioStreamPlayer" parent="FratBro"]
+stream = ExtResource("4_obct2")
+script = ExtResource("6_mwmus")
+character_type = "frat_bro"
 
 [node name="MainCharacterEat" type="Sprite2D" parent="."]
 position = Vector2(251, 945)

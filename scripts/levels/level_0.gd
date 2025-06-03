@@ -18,9 +18,20 @@ func _ready():
 	oh_no_label.visible = false
 	evil_label.visible = false
 	
+	# Stop narrative audio when Level 0 starts
+	stop_narrative_audio()
+	
 	player.max_health = 5
 	player.health = 5
 	player.connect("bounced_off_ice", Callable(self, "_on_player_bounce_off_ice"))
+
+func stop_narrative_audio():
+	# Access the autoload using get_node to stop narrative audio
+	var audio_manager = get_node("/root/NarrativeAudioManager")
+	if audio_manager:
+		audio_manager.stop_narrative_audio()
+	else:
+		print("Warning: NarrativeAudioManager not found")
 	
 func _on_player_bounce_off_ice():
 	if not gave_bounce_hint:

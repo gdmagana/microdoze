@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://b8031r7ess33k"]
+[gd_scene load_steps=19 format=3 uid="uid://b8031r7ess33k"]
 
 [ext_resource type="Script" uid="uid://dsm5ftrt306io" path="res://scripts/level_zero.gd" id="1_a0gos"]
 [ext_resource type="PackedScene" uid="uid://b7mu1034wh12b" path="res://scenes/Player.tscn" id="2_buf0d"]
@@ -6,13 +6,21 @@
 [ext_resource type="Texture2D" uid="uid://b2v2alfch3m20" path="res://assets/freezer/snow.png" id="3_7dtwl"]
 [ext_resource type="PackedScene" uid="uid://chkrln0i73kui" path="res://scenes/projectile_ice_cube.tscn" id="4_6oe1b"]
 [ext_resource type="PackedScene" uid="uid://bsdi5day054n2" path="res://scenes/HealthUI.tscn" id="5_6ip7e"]
+[ext_resource type="Script" path="res://scripts/camera_2d.gd" id="5_11olo"]
+[ext_resource type="FontFile" uid="uid://cwrp8r743gy5" path="res://assets/fonts/arcade.ttf" id="5_i0hcr"]
 [ext_resource type="PackedScene" uid="uid://cbp45nyhyledd" path="res://scenes/HealthPowerUp.tscn" id="6_7dtwl"]
+[ext_resource type="PackedScene" uid="uid://b18aa8ui7s5jr" path="res://scenes/GameOver.tscn" id="8_6ip7e"]
+[ext_resource type="Texture2D" uid="uid://df3nmsirqvo2s" path="res://assets/freezer/frozen peas pixel.png" id="9_h6dln"]
+[ext_resource type="Texture2D" uid="uid://c4mjd12ou81kn" path="res://assets/freezer/twisted tea pixel.png" id="10_i0hcr"]
+[ext_resource type="Texture2D" uid="uid://dxkmuhokaonh1" path="res://assets/freezer/milk_pixel.png" id="11_2cghs"]
+[ext_resource type="Texture2D" uid="uid://cgjobw0l58b34" path="res://assets/freezer/frozen pizza pixel.png" id="12_11olo"]
+[ext_resource type="Texture2D" uid="uid://3m0c0476ch80" path="res://assets/sprites/evil_lactose_free_ice_cream_pixel.png" id="14_2cghs"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qnx47"]
-size = Vector2(407, 3072)
+size = Vector2(407, 4215)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7dtwl"]
-size = Vector2(419, 3063)
+size = Vector2(419, 4217)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0lbt8"]
 size = Vector2(1108, 295.5)
@@ -26,11 +34,17 @@ position = Vector2(519.5, 63.5)
 scale = Vector2(1.61621, 3.47754)
 texture = ExtResource("3_7dtwl")
 
+[node name="FloorSprite2" type="Sprite2D" parent="."]
+position = Vector2(559.724, -3443.01)
+scale = Vector2(1.5982, 3.5)
+texture = ExtResource("3_7dtwl")
+
 [node name="Player" parent="." instance=ExtResource("2_buf0d")]
 position = Vector2(528, 900)
 collision_mask = 1
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
+script = ExtResource("5_11olo")
 
 [node name="OnBounceLabel" type="Label" parent="Player"]
 offset_left = -137.0
@@ -38,37 +52,51 @@ offset_top = 66.0
 offset_right = 154.0
 offset_bottom = 616.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("5_i0hcr")
 theme_override_font_sizes/font_size = 75
 text = "press shift"
 horizontal_alignment = 1
 autowrap_mode = 2
 metadata/_edit_use_anchors_ = true
 
+[node name="OhNoLabel" type="Label" parent="Player"]
+offset_left = -143.0
+offset_right = -11.0
+offset_bottom = 51.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("5_i0hcr")
+theme_override_font_sizes/font_size = 40
+text = "OH NO!"
+
 [node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="GameOver" parent="HUD" instance=ExtResource("8_6ip7e")]
+process_mode = 3
+visible = false
 
 [node name="HealthUI" parent="HUD" instance=ExtResource("5_6ip7e")]
 anchors_preset = -1
 anchor_top = 1.0
-offset_left = 10.0
-offset_top = -110.0
-offset_right = 10.0
-offset_bottom = -110.0
+anchor_bottom = 1.18281
+offset_top = -230.0
+offset_right = -1080.0
+offset_bottom = -464.0
 grow_vertical = 0
-scale = Vector2(0.051317, 0.051317)
+scale = Vector2(0.75, 0.75)
 metadata/_edit_use_anchors_ = true
 
 [node name="LeftWall" type="StaticBody2D" parent="."]
 collision_mask = 10
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
-position = Vector2(190.5, 8)
+position = Vector2(190.5, -565)
 shape = SubResource("RectangleShape2D_qnx47")
 
 [node name="RightWall" type="StaticBody2D" parent="."]
 collision_mask = 10
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
-position = Vector2(889.5, 12.5)
+position = Vector2(889.5, -565)
 shape = SubResource("RectangleShape2D_7dtwl")
 
 [node name="Floor" type="StaticBody2D" parent="."]
@@ -109,6 +137,7 @@ offset_top = 1246.0
 offset_right = 685.0
 offset_bottom = 1896.0
 theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("5_i0hcr")
 theme_override_font_sizes/normal_font_size = 75
 bbcode_enabled = true
 text = "use
@@ -118,3 +147,40 @@ fit_content = true
 scroll_active = false
 horizontal_alignment = 1
 metadata/_edit_use_anchors_ = true
+
+[node name="FrozenPeasPixel" type="Sprite2D" parent="."]
+position = Vector2(106.5, 923)
+scale = Vector2(0.782552, 0.692708)
+texture = ExtResource("9_h6dln")
+
+[node name="TwistedTeaPixel" type="Sprite2D" parent="."]
+position = Vector2(967.177, 735.601)
+rotation = 1.30725
+scale = Vector2(1.01747, 0.958704)
+texture = ExtResource("10_i0hcr")
+
+[node name="MilkPixel" type="Sprite2D" parent="."]
+position = Vector2(16, -164)
+rotation = -0.174533
+scale = Vector2(0.3832, 0.31104)
+texture = ExtResource("11_2cghs")
+
+[node name="FrozenPizzaPixel" type="Sprite2D" parent="."]
+position = Vector2(1110, -1081)
+scale = Vector2(1.98837, 1.66505)
+texture = ExtResource("12_11olo")
+
+[node name="EvilLactoseFreeIceCreamPixel" type="Sprite2D" parent="."]
+position = Vector2(524, -1732)
+scale = Vector2(1.40714, 1.30253)
+texture = ExtResource("14_2cghs")
+
+[node name="EvilLabel" type="Label" parent="EvilLactoseFreeIceCreamPixel"]
+offset_left = -252.285
+offset_top = 146.638
+offset_right = 279.715
+offset_bottom = 231.305
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("5_i0hcr")
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1

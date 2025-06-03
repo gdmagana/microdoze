@@ -13,31 +13,21 @@ var rainbow_scroll_speed := 1.0 # How fast the rainbow scrolls (higher = faster)
 
 var shader_material: ShaderMaterial
 
-func _ready():
-	print("DEBUG: HealthUI _ready called")
-	
+func _ready():	
 	# Set up the health bar frame with a border
 	if health_frame:
 		health_frame.add_theme_color_override("bg_color", Color(0.2, 0.2, 0.2, 1.0)) # Dark gray frame
-		print("DEBUG: Health frame setup complete")
 	else:
 		print("ERROR: Health frame not found!")
 	
 	# Set up the health bar with trippy rainbow shader
 	if health_bar:
 		health_bar.visible = true
-		print("DEBUG: Health bar setup complete - using ColorRect with shader")
-		print("DEBUG: Health bar visible: ", health_bar.visible)
-		print("DEBUG: Health bar type: ", health_bar.get_class())
 		create_rainbow_shader() # Create the trippy shader effect
 	else:
 		print("ERROR: Health bar not found!")
 		
-	print("DEBUG: HealthUI _ready completed")
-
-func create_rainbow_shader():
-	print("DEBUG: Creating pixelated stair-step rainbow shader")
-	
+func create_rainbow_shader():	
 	# Create a new shader
 	var shader = Shader.new()
 	
@@ -110,8 +100,6 @@ func create_rainbow_shader():
 	# Apply the shader to the health bar
 	health_bar.material = shader_material
 	
-	print("DEBUG: Pixelated stair-step rainbow shader created and applied!")
-
 func update_shader_parameters():
 	if shader_material:
 		shader_material.set_shader_parameter("scroll_speed", rainbow_scroll_speed)
@@ -128,9 +116,7 @@ func update_shader_parameters():
 		shader_material.set_shader_parameter("step_width", step_width)
 		shader_material.set_shader_parameter("step_height", 0.333)
 
-func update_health(current_health: float, max_health: float = 100.0):
-	print("DEBUG: update_health called with ", current_health, "/", max_health)
-	
+func update_health(current_health: float, max_health: float):	
 	if not health_bar:
 		print("ERROR: health_bar is null in update_health!")
 		return
@@ -138,25 +124,20 @@ func update_health(current_health: float, max_health: float = 100.0):
 	# Calculate health percentage
 	var health_percentage = clamp(current_health / max_health, 0.0, 1.0)
 	current_health_percentage = health_percentage
-	print("DEBUG: Health percentage: ", health_percentage)
 	
 	# Update the health bar width by adjusting the anchor
 	health_bar.anchor_right = health_percentage
-	print("DEBUG: Set anchor_right to: ", health_percentage)
 	
 	# Adjust shader effects based on health level
 	if health_percentage > 0.6:
 		# High health - smooth, pleasant scrolling with smaller blocks
 		rainbow_scroll_speed = 0.3
-		print("DEBUG: High health - smooth pixelated rainbow")
 	elif health_percentage > 0.3:
 		# Medium health - faster scrolling with medium blocks
 		rainbow_scroll_speed = 0.6
-		print("DEBUG: Medium health - faster pixelated rainbow")
 	else:
 		# Low health - rapid scrolling with larger, chunkier blocks
 		rainbow_scroll_speed = 1.2
-		print("DEBUG: Low health - CRAZY fast pixelated rainbow")
 	
 	# Apply the new parameters to the shader
 	update_shader_parameters()

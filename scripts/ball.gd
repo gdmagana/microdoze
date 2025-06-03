@@ -62,7 +62,6 @@ func accelerate(multiplier: float):
 	var fire_boost = 1.0
 	if PowerUpManager and PowerUpManager.has_fire_pucks():
 		fire_boost = 1.4
-		print("DEBUG: Fire pucks active! Applying 1.4x speed boost to accelerated puck")
 	
 	# Update the ball's speed with the multiplier and fire boost
 	var total_multiplier = multiplier * fire_boost
@@ -123,4 +122,3 @@ func set_speed_multiplier(multiplier: float):
 	if linear_velocity.length() > 0:
 		speed *= multiplier
 		linear_velocity = linear_velocity.normalized() * speed
-		print("DEBUG: Puck speed boosted to: ", speed)

@@ -28,6 +28,10 @@ texture = ExtResource("8_jlsqs")
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
+[node name="GameOver" parent="HUD" instance=ExtResource("9_q8u5g")]
+process_mode = 3
+visible = false
+
 [node name="HealthUI" parent="HUD" instance=ExtResource("5_healthui")]
 offset_left = 20.0
 offset_top = 1174.0
@@ -81,10 +85,6 @@ physics_material_override = SubResource("PhysicsMaterial_uu6xs")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Node/WallRight"]
 position = Vector2(1124, 645)
 shape = SubResource("RectangleShape2D_r0du0")
-
-[node name="GameOver" parent="." instance=ExtResource("9_q8u5g")]
-process_mode = 3
-visible = false
 
 [node name="IceCreamBoss" parent="." instance=ExtResource("4_rarhs")]
 position = Vector2(534, 268)

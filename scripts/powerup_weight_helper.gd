@@ -41,7 +41,6 @@ static func get_weighted_random_powerup_from_config(config: Dictionary) -> Packe
 		if weight > 0:
 			current_weight += weight
 			if random_value <= current_weight:
-				print("DEBUG: PowerupWeightHelper selected: ", powerup_scene.resource_path, " (weight: ", weight, ")")
 				return powerup_scene
 	
 	# Fallback (shouldn't happen with proper weights)
@@ -83,7 +82,6 @@ static func get_weighted_random_powerup_from_arrays(powerup_scenes: Array, weigh
 		if weight > 0:
 			current_weight += weight
 			if random_value <= current_weight:
-				print("DEBUG: PowerupWeightHelper selected: ", powerup_scenes[i].resource_path, " (weight: ", weight, ")")
 				return powerup_scenes[i]
 	
 	# Fallback (shouldn't happen with proper weights)

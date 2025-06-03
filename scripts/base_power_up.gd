@@ -19,28 +19,21 @@ func _ready():
 	body_entered.connect(_on_body_entered)
 	area_entered.connect(_on_area_entered)
 	
-	print("DEBUG: Powerup ready: ", powerup_type)
 
 func _process(delta):
 	# Make powerup fall slowly
 	position.y += fall_speed * delta
 
 func _on_body_entered(body):
-	print("DEBUG: Powerup body entered: ", body.name, " groups: ", body.get_groups())
 	if body.is_in_group("player"):
-		print("DEBUG: Player detected via body_entered!")
 		collect_powerup()
 
 func _on_area_entered(area):
-	print("DEBUG: Powerup area entered: ", area.name, " parent: ", area.get_parent().name if area.get_parent() else "none")
 	# Handle Area2D collisions (like player's hitbox)
 	if area.get_parent().is_in_group("player"):
-		print("DEBUG: Player detected via area_entered!")
 		collect_powerup()
 
 func collect_powerup():
-	print("DEBUG: Collecting powerup: ", powerup_type)
-	
 	# Play collection sound if available
 	if collection_sound:
 		# Create a temporary audio player to play the sound
@@ -52,9 +45,7 @@ func collect_powerup():
 		audio_player.finished.connect(audio_player.queue_free)
 	
 	# Activate the powerup effect
-	print("DEBUG: About to activate effect for: ", powerup_type)
 	activate_effect()
-	print("DEBUG: Effect activated for: ", powerup_type)
 	
 	# Visual feedback - quick scale animation before disappearing
 	var tween = create_tween()

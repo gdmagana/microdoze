@@ -5,7 +5,7 @@ extends Area2D
 func _ready():
 	connect("body_shape_entered", Callable(self, "_on_body_shape_entered"))
 
-func _on_body_shape_entered(body_id, body, body_shape_index, local_shape_index):
+func _on_body_shape_entered(_body_id, body, _body_shape_index, _local_shape_index):
 	if body.is_in_group("puck"):
 		# Accelerate the ball
 		body.accelerate(hit_acceleration)

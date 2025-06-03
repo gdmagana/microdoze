@@ -3,7 +3,7 @@
 ## Quick Setup
 
 1. **Add Debug UI to Main Scene:**
-   - Open your `Main.tscn` scene
+   - Open your `Level1.tscn` scene
    - Right-click and select "Instance Scene"
    - Choose `scenes/PowerupDebugUI.tscn`
    - Position it anywhere in your scene

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bdebug001"]
+
+[ext_resource type="Script" uid="uid://u4x3mwn604fl" path="res://scripts/power_ups/powerup_debug_ui.gd" id="1_debug"]
+
+[node name="PowerupDebugUI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_debug")

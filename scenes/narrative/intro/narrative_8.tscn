@@ -1,0 +1,106 @@
+[gd_scene load_steps=12 format=3 uid="uid://dnv3i4cl0oxut"]
+
+[ext_resource type="Script" uid="uid://c0yua44easpeu" path="res://scripts/narrative/intro/narrative_8.gd" id="1_jbbu6"]
+[ext_resource type="Texture2D" uid="uid://ctrc2aqacldld" path="res://assets/narrative/kitchen_wide.png" id="2_nkftj"]
+[ext_resource type="Texture2D" uid="uid://garlhcligbug" path="res://assets/narrative/characters/main_character_eat.png" id="3_l5xne"]
+[ext_resource type="AudioStream" uid="uid://d1y3pjjws6et5" path="res://assets/audio/voice/telandSample.wav" id="4_mgqqq"]
+[ext_resource type="Script" uid="uid://e70exscs0nxt" path="res://scripts/dialog_audio.gd" id="5_xrpi4"]
+[ext_resource type="Texture2D" uid="uid://g5yvw20sy1ra" path="res://assets/narrative/items/mystical_object.png" id="6_8hil2"]
+[ext_resource type="Texture2D" uid="uid://cwdfs7f2tflts" path="res://assets/narrative/characters/frat_bro_shocked.png" id="7_2c66m"]
+[ext_resource type="AudioStream" uid="uid://cbtbt0kcujk3l" path="res://assets/audio/voice/gabeSample.wav" id="8_u1x5r"]
+[ext_resource type="Script" uid="uid://cjetl0qsi6j01" path="res://scripts/text_scene_2.gd" id="9_jnfmg"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_2mf45"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_sxtgq"]
+
+[node name="NarrativeEight" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_jbbu6")
+
+[node name="KitchenWide" type="Sprite2D" parent="."]
+position = Vector2(538.5, 638.5)
+scale = Vector2(1.05957, 0.833984)
+texture = ExtResource("2_nkftj")
+
+[node name="MainCharacterEat" type="Sprite2D" parent="."]
+position = Vector2(251, 945)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("3_l5xne")
+
+[node name="DialogAudio" type="AudioStreamPlayer" parent="MainCharacterEat"]
+stream = ExtResource("4_mgqqq")
+script = ExtResource("5_xrpi4")
+
+[node name="MysticalObject" type="Sprite2D" parent="."]
+position = Vector2(278, 789)
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("6_8hil2")
+
+[node name="FratBroShocked" type="Sprite2D" parent="."]
+position = Vector2(749, 959)
+scale = Vector2(0.65, 0.65)
+texture = ExtResource("7_2c66m")
+flip_h = true
+
+[node name="DialogAudio" type="AudioStreamPlayer" parent="FratBroShocked"]
+stream = ExtResource("8_u1x5r")
+script = ExtResource("5_xrpi4")
+character_type = "frat_bro"
+
+[node name="TextureRect3" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 470.0
+offset_top = 327.0
+offset_right = 827.0
+offset_bottom = 485.0
+texture = SubResource("CanvasTexture_2mf45")
+
+[node name="Label2" type="Label" parent="TextureRect3"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.981
+offset_bottom = 4.00198
+theme_override_colors/font_color = Color(0.0313726, 0, 0, 1)
+theme_override_font_sizes/font_size = 50
+text = "WAIT!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("9_jnfmg")
+
+[node name="TextureRect2" type="TextureRect" parent="Control"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 324.0
+offset_right = 434.0
+offset_bottom = 500.0
+texture = SubResource("CanvasTexture_sxtgq")
+
+[node name="Label" type="Label" parent="Control"]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 0
+offset_left = 102.0
+offset_top = 337.0
+offset_right = 401.0
+offset_bottom = 482.0
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Timer" type="Timer" parent="Control"]
+
+[connection signal="timeout" from="Control/Timer" to="Control" method="_on_Timer_timeout"]

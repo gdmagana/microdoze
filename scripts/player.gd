@@ -190,10 +190,6 @@ func _physics_process(delta):
 		# Hit top or bottom edge, stop vertical momentum
 		velocity.y = 0
 	
-	# -- Player Hitbox --
-	var hitbox = $CollisionShape2D.shape
-	# Radius is available if needed: var hitbox_radius = hitbox.radius
-	
 	# -- Stick logic --
 	if Input.is_action_just_pressed("ui_accept") and not is_stick_pushing:
 		is_stick_pushing = true
@@ -235,7 +231,7 @@ func _physics_process(delta):
 func _on_intro_finished():
 	is_frozen = false
 
-func _process(delta):
+func _process(_delta):
 	if is_level_zero:
 		return
 
@@ -248,7 +244,7 @@ func _process(delta):
 			change_to_level_2()
 
 func change_to_level_2():
-	get_tree().change_scene_to_file("res://scenes/Level2.tscn")
+	get_tree().change_scene_to_file("res://scenes/levels/Level2.tscn")
 	
 func change_to_the_end():
 	get_tree().change_scene_to_file("res://scenes/TheEnd.tscn")

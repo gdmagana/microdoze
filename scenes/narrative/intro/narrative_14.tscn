@@ -1,0 +1,65 @@
+[gd_scene load_steps=8 format=3 uid="uid://dhv0lolwyieu"]
+
+[ext_resource type="Script" uid="uid://t2t7u22ewo2s" path="res://scripts/narrative/intro/narrative_14.gd" id="1_ll56k"]
+[ext_resource type="Texture2D" uid="uid://dgbiff3ayt8v3" path="res://assets/narrative/kitchen_zoomed_trippy.png" id="1_m6ypi"]
+[ext_resource type="Texture2D" uid="uid://b8ul3q8rpb3gd" path="res://assets/narrative/kitchen_zoomed.png" id="2_ll56k"]
+[ext_resource type="Script" uid="uid://cjetl0qsi6j01" path="res://scripts/text_scene_2.gd" id="4_agwjl"]
+[ext_resource type="FontFile" uid="uid://cwrp8r743gy5" path="res://assets/fonts/arcade.ttf" id="5_gsy7e"]
+
+[sub_resource type="AnimatedTexture" id="AnimatedTexture_4ic7j"]
+frames = 2
+frame_0/texture = ExtResource("1_m6ypi")
+frame_1/texture = ExtResource("2_ll56k")
+frame_1/duration = 1.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_agwjl"]
+font = ExtResource("5_gsy7e")
+font_size = 200
+outline_size = 10
+outline_color = Color(0, 0, 0, 1)
+
+[node name="NarrativeFourteen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ll56k")
+
+[node name="KitchenWide" type="Sprite2D" parent="."]
+position = Vector2(538.5, 638.5)
+scale = Vector2(1.05957, 0.833984)
+texture = SubResource("AnimatedTexture_4ic7j")
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("4_agwjl")
+
+[node name="Label" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = 99.0
+offset_top = 353.0
+offset_right = 999.0
+offset_bottom = 964.0
+label_settings = SubResource("LabelSettings_agwjl")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Timer" type="Timer" parent="Control"]
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 758.0
+offset_top = 107.0
+offset_right = 1012.0
+offset_bottom = 317.0
+
+[connection signal="timeout" from="Control/Timer" to="Control" method="_on_Timer_timeout"]
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

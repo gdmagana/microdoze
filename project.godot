@@ -17,7 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-PowerUpManager="*res://scripts/power_up_manager.gd"
+PowerUpManager="*res://scripts/power_ups/power_up_manager.gd"
 DebugSettings="*res://scripts/debug_settings.gd"
 GameState="*res://scripts/GameState.gd"
 

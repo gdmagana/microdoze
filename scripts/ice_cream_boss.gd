@@ -66,10 +66,10 @@ func _ready():
 func _load_powerup_scenes():
 	# Load all available powerup scenes with their corresponding weights
 	powerup_scenes = [
-		preload("res://scenes/SpeedBoostPowerUp.tscn"),
-		preload("res://scenes/UnlimitedPucksPowerUp.tscn"),
-		preload("res://scenes/FirePucksPowerUp.tscn"),
-		preload("res://scenes/InvincibilityPowerUp.tscn")
+		preload("res://scenes/power_ups/SpeedBoostPowerUp.tscn"),
+		preload("res://scenes/power_ups/UnlimitedPucksPowerUp.tscn"),
+		preload("res://scenes/power_ups/FirePucksPowerUp.tscn"),
+		preload("res://scenes/power_ups/InvincibilityPowerUp.tscn")
 	]
 	
 	# Set up weights array to match the scenes array
@@ -263,7 +263,6 @@ func _dramatic_damage_sequence():
 		zoom_tween.parallel().tween_property(camera, "global_position", target_camera_pos, 0.4)
 		
 		# Start typewriter effect as a concurrent task
-		var typewriter_finished = false
 		_start_typewriter_concurrent(dialog_label, "Your mom never loved you!")
 		
 		# Wait for zoom to complete

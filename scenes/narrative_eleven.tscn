@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bvq2bv1jmsjwb"]
+[gd_scene load_steps=8 format=3 uid="uid://caxicv2a513u1"]
 
 [ext_resource type="Texture2D" uid="uid://ctrc2aqacldld" path="res://assets/narrative/kitchen_wide.png" id="1_t4g1w"]
 [ext_resource type="Script" uid="uid://b28nu71rh3oox" path="res://scripts/narrative/intro/narrative_11.gd" id="1_tubme"]

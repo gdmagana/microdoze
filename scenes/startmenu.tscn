@@ -1,34 +1,6 @@
-[gd_scene load_steps=12 format=3 uid="uid://d12e5n7wqoxwo"]
+[gd_scene load_steps=2 format=3 uid="uid://du87sb7bhgow6"]
 
 [ext_resource type="Script" uid="uid://cve0bsiyjp674" path="res://control.gd" id="1_u4tt2"]
-[ext_resource type="Shader" uid="uid://bo35g4n7exe1w" path="res://scenes/startmenu.gdshader" id="2_poymh"]
-[ext_resource type="FontFile" uid="uid://cwrp8r743gy5" path="res://assets/fonts/arcade.ttf" id="2_t0y3k"]
-[ext_resource type="Texture2D" uid="uid://bbsi7ibseyf63" path="res://assets/sprites/start_menu_animation.png" id="3_ids67"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_cy0qo"]
-shader = ExtResource("2_poymh")
-shader_parameter/time = 0.0
-shader_parameter/speed = 2.0
-shader_parameter/strength = 0.02
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cy0qo"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ihhoq"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_poymh"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_color = Color(0.8, 0.8, 0.8, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ag814"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lqn8n"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fndww"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [node name="StartMenu" type="Control"]
 layout_mode = 3
@@ -39,16 +11,6 @@ offset_right = 690.0
 offset_bottom = 376.0
 script = ExtResource("1_u4tt2")
 
-[node name="Background" type="TextureRect" parent="."]
-material = SubResource("ShaderMaterial_cy0qo")
-layout_mode = 0
-offset_left = -914.0
-offset_top = -335.0
-offset_right = 423.0
-offset_bottom = 973.0
-texture = ExtResource("3_ids67")
-stretch_mode = 6
-
 [node name="MicroDoze" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = -1
@@ -56,54 +18,28 @@ anchor_left = -13.425
 anchor_top = -6.15
 anchor_right = 8.325
 anchor_bottom = -0.4
-offset_left = -110.0
-offset_top = 106.0
-offset_right = -873.0
-offset_bottom = -102.0
+offset_right = -783.0
+offset_bottom = -207.0
 scale = Vector2(10, 10)
-theme_override_colors/font_color = Color(0.847059, 0.854902, 0.8, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 10
-theme_override_constants/shadow_outline_size = 0
-theme_override_fonts/font = ExtResource("2_t0y3k")
-theme_override_font_sizes/font_size = 15
 text = "Microdoze"
-horizontal_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="StartButton" type="Button" parent="."]
 layout_mode = 0
-offset_left = -648.0
-offset_top = 3.0
-offset_right = 426.0
-offset_bottom = 213.0
+offset_left = -591.0
+offset_top = 369.0
+offset_right = -545.0
+offset_bottom = 400.0
+scale = Vector2(10, 10)
+text = "Start"
 
-[node name="NewGame" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_hover_color = Color(0.847059, 0.854902, 0.8, 1)
-theme_override_colors/icon_normal_color = Color(0.847059, 0.854902, 0.8, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_colors/font_color = Color(0.847059, 0.854902, 0.8, 1)
-theme_override_constants/outline_size = 50
-theme_override_fonts/font = ExtResource("2_t0y3k")
-theme_override_font_sizes/font_size = 85
-theme_override_styles/hover = SubResource("StyleBoxFlat_cy0qo")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_ihhoq")
-theme_override_styles/normal = SubResource("StyleBoxFlat_poymh")
-text = "New Game"
+[node name="QuitButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = -95.0
+offset_top = 372.0
+offset_right = -53.0
+offset_bottom = 403.0
+scale = Vector2(10, 10)
+text = "Quit"
 
-[node name="ContinueOldGame" type="Button" parent="VBoxContainer"]
-visible = false
-layout_mode = 2
-theme_override_colors/font_hover_color = Color(0.847059, 0.854902, 0.8, 1)
-theme_override_colors/font_color = Color(0.847059, 0.854902, 0.8, 1)
-theme_override_colors/font_pressed_color = Color(0.847059, 0.854902, 0.8, 1)
-theme_override_constants/outline_size = 50
-theme_override_fonts/font = ExtResource("2_t0y3k")
-theme_override_font_sizes/font_size = 85
-theme_override_styles/hover = SubResource("StyleBoxFlat_ag814")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_lqn8n")
-theme_override_styles/normal = SubResource("StyleBoxFlat_fndww")
-text = "Continue Game"
-
-[connection signal="pressed" from="VBoxContainer/NewGame" to="." method="_on_new_game_pressed"]
-[connection signal="pressed" from="VBoxContainer/ContinueOldGame" to="." method="_on_continue_old_game_pressed"]
+[connection signal="pressed" from="StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="QuitButton" to="." method="_on_quit_button_pressed"]

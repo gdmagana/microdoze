@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://dgbiff3ayt8v3" path="res://assets/narrative/kitchen_zoomed_trippy.png" id="1_m6ypi"]
 [ext_resource type="Texture2D" uid="uid://b8ul3q8rpb3gd" path="res://assets/narrative/kitchen_zoomed.png" id="2_ll56k"]
 [ext_resource type="Script" uid="uid://cjetl0qsi6j01" path="res://scenes/text_scene_2.gd" id="4_agwjl"]
-[ext_resource type="FontFile" uid="uid://mtien7aag3t" path="res://assets/fonts/arcadeclassic.regular.ttf" id="5_gsy7e"]
+[ext_resource type="FontFile" uid="uid://cwrp8r743gy5" path="res://assets/fonts/arcade.ttf" id="5_gsy7e"]
 
 [sub_resource type="AnimatedTexture" id="AnimatedTexture_4ic7j"]
 frames = 2

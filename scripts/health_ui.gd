@@ -1,12 +1,17 @@
 extends Control
 
-@onready var health_bar: Panel = $HealthBarContainer/HealthBarFrame/HealthBar
+@onready var health_bar: ColorRect = $HealthBarContainer/HealthBarFrame/HealthBar
 @onready var health_frame: Panel = $HealthBarContainer/HealthBarFrame
 @onready var progress_background: Panel = $HealthBarContainer/ProgressBarBackground
 
 var low_health_tween: Tween
 var rainbow_tween: Tween
 var current_health_percentage: float = 1.0
+
+# Rainbow effect timing - ADJUST THESE TO CHANGE SPEED
+var rainbow_transition_time := 0.3 # Seconds per color transition (LOWER = FASTER, HIGHER = SLOWER)
+var medium_health_pulse_time := 0.4 # Medium health pulse speed
+var low_health_pulse_time := 0.2 # Low health pulse speed
 
 func _ready():
 	print("DEBUG: HealthUI _ready called")
@@ -30,7 +35,7 @@ func _ready():
 	print("DEBUG: HealthUI _ready completed")
 
 func start_rainbow_effect():
-	print("DEBUG: Starting rainbow effect for health bar")
+	print("DEBUG: Starting TRIPPY rainbow effect for health bar")
 	
 	# Stop any existing effects
 	if rainbow_tween:
@@ -39,27 +44,29 @@ func start_rainbow_effect():
 		low_health_tween.kill()
 		low_health_tween = null
 	
-	# Create rainbow animation
+	# Create super trippy rainbow animation - much faster and more vibrant
 	rainbow_tween = create_tween()
 	rainbow_tween.set_loops() # Loop infinitely
 	
-	# Rainbow colors - bright and vibrant
+	# Super vibrant rainbow colors - make them REALLY pop
 	var rainbow_colors = [
-		Color(1.0, 0.0, 0.0, 1.0), # Red
-		Color(1.0, 0.5, 0.0, 1.0), # Orange
-		Color(1.0, 1.0, 0.0, 1.0), # Yellow
-		Color(0.0, 1.0, 0.0, 1.0), # Green
+		Color(1.0, 0.0, 1.0, 1.0), # Magenta - start with trippy color
 		Color(0.0, 1.0, 1.0, 1.0), # Cyan
-		Color(0.0, 0.0, 1.0, 1.0), # Blue
+		Color(0.0, 1.0, 0.0, 1.0), # Green
+		Color(1.0, 1.0, 0.0, 1.0), # Yellow
+		Color(1.0, 0.5, 0.0, 1.0), # Orange
+		Color(1.0, 0.0, 0.0, 1.0), # Red
 		Color(0.5, 0.0, 1.0, 1.0), # Purple
-		Color(1.0, 0.0, 1.0, 1.0) # Magenta
+		Color(1.0, 0.0, 0.5, 1.0), # Hot pink
+		Color(0.0, 0.5, 1.0, 1.0), # Light blue
+		Color(0.5, 1.0, 0.0, 1.0), # Lime green
 	]
 	
-	# Cycle through rainbow colors
+	# Cycle through rainbow colors - use the adjustable timing variable
 	for color in rainbow_colors:
-		rainbow_tween.tween_method(set_health_bar_color, health_bar.modulate, color, 0.3)
+		rainbow_tween.tween_property(health_bar, "color", color, rainbow_transition_time)
 	
-	print("DEBUG: Rainbow tween created and started")
+	print("DEBUG: TRIPPY Rainbow tween created and started with ColorRect")
 
 func set_health_bar_color(color: Color):
 	if health_bar:
@@ -108,12 +115,26 @@ func update_health(current_health: float, max_health: float = 100.0):
 		if health_percentage > 0:
 			start_low_health_pulse()
 
-func start_low_health_pulse():
-	# Create a pulsing effect for low health
+func start_medium_health_pulse():
+	# Stop any existing effects
 	if low_health_tween:
 		low_health_tween.kill()
 	
 	low_health_tween = create_tween()
 	low_health_tween.set_loops()
-	low_health_tween.tween_property(health_bar, "modulate:a", 0.6, 0.5)
-	low_health_tween.tween_property(health_bar, "modulate:a", 1.0, 0.5)
+	
+	# Pulse between yellow and orange - use adjustable timing
+	low_health_tween.tween_property(health_bar, "color", Color(1.0, 1.0, 0.0, 1.0), medium_health_pulse_time) # Yellow
+	low_health_tween.tween_property(health_bar, "color", Color(1.0, 0.6, 0.0, 1.0), medium_health_pulse_time) # Orange
+
+func start_low_health_pulse():
+	# Create an intense pulsing effect for low health
+	if low_health_tween:
+		low_health_tween.kill()
+	
+	low_health_tween = create_tween()
+	low_health_tween.set_loops()
+	
+	# Fast, intense red pulsing - use adjustable timing
+	low_health_tween.tween_property(health_bar, "color", Color(1.0, 0.0, 0.0, 1.0), low_health_pulse_time) # Bright red
+	low_health_tween.tween_property(health_bar, "color", Color(0.8, 0.0, 0.0, 0.7), low_health_pulse_time) # Darker red, slight transparency

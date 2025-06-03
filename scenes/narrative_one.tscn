@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://ddpan584qu2f"]
 
 [ext_resource type="Texture2D" uid="uid://ctrc2aqacldld" path="res://assets/narrative/kitchen_wide.png" id="1_aqhs2"]
-[ext_resource type="Script" uid="uid://dt8i3c172d50c" path="res://scenes/narrative_one.gd" id="1_fyl4g"]
+[ext_resource type="Script" path="res://scenes/narrative_one.gd" id="1_fyl4g"]
 [ext_resource type="Texture2D" uid="uid://b2fn5knoj3pmq" path="res://assets/narrative/characters/main_character_two.png" id="2_d1i1p"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_fyl4g"]

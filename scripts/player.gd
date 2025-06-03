@@ -2,6 +2,7 @@ extends CharacterBody2D
 
 @onready var health_ui = get_tree().get_current_scene().get_node("HUD/HealthUI")
 @onready var puck_counter = get_tree().get_current_scene().get_node("HUD/PuckCounter")
+@onready var ouch_label: Label = $Ouch
 
 # -- Player Health --
 @export var health := 3
@@ -40,21 +41,68 @@ var can_shoot_puck = true
 var stage_width
 var stage_height
 
+# -- Using this for scene changes
+var scene_change_triggered := false  # prevents switching multiple times
+
 func _ready():
+	GameState.current_level_path = get_tree().current_scene.scene_file_path
 	add_to_group("player")
 	$Stick.add_to_group("player_stick")
 	
 	stage_width = get_viewport_rect().size.x
 	stage_height = get_viewport_rect().size.y
 	
+	var center_x = stage_width / 2
+	var start_position = Vector2(center_x, stage_height - 150)
+	var entry_position = Vector2(center_x, stage_height + 100)
+	# Set entry position and freeze
+	global_position = entry_position
+	is_frozen = true
+	can_move_up = false  # no movement until intro done
+	
+	# Start entry animation
+	var tween = create_tween()
+	tween.tween_property(self, "global_position", start_position, 1.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_callback(Callable(self, "_on_intro_finished"))
+	
+	# Player health
 	health_ui.update_health(health)
 	if puck_counter:
 		puck_counter.update_puck_count(max_active_pucks, active_pucks)
 	$Hitbox.connect("body_entered", Callable(self, "_on_hitbox_body_entered"))	
 
+# NEW THING
+func _on_intro_finished():
+	is_frozen = false
+	can_move_up = false
+
+func _process(delta):
+	if not scene_change_triggered and global_position.y <= 0:
+		scene_change_triggered = true
+		print("hi shayla")
+		var current_scene_name = get_tree().current_scene.name
+		print(current_scene_name)
+		if current_scene_name == "LevelTwo":
+			print("got to the end! u win shayla rawrrrr")
+		else:
+			change_to_level_2()
+
+func change_to_level_2():
+	get_tree().change_scene_to_file("res://scenes/LevelTwo.tscn")
+
 func take_damage(amount := 1):
 	health -= amount
 	health_ui.update_health(health)
+	
+	# Show "Ouch!" sign
+	ouch_label.visible = true
+	ouch_label.modulate = Color(1, 1, 1, 1)  # full opacity
+
+	# Fade out after 2 seconds
+	var tween = create_tween()
+	tween.tween_property(ouch_label, "modulate:a", 0.0, 1.0).set_delay(1.0)
+	tween.tween_callback(Callable(ouch_label, "hide"))
+	
 	if health <= 0:
 		# Player is dead, show game over screen
 		show_game_over()
@@ -245,36 +293,29 @@ func puck_destroyed():
 		puck_counter.update_puck_count(max_active_pucks, active_pucks)
 	
 func show_game_over():
-	# Slow down background music
+	# Optional: Slow down background music
 	var audio = $"../audio/BossMusic"
 	if audio:
-		var target_pitch = 0.5  # Slow to half speed
-		
-		# Immediately set half speed if we can't do smooth transition
-		if not is_inside_tree() or get_tree() == null:
-			audio.pitch_scale = target_pitch
-		else:
-			# Try to create a smooth transition for music slowdown
-			var transition_time = 1.0  # seconds for smooth transition
-			var tween = create_tween()
-			tween.tween_property(audio, "pitch_scale", target_pitch, transition_time)
-			# Wait for the tween to finish
-			await tween.finished
-	
-	# Make sure we're still valid before continuing
-	if not is_inside_tree():
-		return
-		
-	# Create and display the game over screen
-	var game_over_scene = load("res://scenes/GameOver.tscn")
-	var game_over_instance = game_over_scene.instantiate()
-	get_tree().get_current_scene().add_child(game_over_instance)
-	
-	# Don't remove player yet - let the game over screen handle restarting
-	visible = false  # Hide the player
+		var target_pitch = 0.5
+		var tween = create_tween()
+		tween.tween_property(audio, "pitch_scale", target_pitch, 1.0)
+		await tween.finished
+
+	# Show the GameOver screen
+	var game_over = get_parent().get_node("GameOver")
+	game_over.visible = true
+	game_over.process_mode = Node.PROCESS_MODE_ALWAYS  # just in case
+
+	# Give focus to the first button
+	game_over.get_node("VBoxContainer/RestartLevelButton").grab_focus()
+
+	# Optional: Pause the game to freeze other input/movement
+	# get_tree().paused = true
+
+	# Hide this player node (or just disable processing)
+	visible = false
 	set_process(false)
 	set_physics_process(false)
-
 
 func _on_visible_on_screen_notifier_2d_screen_exited() -> void:
 	puck_destroyed()

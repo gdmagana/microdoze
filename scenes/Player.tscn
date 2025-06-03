@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://b7mu1034wh12b"]
+[gd_scene load_steps=12 format=3 uid="uid://b7mu1034wh12b"]
 
 [ext_resource type="Script" uid="uid://c42nmw6pvf0vi" path="res://scripts/player.gd" id="1_xhfnw"]
 [ext_resource type="Script" uid="uid://qeipi7vrr5j6" path="res://scripts/stick.gd" id="2_kpjcp"]
 [ext_resource type="Texture2D" uid="uid://cgh1cok0km66j" path="res://assets/freezer/helmet.png" id="2_mdl7e"]
 [ext_resource type="PackedScene" uid="uid://c56tdwek10dmn" path="res://scenes/Ball.tscn" id="2_qu4a1"]
 [ext_resource type="Texture2D" uid="uid://cr106ydl1b4j0" path="res://assets/ui/stick.png" id="3_3li8b"]
+[ext_resource type="FontFile" uid="uid://bvbqv3mp1irfc" path="res://assets/fonts/arcadeclassic.regular.ttf" id="6_70d11"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_xhfnw"]
 radius = 56.0089
@@ -55,5 +56,16 @@ collision_layer = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 shape = SubResource("CircleShape2D_v6fml")
+
+[node name="Ouch" type="Label" parent="."]
+visible = false
+offset_left = 27.0
+offset_top = -58.0
+offset_right = 115.0
+offset_bottom = -27.0
+theme_override_colors/font_color = Color(0, 0, 0.321569, 1)
+theme_override_fonts/font = ExtResource("6_70d11")
+theme_override_font_sizes/font_size = 30
+text = "Ouch!"
 
 [connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]

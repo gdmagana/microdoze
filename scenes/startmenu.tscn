@@ -1,6 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://bpymg27enx05j"]
+[gd_scene load_steps=7 format=3 uid="uid://d12e5n7wqoxwo"]
 
 [ext_resource type="Script" uid="uid://cve0bsiyjp674" path="res://control.gd" id="1_u4tt2"]
+[ext_resource type="Shader" uid="uid://bo35g4n7exe1w" path="res://scenes/startmenu.gdshader" id="2_poymh"]
+[ext_resource type="FontFile" uid="uid://bvbqv3mp1irfc" path="res://assets/fonts/arcadeclassic.regular.ttf" id="2_t0y3k"]
+[ext_resource type="Texture2D" uid="uid://bbsi7ibseyf63" path="res://assets/sprites/start_menu_animation.png" id="3_ids67"]
+[ext_resource type="Theme" uid="uid://ci4p0u6qvfs37" path="res://assets/themes/new_theme.tres" id="5_cy0qo"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cy0qo"]
+shader = ExtResource("2_poymh")
+shader_parameter/time = 0.0
+shader_parameter/speed = 2.0
+shader_parameter/strength = 0.02
 
 [node name="StartMenu" type="Control"]
 layout_mode = 3
@@ -11,6 +21,16 @@ offset_right = 690.0
 offset_bottom = 376.0
 script = ExtResource("1_u4tt2")
 
+[node name="Background" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_cy0qo")
+layout_mode = 0
+offset_left = -914.0
+offset_top = -335.0
+offset_right = 423.0
+offset_bottom = 973.0
+texture = ExtResource("3_ids67")
+stretch_mode = 6
+
 [node name="MicroDoze" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = -1
@@ -18,28 +38,55 @@ anchor_left = -13.425
 anchor_top = -6.15
 anchor_right = 8.325
 anchor_bottom = -0.4
-offset_right = -783.0
-offset_bottom = -207.0
+offset_left = -16.0001
+offset_top = 98.0
+offset_right = -799.0
+offset_bottom = -109.0
 scale = Vector2(10, 10)
+theme_override_colors/font_color = Color(0.882456, 0.411963, 0.410726, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_constants/shadow_outline_size = 0
+theme_override_fonts/font = ExtResource("2_t0y3k")
+theme_override_font_sizes/font_size = 15
 text = "Microdoze"
+horizontal_alignment = 1
 
-[node name="MicroDoze2" type="Button" parent="."]
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -9.211
+anchor_top = 5.139
+anchor_right = -9.211
+anchor_bottom = 5.139
+offset_left = -102.56
+offset_top = -228.56
+offset_right = 628.44
+offset_bottom = -142.56
+theme_override_colors/font_color = Color(0.882353, 0.411765, 0.411765, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 50
+theme_override_fonts/font = ExtResource("2_t0y3k")
+theme_override_font_sizes/font_size = 70
+text = "Press space to start"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 0
-offset_left = -591.0
-offset_top = 369.0
-offset_right = -545.0
-offset_bottom = 400.0
-scale = Vector2(10, 10)
-text = "Start"
+offset_left = -405.0
+offset_top = 45.0
+offset_right = 82.0
+offset_bottom = 213.0
 
-[node name="MicroDoze3" type="Button" parent="."]
-layout_mode = 0
-offset_left = -95.0
-offset_top = 372.0
-offset_right = -53.0
-offset_bottom = 403.0
-scale = Vector2(10, 10)
-text = "Quit"
+[node name="NewGame" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_cy0qo")
+text = "New Game"
 
-[connection signal="pressed" from="MicroDoze2" to="." method="_on_start_button_pressed"]
-[connection signal="pressed" from="MicroDoze3" to="." method="_on_quit_button_pressed"]
+[node name="ContinueOldGame" type="Button" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+theme = ExtResource("5_cy0qo")
+text = "Continue Game"
+
+[connection signal="pressed" from="VBoxContainer/NewGame" to="." method="_on_new_game_pressed"]
+[connection signal="pressed" from="VBoxContainer/ContinueOldGame" to="." method="_on_continue_old_game_pressed"]

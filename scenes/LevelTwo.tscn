@@ -1,14 +1,14 @@
-[gd_scene load_steps=13 format=3 uid="uid://bhbf48fir0ikx"]
+[gd_scene load_steps=13 format=3 uid="uid://kinr0nmah0gs"]
 
-[ext_resource type="PackedScene" uid="uid://b7mu1034wh12b" path="res://scenes/Player.tscn" id="1_glv2v"]
-[ext_resource type="Texture2D" uid="uid://du4d4rqryad3h" path="res://assets/freezer/snow_texture.jpg" id="1_vcsgt"]
-[ext_resource type="PackedScene" uid="uid://do281nd83ggn3" path="res://scenes/PuckCounter.tscn" id="3_q8u5g"]
-[ext_resource type="PackedScene" uid="uid://drb605l5hvpfw" path="res://scenes/ice_cream_boss.tscn" id="4_rarhs"]
-[ext_resource type="PackedScene" uid="uid://bsdi5day054n2" path="res://scenes/HealthUI.tscn" id="5_healthui"]
-[ext_resource type="AudioStream" uid="uid://dsuur5ttlumq7" path="res://assets/audio/microdozeTheme2.wav" id="7_nxtc6"]
-[ext_resource type="AudioStream" uid="uid://cuxhgawi0egl5" path="res://assets/audio/pain_1.wav" id="8_q8u5g"]
-[ext_resource type="AudioStream" uid="uid://dppr47m42qmx5" path="res://assets/audio/yay_1.wav" id="9_lhr70"]
-[ext_resource type="PackedScene" uid="uid://b18aa8ui7s5jr" path="res://scenes/GameOver.tscn" id="9_q8u5g"]
+[ext_resource type="Texture2D" uid="uid://du4d4rqryad3h" path="res://assets/freezer/snow_texture.jpg" id="1_dd1l5"]
+[ext_resource type="PackedScene" uid="uid://bsdi5day054n2" path="res://scenes/HealthUI.tscn" id="2_16ers"]
+[ext_resource type="PackedScene" uid="uid://do281nd83ggn3" path="res://scenes/PuckCounter.tscn" id="3_csyy3"]
+[ext_resource type="PackedScene" uid="uid://b7mu1034wh12b" path="res://scenes/Player.tscn" id="4_dml08"]
+[ext_resource type="PackedScene" uid="uid://b18aa8ui7s5jr" path="res://scenes/GameOver.tscn" id="5_hv16n"]
+[ext_resource type="PackedScene" uid="uid://drb605l5hvpfw" path="res://scenes/ice_cream_boss.tscn" id="6_1ymlr"]
+[ext_resource type="AudioStream" uid="uid://dsuur5ttlumq7" path="res://assets/audio/microdozeTheme2.wav" id="7_pkrxy"]
+[ext_resource type="AudioStream" uid="uid://cuxhgawi0egl5" path="res://assets/audio/pain_1.wav" id="8_ydepa"]
+[ext_resource type="AudioStream" uid="uid://dppr47m42qmx5" path="res://assets/audio/yay_1.wav" id="9_yl17g"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_uu6xs"]
 friction = 0.0
@@ -20,16 +20,16 @@ size = Vector2(86, 1370)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cm0pq"]
 size = Vector2(1254.75, 89.5)
 
-[node name="Node2D" type="Node2D"]
+[node name="LevelTwo" type="Node2D"]
 
 [node name="SnowTexture" type="Sprite2D" parent="."]
 position = Vector2(416, -2778)
 scale = Vector2(1.86688, 3.52576)
-texture = ExtResource("1_vcsgt")
+texture = ExtResource("1_dd1l5")
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
-[node name="HealthUI" parent="HUD" instance=ExtResource("5_healthui")]
+[node name="HealthUI" parent="HUD" instance=ExtResource("2_16ers")]
 anchors_preset = -1
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -41,13 +41,13 @@ grow_vertical = 0
 scale = Vector2(0.051317, 0.051317)
 metadata/_edit_use_anchors_ = true
 
-[node name="PuckCounter" parent="HUD" instance=ExtResource("3_q8u5g")]
+[node name="PuckCounter" parent="HUD" instance=ExtResource("3_csyy3")]
 offset_left = -165.0
 offset_top = 1193.0
 offset_right = -18.0
 offset_bottom = 1247.0
 
-[node name="Player" parent="." instance=ExtResource("1_glv2v")]
+[node name="Player" parent="." instance=ExtResource("4_dml08")]
 position = Vector2(525, 1076)
 
 [node name="Node" type="Node" parent="."]
@@ -88,24 +88,32 @@ physics_material_override = SubResource("PhysicsMaterial_uu6xs")
 position = Vector2(1124, 645)
 shape = SubResource("RectangleShape2D_r0du0")
 
-[node name="GameOver" parent="." instance=ExtResource("9_q8u5g")]
+[node name="GameOver" parent="." instance=ExtResource("5_hv16n")]
 process_mode = 3
 visible = false
 
-[node name="IceCreamBoss" parent="." instance=ExtResource("4_rarhs")]
+[node name="IceCreamBoss" parent="." instance=ExtResource("6_1ymlr")]
 position = Vector2(534, 268)
 
 [node name="audio" type="Node" parent="."]
 
 [node name="BossMusic" type="AudioStreamPlayer2D" parent="audio"]
-stream = ExtResource("7_nxtc6")
+stream = ExtResource("7_pkrxy")
 volume_db = -5.354
 autoplay = true
 
 [node name="Pain1" type="AudioStreamPlayer" parent="audio"]
-stream = ExtResource("8_q8u5g")
+stream = ExtResource("8_ydepa")
 volume_db = -11.022
 
 [node name="Yay1" type="AudioStreamPlayer" parent="audio"]
-stream = ExtResource("9_lhr70")
+stream = ExtResource("9_yl17g")
 volume_db = -9.546
+
+[node name="Label" type="Label" parent="."]
+offset_left = 394.0
+offset_top = 697.0
+offset_right = 644.0
+offset_bottom = 720.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "hi shayla, welcome to level 2 yay"

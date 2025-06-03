@@ -37,7 +37,7 @@ scale = Vector2(2.46926, 2.46926)
 theme_override_constants/separation = 8
 
 [node name="HealthBarFrame" type="Panel" parent="HealthBarContainer"]
-custom_minimum_size = Vector2(220, 32)
+custom_minimum_size = Vector2(220, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4

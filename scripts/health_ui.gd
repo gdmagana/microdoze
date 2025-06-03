@@ -8,11 +8,8 @@ var low_health_tween: Tween
 var rainbow_tween: Tween
 var current_health_percentage: float = 1.0
 
-# Shader effect variables - CUSTOMIZE THESE FOR DIFFERENT EFFECTS
+# Shader effect variables - CUSTOMIZE THESE FOR PIXELATED RAINBOW EFFECT
 var rainbow_scroll_speed := 1.0 # How fast the rainbow scrolls (higher = faster)
-var wiggle_intensity := 0.3 # How much the rainbow wiggles (0.0 = no wiggle, 1.0 = intense)
-var wiggle_frequency := 8.0 # How many wiggle waves across the bar (higher = more waves)
-var rainbow_intensity := 1.0 # How bright/saturated the colors are
 
 var shader_material: ShaderMaterial
 
@@ -39,49 +36,67 @@ func _ready():
 	print("DEBUG: HealthUI _ready completed")
 
 func create_rainbow_shader():
-	print("DEBUG: Creating trippy scrolling rainbow shader")
+	print("DEBUG: Creating pixelated stair-step rainbow shader")
 	
 	# Create a new shader
 	var shader = Shader.new()
 	
-	# This is the magic! GLSL shader code for scrolling wiggly rainbow
+	# Pixelated stair-step rainbow shader code
 	shader.code = """
 	shader_type canvas_item;
 
-	// Uniforms - these let us control the effect from GDScript
+	// Uniforms for controlling the pixelated rainbow effect
 	uniform float scroll_speed : hint_range(0.0, 5.0) = 1.0;
-	uniform float wiggle_intensity : hint_range(0.0, 1.0) = 0.3;
-	uniform float wiggle_frequency : hint_range(1.0, 20.0) = 8.0;
-	uniform float rainbow_intensity : hint_range(0.1, 2.0) = 1.0;
+	uniform float pixel_height_fraction : hint_range(0.1, 1.0) = 0.333; // 1/3 of health bar height
+	uniform float step_width : hint_range(8.0, 64.0) = 32.0; // Width of each color block
+	uniform float step_height : hint_range(0.1, 1.0) = 0.333; // Height of each step (1/3)
 
-	// Function to convert HSV to RGB (for smooth rainbow colors)
-	vec3 hsv_to_rgb(vec3 c) {
-		vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-		vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-		return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+	// Function to get 8-color rainbow palette
+	vec3 get_rainbow_color(int color_index) {
+		// 8 vibrant rainbow colors
+		vec3 colors[8];
+		colors[0] = vec3(1.0, 0.0, 0.0);    // Red
+		colors[1] = vec3(1.0, 0.5, 0.0);    // Orange  
+		colors[2] = vec3(1.0, 1.0, 0.0);    // Yellow
+		colors[3] = vec3(0.0, 1.0, 0.0);    // Green
+		colors[4] = vec3(0.0, 1.0, 1.0);    // Cyan
+		colors[5] = vec3(0.0, 0.0, 1.0);    // Blue
+		colors[6] = vec3(0.5, 0.0, 1.0);    // Purple
+		colors[7] = vec3(1.0, 0.0, 1.0);    // Magenta
+		
+		return colors[color_index];
 	}
 
 	void fragment() {
-		// Get the current pixel position
 		vec2 uv = UV;
 		
-		// Add wiggle effect using sine waves
-		float wiggle_offset = sin(uv.x * wiggle_frequency + TIME * 2.0) * wiggle_intensity * 0.1;
-		uv.y += wiggle_offset;
+		// Apply horizontal scrolling
+		float scrolled_x = uv.x - TIME * scroll_speed;
 		
-		// Create scrolling rainbow effect
-		float rainbow_position = uv.x + TIME * scroll_speed;
+		// Create pixelated blocks - quantize to discrete grid
+		float block_x = floor(scrolled_x * step_width);
+		float block_y = floor(uv.y / pixel_height_fraction);
 		
-		// Generate smooth rainbow colors using HSV
-		float hue = fract(rainbow_position * 2.0); // 2.0 makes the rainbow repeat across the bar
-		vec3 rainbow_color = hsv_to_rgb(vec3(hue, 1.0, rainbow_intensity));
+		// Create stair-step pattern: each step moves down as we go right
+		float stair_offset = mod(block_x, 3.0); // 3-step pattern for clean stairs
+		float adjusted_y = block_y + stair_offset;
 		
-		// Add some extra trippy effects
-		float pulse = sin(TIME * 3.0) * 0.2 + 0.8; // Subtle pulsing brightness
-		rainbow_color *= pulse;
+		// Determine which color to use based on horizontal position
+		int color_index = int(mod(block_x, 8.0)); // Cycle through 8 colors
 		
-		// Output the final color
-		COLOR = vec4(rainbow_color, 1.0);
+		// Get the rainbow color for this block
+		vec3 rainbow_color = get_rainbow_color(color_index);
+		
+		// Make sure we're within the pixelated grid
+		float pixel_y = mod(uv.y, pixel_height_fraction);
+		
+		// Create clean pixel boundaries (no anti-aliasing for crisp retro look)
+		if (pixel_y < pixel_height_fraction * 0.95) { // Small gap between pixel rows for definition
+			COLOR = vec4(rainbow_color, 1.0);
+		} else {
+			// Subtle dark outline between pixels for better definition
+			COLOR = vec4(rainbow_color * 0.8, 1.0);
+		}
 	}
 	"""
 	
@@ -95,14 +110,23 @@ func create_rainbow_shader():
 	# Apply the shader to the health bar
 	health_bar.material = shader_material
 	
-	print("DEBUG: Trippy scrolling rainbow shader created and applied!")
+	print("DEBUG: Pixelated stair-step rainbow shader created and applied!")
 
 func update_shader_parameters():
 	if shader_material:
 		shader_material.set_shader_parameter("scroll_speed", rainbow_scroll_speed)
-		shader_material.set_shader_parameter("wiggle_intensity", wiggle_intensity)
-		shader_material.set_shader_parameter("wiggle_frequency", wiggle_frequency)
-		shader_material.set_shader_parameter("rainbow_intensity", rainbow_intensity)
+		# Keep pixel height as 1/3 consistently 
+		shader_material.set_shader_parameter("pixel_height_fraction", 0.333)
+		# Adjust step width based on health level for more/less detail
+		var step_width = 32.0
+		if current_health_percentage > 0.6:
+			step_width = 24.0 # Smaller blocks when healthy
+		elif current_health_percentage > 0.3:
+			step_width = 32.0 # Medium blocks
+		else:
+			step_width = 48.0 # Larger, chunkier blocks when low health
+		shader_material.set_shader_parameter("step_width", step_width)
+		shader_material.set_shader_parameter("step_height", 0.333)
 
 func update_health(current_health: float, max_health: float = 100.0):
 	print("DEBUG: update_health called with ", current_health, "/", max_health)
@@ -122,23 +146,17 @@ func update_health(current_health: float, max_health: float = 100.0):
 	
 	# Adjust shader effects based on health level
 	if health_percentage > 0.6:
-		# High health - smooth, pleasant rainbow
-		rainbow_scroll_speed = 1.0
-		wiggle_intensity = 0.3
-		rainbow_intensity = 1.0
-		print("DEBUG: High health - smooth rainbow")
+		# High health - smooth, pleasant scrolling with smaller blocks
+		rainbow_scroll_speed = 0.3
+		print("DEBUG: High health - smooth pixelated rainbow")
 	elif health_percentage > 0.3:
-		# Medium health - faster, more intense
-		rainbow_scroll_speed = 1.5
-		wiggle_intensity = 0.5
-		rainbow_intensity = 1.2
-		print("DEBUG: Medium health - intense rainbow")
+		# Medium health - faster scrolling with medium blocks
+		rainbow_scroll_speed = 0.6
+		print("DEBUG: Medium health - faster pixelated rainbow")
 	else:
-		# Low health - crazy fast and wiggly
-		rainbow_scroll_speed = 2.5
-		wiggle_intensity = 0.8
-		rainbow_intensity = 1.5
-		print("DEBUG: Low health - CRAZY rainbow")
+		# Low health - rapid scrolling with larger, chunkier blocks
+		rainbow_scroll_speed = 1.2
+		print("DEBUG: Low health - CRAZY fast pixelated rainbow")
 	
 	# Apply the new parameters to the shader
 	update_shader_parameters()

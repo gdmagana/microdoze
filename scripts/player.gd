@@ -42,8 +42,8 @@ var last_direction := 1 # 1 = right, -1 = left
 var stick_push_timer := 0.0
 var stick_push_duration := 0.15 # seconds
 var is_stick_pushing := false
-var stick_base_offset := Vector2(50, 0)
-var stick_extended_offset := Vector2(50, -25)
+var stick_base_offset := Vector2(30, -30)
+var stick_extended_offset := Vector2(30, -25)
 var stick_rotation_max := -0.5 # Maximum rotation in radians
 
 # -- Puck --

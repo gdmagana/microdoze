@@ -35,10 +35,20 @@ var rng = RandomNumberGenerator.new()
 var player: Node2D
 var is_raging := false
 
+# used to keep track of current level
+var level := 0
+
 # Ice cube tracking system to prevent overlapping ice cubes
 var active_ice_cubes = {} # Dictionary to track ice cubes by position key
 
 func _ready():
+	var current_scene_name = get_tree().current_scene.name
+	if current_scene_name == "Level2":
+		level = 2
+		$Timer.wait_time = 0.75
+	else:
+		level = 1
+	print(level)
 	add_to_group("boss")
 	player = get_tree().get_current_scene().find_child("Player", true, false)
 	$Timer.timeout.connect(_on_Timer_timeout)
@@ -123,20 +133,25 @@ func _on_Timer_timeout():
 
 		var projectile
 		var direction
-
-		if random_number < 2:
-			# "throw" the icicle projectiles at the player
+		
+		if level == 1:
 			projectile = projectile_icicle.instantiate()
 			direction = (player.global_position - global_position).normalized()
-		else:
-			# "throw" the ice cream scoop at a random position
-			projectile = projectile_ice_cream_scoop.instantiate()
-			
-			# Pick a random x within screen width, y slightly below screen
-			var viewport_size = get_viewport().get_visible_rect().size
-			var random_x = rng.randi_range(0, int(viewport_size.x))
-			var target_point = Vector2(random_x, viewport_size.y + 100)
-			direction = (target_point - global_position).normalized()
+		
+		elif level == 2:
+			if random_number < 2:
+				# "throw" the icicle projectiles at the player
+				projectile = projectile_icicle.instantiate()
+				direction = (player.global_position - global_position).normalized()
+			else:
+				# "throw" the ice cream scoop at a random position
+				projectile = projectile_ice_cream_scoop.instantiate()
+				
+				# Pick a random x within screen width, y slightly below screen
+				var viewport_size = get_viewport().get_visible_rect().size
+				var random_x = rng.randi_range(0, int(viewport_size.x))
+				var target_point = Vector2(random_x, viewport_size.y + 100)
+				direction = (target_point - global_position).normalized()
 
 		get_parent().add_child(projectile)
 		projectile.global_position = global_position

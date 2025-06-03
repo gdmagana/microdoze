@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://drb605l5hvpfw"]
+[gd_scene load_steps=12 format=3 uid="uid://drb605l5hvpfw"]
 
 [ext_resource type="Script" uid="uid://bh2kvdma1guj7" path="res://scripts/ice_cream_boss.gd" id="1_q3t3g"]
 [ext_resource type="PackedScene" uid="uid://chkrln0i73kui" path="res://scenes/projectile_ice_cube.tscn" id="2_rmwav"]
@@ -8,9 +8,21 @@
 [ext_resource type="Texture2D" uid="uid://by8xod6wb7ohy" path="res://assets/sprites/ice cream.png" id="6_qtmpm"]
 [ext_resource type="Texture2D" uid="uid://cw2vioxjrvrik" path="res://assets/sprites/lactosefree.png" id="7_rocre"]
 [ext_resource type="Texture2D" uid="uid://b51myk12ckyl5" path="res://icon.svg" id="8_1pu0b"]
+[ext_resource type="FontFile" uid="uid://mtien7aag3t" path="res://assets/fonts/arcadeclassic.regular.ttf" id="9_rocre"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1vifr"]
 size = Vector2(419, 293)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qtmpm"]
+bg_color = Color(0, 0, 0, 0.419608)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.8, 0, 0, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
 
 [node name="IceCreamBoss" type="Area2D"]
 collision_layer = 4
@@ -38,3 +50,23 @@ shape = SubResource("RectangleShape2D_1vifr")
 
 [node name="Timer" type="Timer" parent="."]
 autostart = true
+
+[node name="BossDialog1" type="Panel" parent="."]
+offset_left = 248.0
+offset_top = -139.0
+offset_right = 561.0
+offset_bottom = -4.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_qtmpm")
+
+[node name="BossDialog1Label" type="Label" parent="BossDialog1"]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 28.0
+offset_right = 290.0
+offset_bottom = 111.0
+theme_override_fonts/font = ExtResource("9_rocre")
+theme_override_font_sizes/font_size = 36
+text = "Your mom never loved you!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3

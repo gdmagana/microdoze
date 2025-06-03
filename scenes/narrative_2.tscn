@@ -1,9 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://1og8gmf0hxy2"]
+[gd_scene load_steps=8 format=3 uid="uid://1og8gmf0hxy2"]
 
 [ext_resource type="Texture2D" uid="uid://ctrc2aqacldld" path="res://assets/narrative/kitchen_wide.png" id="1_evbwb"]
-[ext_resource type="Script" uid="uid://cugy4p78xg4fc" path="res://scenes/narrative_2.gd" id="1_lw8mg"]
+[ext_resource type="Script" path="res://scenes/narrative_2.gd" id="1_lw8mg"]
 [ext_resource type="Texture2D" uid="uid://b2fn5knoj3pmq" path="res://assets/narrative/characters/main_character_two.png" id="2_lw8mg"]
+[ext_resource type="AudioStream" uid="uid://d1y3pjjws6et5" path="res://assets/audio/voice/telandSample.wav" id="4_m50ym"]
 [ext_resource type="Script" uid="uid://cjetl0qsi6j01" path="res://scenes/text_scene_2.gd" id="4_yw02q"]
+[ext_resource type="Script" uid="uid://e70exscs0nxt" path="res://scripts/dialog_audio.gd" id="5_dialog"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_lw8mg"]
 
@@ -25,6 +27,10 @@ texture = ExtResource("1_evbwb")
 position = Vector2(241, 970)
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("2_lw8mg")
+
+[node name="DialogAudio" type="AudioStreamPlayer" parent="MainCharacter"]
+stream = ExtResource("4_m50ym")
+script = ExtResource("5_dialog")
 
 [node name="Timer" type="Timer" parent="."]
 

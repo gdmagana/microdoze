@@ -216,7 +216,7 @@ func _dramatic_damage_sequence():
 	dialog_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	dialog_label.add_theme_font_size_override("font_size", 24)
 	dialog_label.add_theme_color_override("font_color", Color(1, 1, 1))
-	dialog_label.text = "Your mom never loved you!"
+	dialog_label.text = "Your mom never\n loved you!"
 	
 	# Set process mode for dialog components
 	dialog_panel.process_mode = Node.PROCESS_MODE_ALWAYS

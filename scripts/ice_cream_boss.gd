@@ -321,7 +321,6 @@ func rage():
 	update_sprite_for_health_state()
 	run_away()
 	if player:
-		player.enable_vertical_movement()
 		player.enable_puck_shooting()
 	call_deferred("throw_ice_wall")
 	call_deferred("throw_ice_wall", -100)
@@ -352,7 +351,6 @@ func throw_ice_wall(y_offset = null):
 			
 			get_parent().add_child(ice_cube)
 			ice_cube.global_position = Vector2(ice_cube_x, y_pos)
-			ice_cube.set_as_static_wall()
 			
 			# Track this ice cube
 			active_ice_cubes[position_key] = ice_cube

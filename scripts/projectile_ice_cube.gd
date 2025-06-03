@@ -2,9 +2,11 @@ extends Area2D
 
 var velocity := Vector2.ZERO
 var canHurtBoss := false
-var is_static_wall := false
 var health := 3
 @export var damage_amount := 12.0 # Moderate damage for ice cubes
+
+# -- Level-Specific Logic --
+var is_level_zero := false
 
 # Powerup system integration
 @export var powerup_scene: PackedScene # Optional powerup to drop
@@ -25,6 +27,18 @@ func _ready():
 	update_sprite_based_on_health()
 	# Create powerup preview sprite
 	create_powerup_preview_sprite()
+	
+	call_deferred("_check_is_level_zero")
+	
+func _check_is_level_zero():
+	var node = get_parent()
+	while node:
+		if node.is_in_group("level_zero"):
+			is_level_zero = true
+			return
+			
+		node = node.get_parent()
+	is_level_zero = false
 
 func create_powerup_preview_sprite():
 	# Create a sprite for showing powerup preview
@@ -35,15 +49,6 @@ func create_powerup_preview_sprite():
 	powerup_preview_sprite.visible = false # Hidden by default
 	powerup_preview_sprite.z_index = 10 # Render on top of everything
 	add_child(powerup_preview_sprite)
-
-func _process(delta):
-	if not is_static_wall:
-		position += velocity * delta
-		
-		# free if off screen
-		var viewport_rect := get_viewport_rect()
-		if not viewport_rect.has_point(global_position):
-			queue_free()
 
 func update_sprite_based_on_health():
 	# Change the sprite based on health
@@ -75,25 +80,14 @@ func _on_body_entered(body):
 			# Drop powerup before destroying
 			drop_powerup()
 			queue_free()
+			
 	# if the ice cube hits the player, hurt them
 	if body.is_in_group("player"):
-		if not is_static_wall:
-			body.take_damage(damage_amount)
-			# Drop powerup before destroying
-			drop_powerup()
-			queue_free()
-		else:
-			body.take_damage(damage_amount)
-			body.bounce_back_from_wall(global_position)
-	## if the ice cube is hit by the stick, be hit back
-	#if body.is_in_group("player_stick"):
-		#canHurtBoss = true
-		#velocity = -velocity
-	## if the ice cube hits the boss, hurt them
-	#if body.is_in_group("boss"):
-		#if canHurtBoss:
-			#body.take_damage()
-			#queue_free()
+		body.take_damage()
+		body.bounce_back_from_wall(global_position)
+		
+		if is_level_zero:
+			body.emit_signal("bounced_off_ice")
 
 func drop_powerup():
 	if powerup_scene and randf() <= powerup_drop_chance:
@@ -143,7 +137,3 @@ func create_powerup_pulse_effect():
 	tween.set_loops() # Loop infinitely
 	tween.tween_property(powerup_preview_sprite, "scale", Vector2(0.08, 0.08), 0.8) # Shrink
 	tween.tween_property(powerup_preview_sprite, "scale", Vector2(0.1, 0.1), 0.8) # Grow back
-
-func set_as_static_wall():
-	is_static_wall = true
-	velocity = Vector2.ZERO

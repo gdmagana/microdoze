@@ -67,7 +67,7 @@ func accelerate(multiplier: float):
 	# Update the ball's speed with the multiplier and fire boost
 	var total_multiplier = multiplier * fire_boost
 	speed = min(speed * total_multiplier, max_speed)
-	$"../audio/Yay1".play()
+	$"Audio/Yay1".play()
 	
 	# Immediately apply the new speed while maintaining direction
 	linear_velocity = linear_velocity.normalized() * speed

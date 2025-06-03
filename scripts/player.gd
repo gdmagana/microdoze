@@ -116,33 +116,45 @@ func freeze():
 	is_frozen = true
 	frozen_timer = 2.0 # seconds
 	$Sprite2D.modulate = Color(0.5, 0.5, 1.0) # light blue
-	# Smoothly slow down the background music, then restore it
+	
+	# Switch background music to "Light" bus for underwater effect (has low pass filter)
 	var audio = $"../audio/BossMusic"
+	var original_bus = audio.bus
+	audio.bus = "Light" # Switch to Light bus which has low pass filter
+	
 	var start_pitch = audio.pitch_scale
 	if start_pitch > 0.6: # Avoid modulating music if scoop hits you after death
 		var target_pitch = 0.8
 		var transition_time = 0.5 # seconds for smooth transition
 
-		# Smoothly decrease pitch
-		var t := 0.0
-		while t < transition_time:
-			t += get_process_delta_time()
-			audio.pitch_scale = lerp(start_pitch, target_pitch, t / transition_time)
-			await get_tree().process_frame # TODO: fix crash when this occurs during game end
-		audio.pitch_scale = target_pitch
+		# Use tween for smooth pitch transition instead of manual loop
+		var pitch_tween = create_tween()
+		pitch_tween.tween_property(audio, "pitch_scale", target_pitch, transition_time)
+		await pitch_tween.finished
+		
+		# Ensure we're still valid before continuing
+		if not is_inside_tree() or audio == null:
+			return
 
 		# Wait for frozen_timer duration
 		await get_tree().create_timer(frozen_timer).timeout
 
-		# Smoothly restore pitch
-		t = 0.0
-		while t < transition_time:
-			t += get_process_delta_time()
-			audio.pitch_scale = lerp(target_pitch, 1.0, t / transition_time)
-			await get_tree().process_frame
-		audio.pitch_scale = 1.0 # reset pitch
+		# Ensure we're still valid before restoring
+		if not is_inside_tree() or audio == null:
+			return
+			
+		# Smoothly restore pitch and bus
+		var restore_tween = create_tween()
+		restore_tween.tween_property(audio, "pitch_scale", 1.0, transition_time)
+		await restore_tween.finished
+		
+		# Final safety check before restoring bus
+		if is_inside_tree() and audio != null:
+			audio.bus = original_bus # Restore original bus (Master)
 
-	$Sprite2D.modulate = original_modulate # back to normal (or rainbow if invincible)
+	# Final safety check before restoring visual
+	if is_inside_tree():
+		$Sprite2D.modulate = original_modulate # back to normal (or rainbow if invincible)
 
 func _on_invincibility_started():
 	print("DEBUG: Player invincibility started - starting rainbow effect!")

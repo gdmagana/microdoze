@@ -6,6 +6,7 @@ extends CharacterBody2D
 
 # -- Player Health --
 @export var max_health := 100.0
+var can_lose_health := false
 @export var health := 100.0
 
 # -- Player Movement --
@@ -13,9 +14,11 @@ extends CharacterBody2D
 @export var friction := 600.0
 @export var max_speed := 500.0
 
+var can_move_vertically := false
+var can_move_horizontally := true
+
 var is_frozen := false
 var frozen_timer := 0.0
-var can_move_up := false
 
 var is_invulnerable := false
 var invulnerable_timer := 0.0
@@ -60,6 +63,10 @@ var stage_height
 # -- Using this for scene changes
 var scene_change_triggered := false  # prevents switching multiple times
 
+# -- Level-Specific Logic --
+var is_level_zero := false
+signal bounced_off_ice
+
 func _ready():
 	GameState.current_level_path = get_tree().current_scene.scene_file_path
 	add_to_group("player")
@@ -74,7 +81,7 @@ func _ready():
 	# Set entry position and freeze
 	global_position = entry_position
 	is_frozen = true
-	can_move_up = false  # no movement until intro done
+	can_move_vertically = false  # no movement until intro done
 	
 	# Start entry animation
 	var tween = create_tween()
@@ -82,7 +89,8 @@ func _ready():
 	tween.tween_callback(Callable(self, "_on_intro_finished"))
 	
 	# Player health
-	health_ui.update_health(health, max_health)
+	if health_ui:
+		health_ui.update_health(health, max_health)
 	print("DEBUG: Player _ready - health initialized to ", health, "/", max_health)
 	if puck_counter:
 		puck_counter.update_puck_count(max_active_pucks, active_pucks)
@@ -100,15 +108,139 @@ func _ready():
 		PowerUpManager.invincibility_ended.connect(_on_invincibility_ended)
 		PowerUpManager.speed_boost_started.connect(_on_speed_boost_started)
 		PowerUpManager.speed_boost_ended.connect(_on_speed_boost_ended)
-		PowerUpManager.fire_pucks_started.connect(_on_fire_pucks_started)
-		PowerUpManager.fire_pucks_ended.connect(_on_fire_pucks_ended)
+		
+	call_deferred("_check_is_level_zero")
+	
+func _check_is_level_zero():
+	if get_parent().is_in_group("level_zero"):
+		is_level_zero = true
+	
+func _physics_process(delta):
+	if is_frozen:
+		frozen_timer -= delta
+		if frozen_timer <= 0:
+			is_frozen = false
+			$Sprite2D.modulate = original_modulate # back to normal (or rainbow if invincible)
+		return # skip movement while frozen
+	
+	# Handle echo effect timer for speed boost
+	if speed_boost_echo_active:
+		echo_timer -= delta
+		if echo_timer <= 0:
+			print("DEBUG: Echo timer triggered! Velocity: ", velocity.length())
+			create_movement_echo()
+			echo_timer = echo_interval # Reset timer
+	
+	var input_direction = Vector2.ZERO
+	if Input.is_action_pressed("ui_left"):
+		input_direction.x -= 1
+	if Input.is_action_pressed("ui_right"):
+		input_direction.x += 1
+	if Input.is_action_pressed("ui_up"):
+		input_direction.y -= 1
+	if Input.is_action_pressed("ui_down"):
+		input_direction.y += 1
+
+	# Get speed multiplier from PowerUpManager
+	var speed_multiplier = 1.0
+	if PowerUpManager:
+		speed_multiplier = PowerUpManager.get_speed_multiplier()
+
+	# -- Movement Physics --
+	# Horizontal
+	if input_direction.x != 0:
+		last_direction = sign(input_direction.x)
+		if can_move_horizontally:
+			velocity.x += input_direction.x * acceleration * speed_multiplier * delta
+	else:
+		# Apply friction to gradually stop
+		if abs(velocity.x) < friction * delta:
+			velocity.x = 0
+		else:
+			velocity.x -= sign(velocity.x) * friction * delta
+			
+	# clamp max horizontal speed (with speed multiplier)
+	var current_max_speed = max_speed * speed_multiplier
+	velocity.x = clamp(velocity.x, -current_max_speed, current_max_speed)
+	
+	# Vertical
+	if input_direction.y != 0:
+		velocity.y += input_direction.y * acceleration * speed_multiplier * delta
+	else:
+		if abs(velocity.y) < friction * delta:
+			velocity.y = 0
+		else:
+			velocity.y -= sign(velocity.y) * friction * delta
+			
+		velocity.y = clamp(velocity.y, -current_max_speed, current_max_speed)
+
+	move_and_slide()
+	
+	# Store position before clamping to detect edge collisions
+	var old_position = position
+	
+	# clamp player movement to screen bounds
+	position.x = clamp(position.x, 0, stage_width)
+	#position.y = clamp(position.y, 0, stage_height)
+	
+	# Reset velocity if player hit the screen bounds
+	if old_position.x != position.x:
+		# Hit left or right edge, stop horizontal momentum
+		velocity.x = 0
+	if old_position.y != position.y:
+		# Hit top or bottom edge, stop vertical momentum
+		velocity.y = 0
+	
+	# -- Player Hitbox --
+	var hitbox = $CollisionShape2D.shape
+	# Radius is available if needed: var hitbox_radius = hitbox.radius
+	
+	# -- Stick logic --
+	if Input.is_action_just_pressed("ui_accept") and not is_stick_pushing:
+		is_stick_pushing = true
+		stick_push_timer = stick_push_duration
+	if is_stick_pushing:
+		stick_push_timer -= delta
+		if stick_push_timer < 0:
+			is_stick_pushing = false
+			
+	# Stick position offset and flip with smooth animation
+	var progress := 0.0
+	if is_stick_pushing:
+		# Calculate smooth progress (ease out)
+		progress = 1.0 - (stick_push_timer / stick_push_duration)
+		progress = ease(progress, 0.5) # Smooth easing function
+	
+	# Interpolate between base and extended position
+	var stick_offset = stick_base_offset.lerp(stick_extended_offset, progress)
+	stick_offset.x *= last_direction
+	
+	# Apply smooth rotation
+	var stick_rotation = stick_rotation_max * progress * last_direction
+	
+	$Stick.position = stick_offset
+	$Stick.rotation = stick_rotation
+	$Stick.scale.x = last_direction # Flip the stick sprite to face correct side
+	
+	# -- Puck Shooting --
+	if not can_shoot_puck:
+		puck_cooldown_timer -= delta
+		if puck_cooldown_timer <= 0:
+			can_shoot_puck = true # Re-enable puck shooting after cooldown
+	else:
+		# Check if the player is trying to shoot a puck
+		if Input.is_action_just_pressed("shoot_puck"):
+			shoot_puck()
 
 # NEW THING
 func _on_intro_finished():
 	is_frozen = false
-	can_move_up = false
+	can_move_vertically = false
 
 func _process(delta):
+	if is_level_zero:
+		return
+	
 	if not scene_change_triggered and global_position.y <= 0:
 		scene_change_triggered = true
 		print("hi shayla")
@@ -134,9 +266,13 @@ func take_damage(amount := 1.0):
 	if PowerUpManager and PowerUpManager.is_invincible():
 		print("DEBUG: Damage blocked by invincibility!")
 		return
-	
-	print("DEBUG: Player taking ", amount, " damage. Health before: ", health)
-	health -= amount	
+		
+	if can_lose_health:
+		print("DEBUG: Player taking ", amount, " damage. Health before: ", health)
+		health -= amount
+		if health_ui:
+			health_ui.update_health(health)
+		
 	# Show "Ouch!" sign
 	ouch_label.visible = true
 	ouch_label.modulate = Color(1, 1, 1, 1)  # full opacity
@@ -151,22 +287,26 @@ func take_damage(amount := 1.0):
 	print("DEBUG: Player health after damage: ", health, "/", max_health)
 	health_ui.update_health(health, max_health)
 	if health <= 0:
-		# Player is dead, show game over screen
-		show_game_over()
-		
-	else:
-		# Flash red to indicate damage
-		$Sprite2D.modulate = Color(1, 0.5, 0.5)
-		is_invulnerable = true
-		invulnerable_timer = 1.0 # seconds
-		$"../audio/Pain1".play()
+			# Player is dead, show game over screen
+			show_game_over()
 
-		# Reset modulate after a short time
-		await get_tree().create_timer(0.2).timeout
-		$Sprite2D.modulate = original_modulate # back to normal (or rainbow if invincible)
-		is_invulnerable = false
-		invulnerable_timer = 0.0
+	# Flash red to indicate damage
+	$Sprite2D.modulate = Color(1, 0.5, 0.5)
+	is_invulnerable = true
+	invulnerable_timer = 1.0 # seconds
+	$"Audio/Pain1".play()
 
+	# Reset modulate after a short time
+	await get_tree().create_timer(0.2).timeout
+	$Sprite2D.modulate = original_modulate # back to normal (or rainbow if invincible)
+	is_invulnerable = false
+	invulnerable_timer = 0.0
+	
+func add_health(amount: int):
+	health += amount
+	if health_ui:
+		health_ui.update_health(health)
+	
 func freeze():
 	# Check if player is invincible
 	if PowerUpManager and PowerUpManager.is_invincible():
@@ -276,9 +416,6 @@ func bounce_back_from_wall(wall_pos):
 	var bounce_dir = (position - wall_pos).normalized()
 	velocity = bounce_dir * 400
 	
-func enable_vertical_movement():
-	can_move_up = true
-	
 func enable_puck_shooting():
 	can_shoot_puck = true
 	
@@ -288,7 +425,6 @@ func disable_puck_shooting():
 func shoot_puck():
 	# Check if unlimited pucks powerup is active
 	var has_unlimited = PowerUpManager and PowerUpManager.has_unlimited_pucks()
-	
 	if not can_shoot_puck or (not has_unlimited and active_pucks >= max_active_pucks):
 		return # Can't shoot if puck shooting is disabled or max pucks active (unless unlimited)
 	
@@ -296,7 +432,12 @@ func shoot_puck():
 	get_parent().add_child(puck)
 	puck.global_position = $Stick.global_position
 	
-	# Check if fire pucks powerup is active - increase the puck speed
+	if is_level_zero:
+		puck.collision_mask |= (1 << 0) # Enable bit 1 (layer 1)
+	else:
+		puck.collision_mask &= ~(1 << 0) # Disable bit 1 (layer 1)
+	
+	# Check if fire pucks powerup is active
 	if PowerUpManager and PowerUpManager.has_fire_pucks():
 		# 1.4x speed boost instead of setting fire mode
 		if puck.has_method("set_speed_multiplier"):
@@ -311,132 +452,6 @@ func shoot_puck():
 	
 	can_shoot_puck = false
 	puck_cooldown_timer = puck_cooldown # Reset cooldown timer
-
-func _physics_process(delta):
-	if is_frozen:
-		frozen_timer -= delta
-		if frozen_timer <= 0:
-			is_frozen = false
-			$Sprite2D.modulate = original_modulate # back to normal (or rainbow if invincible)
-		return # skip movement while frozen
-	
-	# Handle echo effect timer for speed boost
-	if speed_boost_echo_active:
-		echo_timer -= delta
-		if echo_timer <= 0:
-			print("DEBUG: Echo timer triggered! Velocity: ", velocity.length())
-			create_movement_echo()
-			echo_timer = echo_interval # Reset timer
-	
-	var input_direction = Vector2.ZERO
-	if Input.is_action_pressed("ui_left"):
-		input_direction.x -= 1
-	if Input.is_action_pressed("ui_right"):
-		input_direction.x += 1
-	if can_move_up:
-		if Input.is_action_pressed("ui_up"):
-			input_direction.y -= 1
-		if Input.is_action_pressed("ui_down"):
-			input_direction.y += 1
-
-	# Get speed multiplier from PowerUpManager
-	var speed_multiplier = 1.0
-	if PowerUpManager:
-		speed_multiplier = PowerUpManager.get_speed_multiplier()
-
-	# -- Movement Physics --
-	# Horizontal
-	if input_direction.x != 0:
-		last_direction = sign(input_direction.x)
-		velocity.x += input_direction.x * acceleration * speed_multiplier * delta
-	else:
-		# Apply friction to gradually stop
-		if abs(velocity.x) < friction * delta:
-			velocity.x = 0
-		else:
-			velocity.x -= sign(velocity.x) * friction * delta
-			
-	# clamp max horizontal speed (with speed multiplier)
-	var current_max_speed = max_speed * speed_multiplier
-	velocity.x = clamp(velocity.x, -current_max_speed, current_max_speed)
-	
-	# Vertical
-	if can_move_up:
-		if input_direction.y != 0:
-			velocity.y += input_direction.y * acceleration * speed_multiplier * delta
-		else:
-			if abs(velocity.y) < friction * delta:
-				velocity.y = 0
-			else:
-				velocity.y -= sign(velocity.y) * friction * delta
-				
-			velocity.y = clamp(velocity.y, -current_max_speed, current_max_speed)
-	else:
-		velocity.y = 0
-
-	move_and_slide()
-	
-	# Store position before clamping to detect edge collisions
-	var old_position = position
-	
-	# clamp player movement to screen bounds
-	position.x = clamp(position.x, 0, stage_width)
-	position.y = clamp(position.y, 0, stage_height)
-	
-	# Reset velocity if player hit the screen bounds
-	if old_position.x != position.x:
-		# Hit left or right edge, stop horizontal momentum
-		velocity.x = 0
-	if old_position.y != position.y:
-		# Hit top or bottom edge, stop vertical momentum
-		velocity.y = 0
-	
-	# -- Player Hitbox --
-	var hitbox = $CollisionShape2D.shape
-	# Radius is available if needed: var hitbox_radius = hitbox.radius
-	
-	# -- Stick logic --
-	if Input.is_action_just_pressed("ui_accept") and not is_stick_pushing:
-		is_stick_pushing = true
-		stick_push_timer = stick_push_duration
-	# also use up arrow if user cant move up
-	elif Input.is_action_just_pressed("ui_up") and not can_move_up and not is_stick_pushing:
-		is_stick_pushing = true
-		stick_push_timer = stick_push_duration
-		# in this case, also try shooting puck
-		shoot_puck()
-	if is_stick_pushing:
-		stick_push_timer -= delta
-		if stick_push_timer < 0:
-			is_stick_pushing = false
-			
-	# Stick position offset and flip with smooth animation
-	var progress := 0.0
-	if is_stick_pushing:
-		# Calculate smooth progress (ease out)
-		progress = 1.0 - (stick_push_timer / stick_push_duration)
-		progress = ease(progress, 0.5) # Smooth easing function
-	
-	# Interpolate between base and extended position
-	var stick_offset = stick_base_offset.lerp(stick_extended_offset, progress)
-	stick_offset.x *= last_direction
-	
-	# Apply smooth rotation
-	var stick_rotation = stick_rotation_max * progress * last_direction
-	
-	$Stick.position = stick_offset
-	$Stick.rotation = stick_rotation
-	$Stick.scale.x = last_direction # Flip the stick sprite to face correct side
-	
-	# -- Puck Shooting --
-	if not can_shoot_puck:
-		puck_cooldown_timer -= delta
-		if puck_cooldown_timer <= 0:
-			can_shoot_puck = true # Re-enable puck shooting after cooldown
-	else:
-		# Check if the player is trying to shoot a puck
-		if Input.is_action_just_pressed("shoot_puck"):
-			shoot_puck()
 
 func _on_hitbox_body_entered(body):
 	if body.is_in_group("puck") or body.is_in_group(""):

@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://cbp45nyhyledd"]
+
+[ext_resource type="PackedScene" uid="uid://bpow3r5up0001" path="res://scenes/power_ups/BasePowerUp.tscn" id="1_yg5aw"]
+[ext_resource type="Script" uid="uid://0giiofs155ig" path="res://scripts/power_ups/speed_boost_power_up.gd" id="2_16ec0"]
+
+[node name="HealthPowerUp" instance=ExtResource("1_yg5aw")]
+script = ExtResource("2_16ec0")
+health_amount = 1

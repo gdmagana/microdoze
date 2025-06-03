@@ -18,7 +18,7 @@ func _ready():
 func _input(event):
 	# F10 to go directly to game from anywhere (debug)
 	if event is InputEventKey and event.pressed and event.keycode == KEY_F10:
-		get_tree().change_scene_to_file("res://scenes/Main.tscn")
+		get_tree().change_scene_to_file("res://scenes/levels/Level1.tscn")
 
 # Quick function to toggle narrative intro skipping
 func toggle_narrative_skip():

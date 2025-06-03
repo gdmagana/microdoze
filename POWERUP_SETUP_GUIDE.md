@@ -114,9 +114,9 @@ var selected_powerup = PowerupWeightHelper.get_weighted_random_powerup_from_arra
 
 # Method 2: Using dictionary
 var powerup_config = {
-	preload("res://scenes/SpeedBoostPowerUp.tscn"): 3.0,
-	preload("res://scenes/FirePucksPowerUp.tscn"): 1.0,
-	preload("res://scenes/InvincibilityPowerUp.tscn"): 0.5
+	preload("res://scenes/power_ups/SpeedBoostPowerUp.tscn"): 3.0,
+	preload("res://scenes/power_ups/FirePucksPowerUp.tscn"): 1.0,
+	preload("res://scenes/power_ups/InvincibilityPowerUp.tscn"): 0.5
 }
 var selected_powerup = PowerupWeightHelper.get_weighted_random_powerup_from_config(powerup_config)
 ```
@@ -143,7 +143,7 @@ Ice cubes now show what powerup they contain!
 ```gdscript
 # Example: Make an ice cube drop a speed boost with 50% chance
 var ice_cube = ice_cube_scene.instantiate()
-var speed_powerup_scene = preload("res://scenes/SpeedBoostPowerUp.tscn")
+var speed_powerup_scene = preload("res://scenes/power_ups/SpeedBoostPowerUp.tscn")
 ice_cube.set_powerup(speed_powerup_scene, 0.5)
 # The powerup preview will automatically show when added to scene
 ```
@@ -189,8 +189,8 @@ For custom powerup drops:
 ```gdscript
 # Custom weighted powerup drop
 var powerup_config = {
-	preload("res://scenes/SpeedBoostPowerUp.tscn"): 2.0,
-	preload("res://scenes/YourCustomPowerUp.tscn"): 1.0
+	preload("res://scenes/power_ups/SpeedBoostPowerUp.tscn"): 2.0,
+	preload("res://scenes/power_ups/YourCustomPowerUp.tscn"): 1.0
 }
 var selected_powerup = PowerupWeightHelper.get_weighted_random_powerup_from_config(powerup_config)
 if selected_powerup:

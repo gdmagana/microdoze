@@ -88,13 +88,12 @@ func _ready():
 	tween.tween_property(self, "global_position", start_position, 1.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	tween.tween_callback(Callable(self, "_on_intro_finished"))
 	
-	# Player health
-	if health_ui:
-		health_ui.update_health(health, max_health)
-	print("DEBUG: Player _ready - health initialized to ", health, "/", max_health)
-	if puck_counter:
-		puck_counter.update_puck_count(max_active_pucks, active_pucks)
-	$Hitbox.connect("body_entered", Callable(self, "_on_hitbox_body_entered"))
+	if GameState.current_level_path != "res://scenes/TheEnd.tscn":
+		# Player health
+		health_ui.update_health(health)
+		if puck_counter:
+			puck_counter.update_puck_count(max_active_pucks, active_pucks)
+		$Hitbox.connect("body_entered", Callable(self, "_on_hitbox_body_entered"))
 	
 	# Store original color for rainbow effect
 	original_modulate = $Sprite2D.modulate
@@ -243,16 +242,15 @@ func _process(delta):
 	
 	if not scene_change_triggered and global_position.y <= 0:
 		scene_change_triggered = true
-		print("hi shayla")
 		var current_scene_name = get_tree().current_scene.name
 		print(current_scene_name)
-		if current_scene_name == "LevelTwo":
+		if current_scene_name == "Level2":
 			print("got to the end! u win shayla rawrrrr")
 		else:
 			change_to_level_2()
 
 func change_to_level_2():
-	get_tree().change_scene_to_file("res://scenes/LevelTwo.tscn")
+	get_tree().change_scene_to_file("res://scenes/Level2.tscn")
 
 func heal(amount := 10.0):
 	health += amount

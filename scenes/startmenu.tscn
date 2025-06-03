@@ -70,7 +70,21 @@ theme_override_font_sizes/font_size = 15
 text = "Microdoze"
 horizontal_alignment = 1
 
+[node name="BeginGame" type="Label" parent="."]
+layout_mode = 0
+offset_left = -500.0
+offset_top = -2.0
+offset_right = 279.0
+offset_bottom = 79.6667
+theme_override_colors/font_color = Color(0.847059, 0.854902, 0.8, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 40
+theme_override_fonts/font = ExtResource("2_t0y3k")
+theme_override_font_sizes/font_size = 80
+text = "Press space to start"
+
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
+visible = false
 layout_mode = 0
 offset_left = -648.0
 offset_top = 3.0
@@ -92,7 +106,6 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_poymh")
 text = "New Game"
 
 [node name="ContinueOldGame" type="Button" parent="VBoxContainer"]
-visible = false
 layout_mode = 2
 theme_override_colors/font_hover_color = Color(0.847059, 0.854902, 0.8, 1)
 theme_override_colors/font_color = Color(0.847059, 0.854902, 0.8, 1)

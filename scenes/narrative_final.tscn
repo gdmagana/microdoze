@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://db4v3wi41t8j1"]
+
+[ext_resource type="Script" uid="uid://dl1g6g4adac0j" path="res://scripts/narrative_final.gd" id="1_monmk"]
+[ext_resource type="Texture2D" uid="uid://lugtci835k2e" path="res://assets/narrative/narrative_final.png" id="1_vqkuu"]
+[ext_resource type="FontFile" uid="uid://cwrp8r743gy5" path="res://assets/fonts/arcade.ttf" id="2_monmk"]
+
+[node name="NarrativeFinal" type="Node2D"]
+script = ExtResource("1_monmk")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(453.5, 596.5)
+scale = Vector2(1.40978, 1.51085)
+texture = ExtResource("1_vqkuu")
+
+[node name="Label" type="Label" parent="."]
+offset_left = 114.0
+offset_top = 134.0
+offset_right = 1194.0
+offset_bottom = 505.75
+theme_override_colors/font_color = Color(0.847059, 0.854902, 0.8, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 30
+theme_override_fonts/font = ExtResource("2_monmk")
+theme_override_font_sizes/font_size = 62
+text = "congrats microdozer, 
+you got your ice cream! 
+
+                                              press space to 
+                                             go back to the  menu"

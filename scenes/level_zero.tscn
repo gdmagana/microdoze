@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://b2v2alfch3m20" path="res://assets/freezer/snow.png" id="3_7dtwl"]
 [ext_resource type="PackedScene" uid="uid://chkrln0i73kui" path="res://scenes/projectile_ice_cube.tscn" id="4_6oe1b"]
 [ext_resource type="PackedScene" uid="uid://bsdi5day054n2" path="res://scenes/HealthUI.tscn" id="5_6ip7e"]
-[ext_resource type="Script" path="res://scripts/camera_2d.gd" id="5_11olo"]
+[ext_resource type="Script" uid="uid://13dfxerpiie1" path="res://scripts/camera_2d.gd" id="5_11olo"]
 [ext_resource type="FontFile" uid="uid://cwrp8r743gy5" path="res://assets/fonts/arcade.ttf" id="5_i0hcr"]
 [ext_resource type="PackedScene" uid="uid://cbp45nyhyledd" path="res://scenes/HealthPowerUp.tscn" id="6_7dtwl"]
 [ext_resource type="PackedScene" uid="uid://b18aa8ui7s5jr" path="res://scenes/GameOver.tscn" id="8_6ip7e"]
@@ -78,11 +78,11 @@ visible = false
 anchors_preset = -1
 anchor_top = 1.0
 anchor_bottom = 1.18281
-offset_top = -230.0
-offset_right = -1080.0
-offset_bottom = -464.0
+offset_left = 20.0
+offset_top = -230.003
+offset_bottom = -254.0
 grow_vertical = 0
-scale = Vector2(0.75, 0.75)
+scale = Vector2(0.436, 0.436)
 metadata/_edit_use_anchors_ = true
 
 [node name="LeftWall" type="StaticBody2D" parent="."]

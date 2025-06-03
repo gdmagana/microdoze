@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-[gd_scene load_steps=13 format=3 uid="uid://bhbf48fir0ikx"]
-=======
 [gd_scene load_steps=15 format=3 uid="uid://bhbf48fir0ikx"]
->>>>>>> bossDialog
 
 [ext_resource type="PackedScene" uid="uid://b7mu1034wh12b" path="res://scenes/Player.tscn" id="1_glv2v"]
 [ext_resource type="Script" path="res://scripts/audio_manager.gd" id="2_audioMgr"]
@@ -124,8 +120,3 @@ volume_db = -9.546
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(539, 640)
-
-[node name="AudioDebugUI" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-script = ExtResource("2_debugUI")

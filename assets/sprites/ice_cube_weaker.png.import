@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dwbsdwg72vswq"
-path="res://.godot/imported/ice_cube_weak.png-db59333e58cc81dfdc4121e517b86f8d.ctex"
+uid="uid://bch7xgel4ij37"
+path="res://.godot/imported/ice_cube_weaker.png-b4bb95fb6e4de27f9c43f8cc600dcb29.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/ice_cube_weak.png"
-dest_files=["res://.godot/imported/ice_cube_weak.png-db59333e58cc81dfdc4121e517b86f8d.ctex"]
+source_file="res://assets/sprites/ice_cube_weaker.png"
+dest_files=["res://.godot/imported/ice_cube_weaker.png-b4bb95fb6e4de27f9c43f8cc600dcb29.ctex"]
 
 [params]
 

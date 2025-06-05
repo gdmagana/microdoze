@@ -5,6 +5,7 @@ extends Node2D
 @onready var oh_no_label = $Player/OhNoLabel
 @onready var evil_label = $EvilLactoseFreeIceCreamPixel/EvilLabel
 @onready var camera = $Player/Camera2D
+@onready var health_ui = $HUD/HealthUI
 var camera_original_position = Vector2.ZERO
 
 var gave_bounce_hint = false
@@ -17,6 +18,7 @@ func _ready():
 	bounce_hint_label.visible = false
 	oh_no_label.visible = false
 	evil_label.visible = false
+	health_ui.visible = false
 	
 	# Stop narrative audio when Level 0 starts
 	stop_narrative_audio()
@@ -35,6 +37,7 @@ func stop_narrative_audio():
 	
 func _on_player_bounce_off_ice():
 	if not gave_bounce_hint:
+		health_ui.visible = true
 		bounce_hint_label.visible = true
 		gave_bounce_hint = true
 			

@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=3 uid="uid://d12e5n7wqoxwo"]
 
 [ext_resource type="Script" uid="uid://cve0bsiyjp674" path="res://control.gd" id="1_u4tt2"]
-[ext_resource type="Shader" path="res://scenes/startmenu.gdshader" id="2_poymh"]
+[ext_resource type="Shader" uid="uid://bo35g4n7exe1w" path="res://scenes/startmenu.gdshader" id="2_poymh"]
 [ext_resource type="FontFile" uid="uid://cwrp8r743gy5" path="res://assets/fonts/arcade.ttf" id="2_t0y3k"]
 [ext_resource type="Texture2D" uid="uid://bbsi7ibseyf63" path="res://assets/sprites/start_menu_animation.png" id="3_ids67"]
 

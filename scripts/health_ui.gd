@@ -149,10 +149,10 @@ func update_health(current_health: float, max_health: float):
 		rainbow_scroll_speed = 0.3
 	elif health_percentage > 0.3:
 		# Medium health - faster scrolling with medium blocks
-		rainbow_scroll_speed = 0.6
+		rainbow_scroll_speed = 0.5
 	else:
 		# Low health - rapid scrolling with larger, chunkier blocks
-		rainbow_scroll_speed = 1.2
+		rainbow_scroll_speed = 0.7
 	
 	# Apply the new parameters to the shader
 	update_shader_parameters()

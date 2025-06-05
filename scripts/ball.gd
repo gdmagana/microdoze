@@ -15,6 +15,10 @@ var is_fire_mode := false
 var fire_damage_multiplier := 2.0
 var speed_multiplier := 1.0 # For fire pucks speed boost
 
+# Particle trail system for fire boost
+var particle_trail: CPUParticles2D
+var has_fire_boost := false
+
 func _ready():
 	add_to_group("puck")
 	gravity_scale = 0
@@ -24,6 +28,11 @@ func _ready():
 	linear_velocity = Vector2(cos(angle), sin(angle)) * launch_speed
 	speed = launch_speed # Update the speed variable too
 	$VisibleOnScreenNotifier2D.connect("screen_exited", Callable(self, "_on_screen_exited"))
+	
+	# Check if this puck should have fire boost particle trail
+	if PowerUpManager and PowerUpManager.has_fire_pucks():
+		has_fire_boost = true
+		create_fire_particle_trail()
 
 func set_fire_mode(enabled: bool):
 	is_fire_mode = enabled
@@ -71,8 +80,13 @@ func accelerate(multiplier: float):
 	# Immediately apply the new speed while maintaining direction
 	linear_velocity = linear_velocity.normalized() * speed
 	
-	# Turn the puck red briefly to indicate acceleration, or orange if fire boosted
+	# Apply permanent fire effects if hit by fire stick
 	if fire_boost > 1.0:
+		has_fire_boost = true
+		set_fire_mode(true)
+		# Only create trail if we don't already have one
+		if not particle_trail:
+			create_fire_particle_trail()
 		flash_orange() # Fire effect
 	else:
 		flash_red() # Normal acceleration
@@ -112,6 +126,10 @@ func _physics_process(_delta):
 
 	# Always keep the total velocity normalized to the current speed
 	linear_velocity = linear_velocity.normalized() * max(speed, min_speed)
+	
+	# Update particle trail direction to opposite of movement for trailing effect
+	if has_fire_boost and particle_trail and is_instance_valid(particle_trail):
+		particle_trail.direction = - linear_velocity.normalized()
 
 func _on_screen_exited():
 	destroy_puck()
@@ -122,3 +140,75 @@ func set_speed_multiplier(multiplier: float):
 	if linear_velocity.length() > 0:
 		speed *= multiplier
 		linear_velocity = linear_velocity.normalized() * speed
+	
+	# Apply fire visual effects and trail for speed boosted pucks
+	if multiplier > 1.0:
+		has_fire_boost = true
+		set_fire_mode(true)
+		create_fire_particle_trail()
+
+func create_fire_particle_trail():
+	# Don't create multiple trails
+	if particle_trail:
+		return
+	
+	# Safety check - make sure we're still in the scene tree
+	if not is_inside_tree():
+		print("DEBUG: Ball not in tree, skipping particle trail creation")
+		return
+		
+	# Create particle trail for fire-boosted pucks
+	particle_trail = CPUParticles2D.new()
+	if particle_trail == null:
+		print("ERROR: Failed to create CPUParticles2D")
+		return
+		
+	add_child(particle_trail)
+	
+	# Configure particle trail
+	particle_trail.emitting = true
+	particle_trail.amount = 30
+	particle_trail.lifetime = 1.2
+	particle_trail.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
+	particle_trail.emission_sphere_radius = 8.0
+	
+	# Direction - particles should trail behind the puck
+	particle_trail.direction = Vector2(0, 1) # Will be updated in _process
+	particle_trail.spread = 30.0
+	
+	# Velocity - slower than puck so they trail behind
+	particle_trail.initial_velocity_min = 50.0
+	particle_trail.initial_velocity_max = 100.0
+	
+	# Make particles 5x larger for dramatic fire effect
+	particle_trail.scale_amount_min = 5.0
+	particle_trail.scale_amount_max = 12.5
+	
+	# Fire colors - red, orange, yellow
+	var fire_colors = [
+		Color(1.0, 0.0, 0.0, 1.0), # Red
+		Color(1.0, 0.5, 0.0, 1.0), # Orange
+		Color(1.0, 0.8, 0.0, 1.0), # Yellow-orange
+		Color(1.0, 1.0, 0.2, 1.0), # Yellow
+	]
+	
+	# Set random fire color
+	particle_trail.color = fire_colors[randi() % fire_colors.size()]
+	
+	# Create fire gradient that fades to transparent
+	particle_trail.color_ramp = create_fire_gradient()
+	
+	# No gravity for power trail effect
+	particle_trail.gravity = Vector2.ZERO
+
+func create_fire_gradient() -> Gradient:
+	var gradient = Gradient.new()
+	
+	# Start bright fire color
+	gradient.add_point(0.0, Color(1.0, 0.8, 0.2, 1.0)) # Bright yellow-orange
+	# Mid-way orange-red
+	gradient.add_point(0.5, Color(1.0, 0.3, 0.0, 0.8)) # Orange-red
+	# End transparent red
+	gradient.add_point(1.0, Color(0.8, 0.0, 0.0, 0.0)) # Transparent red
+	
+	return gradient

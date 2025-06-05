@@ -25,6 +25,7 @@ extends Area2D
 @export var unlimited_pucks_weight := 1.0 # Default equal chance
 @export var fire_pucks_weight := 1.0 # Default equal chance
 @export var invincibility_weight := 0.5 # Half as likely (since it's powerful)
+@export var health_weight := 1.5 # Slightly more likely since health is valuable but not overpowered
 
 var powerup_scenes = []
 var powerup_weights = []
@@ -69,7 +70,8 @@ func _load_powerup_scenes():
 		preload("res://scenes/power_ups/SpeedBoostPowerUp.tscn"),
 		preload("res://scenes/power_ups/UnlimitedPucksPowerUp.tscn"),
 		preload("res://scenes/power_ups/FirePucksPowerUp.tscn"),
-		preload("res://scenes/power_ups/InvincibilityPowerUp.tscn")
+		preload("res://scenes/power_ups/InvincibilityPowerUp.tscn"),
+		preload("res://scenes/power_ups/HealthPowerUp.tscn")
 	]
 	
 	# Set up weights array to match the scenes array
@@ -77,13 +79,15 @@ func _load_powerup_scenes():
 		speed_boost_weight,
 		unlimited_pucks_weight,
 		fire_pucks_weight,
-		invincibility_weight
+		invincibility_weight,
+		health_weight
 	]
 	
 	print("  Speed Boost: ", speed_boost_weight)
 	print("  Unlimited Pucks: ", unlimited_pucks_weight)
 	print("  Fire Pucks: ", fire_pucks_weight)
 	print("  Invincibility: ", invincibility_weight)
+	print("  Health: ", health_weight)
 
 func get_weighted_random_powerup() -> PackedScene:
 	# Calculate total weight
@@ -239,17 +243,17 @@ func _dramatic_damage_sequence():
 	if camera:
 		# Get boss position as our reference point
 		var viewport_size = get_viewport().get_visible_rect().size
-		var zoom_target = Vector2(1.3, 1.3)  # Zoom in for dramatic effect
+		var zoom_target = Vector2(1.3, 1.3) # Zoom in for dramatic effect
 		
 		# Position dialog box relative to boss to ensure it's visible in zoomed view
-		dialog_panel.position = Vector2(250, -150)  # To the right of the boss
+		dialog_panel.position = Vector2(250, -150) # To the right of the boss
 		
 		# Calculate camera offset to show top-right area
 		# Move camera up and right from current position to focus on top-right area
-		var offset_factor = 0.3  # How much to offset (30% of current view)
+		var offset_factor = 0.3 # How much to offset (30% of current view)
 		var camera_offset = Vector2(
-			viewport_size.x * offset_factor / original_zoom.x,   # Move right
-			-viewport_size.y * offset_factor / original_zoom.y   # Move up (negative Y)
+			viewport_size.x * offset_factor / original_zoom.x, # Move right
+			- viewport_size.y * offset_factor / original_zoom.y # Move up (negative Y)
 		)
 		var target_camera_pos = original_camera_pos + camera_offset
 
@@ -288,7 +292,7 @@ func _dramatic_damage_sequence():
 
 	# Hide dialog and reset its position
 	dialog_panel.visible = false
-	dialog_panel.position = Vector2(248, -139)  # Reset to original scene position
+	dialog_panel.position = Vector2(248, -139) # Reset to original scene position
 
 	# Restore original process mode and unpause
 	process_mode = _original_process_mode
@@ -299,7 +303,7 @@ func show_typewriter_text(label: Label, full_text: String):
 	label.text = ""
 	for i in range(full_text.length()):
 		label.text += full_text[i]
-		await get_tree().create_timer(0.05, true).timeout  # 0.05 seconds per character
+		await get_tree().create_timer(0.05, true).timeout # 0.05 seconds per character
 
 # Helper function to start typewriter effect concurrently
 func _start_typewriter_concurrent(label: Label, text: String):
@@ -342,7 +346,7 @@ func throw_ice_wall(y_offset = null):
 		y_pos = global_position.y - y_offset
 	
 	for x in range(0, screen_width, ice_cube_width):
-		var ice_cube_x = x + ice_cube_width/2.0
+		var ice_cube_x = x + ice_cube_width / 2.0
 		var position_key = get_position_key(ice_cube_x, y_pos)
 		
 		# Only create ice cube if position is not occupied

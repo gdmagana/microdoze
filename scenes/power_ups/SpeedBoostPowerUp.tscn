@@ -1,8 +1,12 @@
-[gd_scene load_steps=3 format=3 uid="uid://bspeed001"]
+[gd_scene load_steps=4 format=3 uid="uid://bspeed001"]
 
 [ext_resource type="PackedScene" uid="uid://bpow3r5up0001" path="res://scenes/power_ups/BasePowerUp.tscn" id="1_base"]
 [ext_resource type="Script" uid="uid://0giiofs155ig" path="res://scripts/power_ups/speed_boost_power_up.gd" id="2_script"]
+[ext_resource type="Texture2D" uid="uid://d1wkhbhyajlgq" path="res://assets/sprites/powerups/speed_powerup.png" id="3_yl72i"]
 
 [node name="SpeedBoostPowerUp" instance=ExtResource("1_base")]
 script = ExtResource("2_script")
 speed_duration = 5.0
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("3_yl72i")

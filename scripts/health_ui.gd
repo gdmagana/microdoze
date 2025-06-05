@@ -13,7 +13,7 @@ var rainbow_scroll_speed := 1.0 # How fast the rainbow scrolls (higher = faster)
 
 var shader_material: ShaderMaterial
 
-func _ready():	
+func _ready():
 	# Set up the health bar frame with a border
 	if health_frame:
 		health_frame.add_theme_color_override("bg_color", Color(0.2, 0.2, 0.2, 1.0)) # Dark gray frame
@@ -27,11 +27,11 @@ func _ready():
 	else:
 		print("ERROR: Health bar not found!")
 		
-func create_rainbow_shader():	
+func create_rainbow_shader():
 	# Create a new shader
 	var shader = Shader.new()
 	
-	# Pixelated stair-step rainbow shader code
+	# Pixelated stair-step rainbow shader code with health-based clipping
 	shader.code = """
 	shader_type canvas_item;
 
@@ -40,6 +40,7 @@ func create_rainbow_shader():
 	uniform float pixel_height_fraction : hint_range(0.1, 1.0) = 0.333; // 1/3 of health bar height
 	uniform float step_width : hint_range(8.0, 64.0) = 32.0; // Width of each color block
 	uniform float step_height : hint_range(0.1, 1.0) = 0.333; // Height of each step (1/3)
+	uniform float health_percentage : hint_range(0.0, 1.0) = 1.0; // Health percentage for clipping
 
 	// Function to get 8-color rainbow palette
 	vec3 get_rainbow_color(int color_index) {
@@ -60,16 +61,21 @@ func create_rainbow_shader():
 	void fragment() {
 		vec2 uv = UV;
 		
-		// Apply horizontal scrolling
-		float scrolled_x = uv.x - TIME * scroll_speed;
+		// Clip based on health percentage - maintain texture scale but cut off at the right
+		if (uv.x > health_percentage) {
+			discard; // Don't render pixels beyond health percentage
+		}
+		
+		// Create stair-step pattern: each row has a static offset
+		float stair_row = floor(uv.y / pixel_height_fraction); // Which pixel row we're in
+		float stair_offset = mod(stair_row, 4.0) * 0.03; // Offset each row by different amounts (0, 0.2, 0.4, 0.6)
+		
+		// Apply horizontal scrolling with row offset (all move at same speed)
+		float scrolled_x = uv.x - TIME * scroll_speed + stair_offset;
 		
 		// Create pixelated blocks - quantize to discrete grid
 		float block_x = floor(scrolled_x * step_width);
 		float block_y = floor(uv.y / pixel_height_fraction);
-		
-		// Create stair-step pattern: each step moves down as we go right
-		float stair_offset = mod(block_x, 3.0); // 3-step pattern for clean stairs
-		float adjusted_y = block_y + stair_offset;
 		
 		// Determine which color to use based on horizontal position
 		int color_index = int(mod(block_x, 8.0)); // Cycle through 8 colors
@@ -105,6 +111,8 @@ func update_shader_parameters():
 		shader_material.set_shader_parameter("scroll_speed", rainbow_scroll_speed)
 		# Keep pixel height as 1/3 consistently 
 		shader_material.set_shader_parameter("pixel_height_fraction", 0.333)
+		# Pass current health percentage to shader for clipping
+		shader_material.set_shader_parameter("health_percentage", current_health_percentage)
 		# Adjust step width based on health level for more/less detail
 		var step_width = 32.0
 		if current_health_percentage > 0.6:
@@ -116,7 +124,7 @@ func update_shader_parameters():
 		shader_material.set_shader_parameter("step_width", step_width)
 		shader_material.set_shader_parameter("step_height", 0.333)
 
-func update_health(current_health: float, max_health: float):	
+func update_health(current_health: float, max_health: float):
 	if not health_bar:
 		print("ERROR: health_bar is null in update_health!")
 		return
@@ -125,8 +133,15 @@ func update_health(current_health: float, max_health: float):
 	var health_percentage = clamp(current_health / max_health, 0.0, 1.0)
 	current_health_percentage = health_percentage
 	
-	# Update the health bar width by adjusting the anchor
-	health_bar.anchor_right = health_percentage
+	# Reset health bar to full size - the shader will handle clipping
+	health_bar.anchor_left = 0.0
+	health_bar.anchor_right = 1.0
+	health_bar.anchor_top = 0.0
+	health_bar.anchor_bottom = 1.0
+	health_bar.offset_left = 3.0
+	health_bar.offset_top = 3.0
+	health_bar.offset_right = -3.0
+	health_bar.offset_bottom = -3.0
 	
 	# Adjust shader effects based on health level
 	if health_percentage > 0.6:
@@ -134,10 +149,10 @@ func update_health(current_health: float, max_health: float):
 		rainbow_scroll_speed = 0.3
 	elif health_percentage > 0.3:
 		# Medium health - faster scrolling with medium blocks
-		rainbow_scroll_speed = 0.6
+		rainbow_scroll_speed = 0.5
 	else:
 		# Low health - rapid scrolling with larger, chunkier blocks
-		rainbow_scroll_speed = 1.2
+		rainbow_scroll_speed = 0.7
 	
 	# Apply the new parameters to the shader
 	update_shader_parameters()

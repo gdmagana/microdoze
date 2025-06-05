@@ -65,7 +65,7 @@ var stage_width
 var stage_height
 
 # -- Using this for scene changes
-var scene_change_triggered := false  # prevents switching multiple times
+var scene_change_triggered := false # prevents switching multiple times
 
 # -- Level-Specific Logic --
 var is_level_zero := false
@@ -74,7 +74,17 @@ signal bounced_off_ice
 func _ready():
 	GameState.current_level_path = get_tree().current_scene.scene_file_path
 	add_to_group("player")
-	$Stick.add_to_group("player_stick")
+	
+	# Safety check for Stick node
+	var stick_node = get_node_or_null("Stick")
+	if stick_node != null:
+		stick_node.add_to_group("player_stick")
+	else:
+		print("ERROR: Stick node is null in player _ready()")
+		# Try to print all children to debug
+		print("DEBUG: Player children: ")
+		for child in get_children():
+			print("  - ", child.name, " (", child.get_class(), ")")
 	
 	stage_width = get_viewport_rect().size.x
 	stage_height = get_viewport_rect().size.y
@@ -93,23 +103,42 @@ func _ready():
 	
 	if GameState.current_level_path != "res://scenes/TheEnd.tscn":
 		# Player health
-		health_ui.update_health(health, max_health)
+		if health_ui:
+			health_ui.update_health(health, max_health)
 		if puck_counter:
 			puck_counter.update_puck_count(max_active_pucks, active_pucks)
-		$Hitbox.connect("body_entered", Callable(self, "_on_hitbox_body_entered"))
+		
+		# Safety check for Hitbox node
+		if $Hitbox != null:
+			$Hitbox.connect("body_entered", Callable(self, "_on_hitbox_body_entered"))
+		else:
+			print("ERROR: Hitbox node is null in player _ready()")
 	
-	# Store original color for rainbow effect
-	original_modulate = $Sprite2D.modulate
+	# Store original color for rainbow effect with safety check
+	if $Sprite2D != null:
+		original_modulate = $Sprite2D.modulate
+	else:
+		print("ERROR: Sprite2D node is null in player _ready()")
+		original_modulate = Color.WHITE
 	
-	# Store original colors for effects
-	stick_original_modulate = $Stick.modulate
+	# Store original colors for effects with safety check
+	var stick_for_color = get_node_or_null("Stick")
+	if stick_for_color != null and stick_for_color.get_node_or_null("Sprite2D") != null:
+		stick_original_modulate = stick_for_color.get_node("Sprite2D").modulate
+	else:
+		print("ERROR: Stick/Sprite2D node is null in player _ready()")
+		stick_original_modulate = Color.WHITE
 	
 	# Connect to PowerUpManager signals if available
 	if PowerUpManager:
+		print("DEBUG: Connecting to PowerUpManager signals...")
 		PowerUpManager.invincibility_started.connect(_on_invincibility_started)
 		PowerUpManager.invincibility_ended.connect(_on_invincibility_ended)
 		PowerUpManager.speed_boost_started.connect(_on_speed_boost_started)
 		PowerUpManager.speed_boost_ended.connect(_on_speed_boost_ended)
+		PowerUpManager.fire_pucks_started.connect(_on_fire_pucks_started)
+		PowerUpManager.fire_pucks_ended.connect(_on_fire_pucks_ended)
+		print("DEBUG: All PowerUpManager signals connected!")
 		
 	call_deferred("_check_is_level_zero")
 	
@@ -186,6 +215,11 @@ func _physics_process(delta):
 
 	move_and_slide()
 	
+	# Update fire aura position to follow stick
+	var fire_aura = get_node_or_null("FireAura")
+	if fire_aura and is_instance_valid(fire_aura) and $Stick != null:
+		fire_aura.position = $Stick.position
+	
 	# Store position before clamping to detect edge collisions
 	var old_position = position
 	
@@ -224,9 +258,11 @@ func _physics_process(delta):
 	# Apply smooth rotation
 	var stick_rotation = stick_rotation_max * progress * last_direction
 	
-	$Stick.position = stick_offset
-	$Stick.rotation = stick_rotation
-	$Stick.scale.x = last_direction # Flip the stick sprite to face correct side
+	# Safety check for Stick node before accessing its properties
+	if $Stick != null:
+		$Stick.position = stick_offset
+		$Stick.rotation = stick_rotation
+		$Stick.scale.x = last_direction # Flip the stick sprite to face correct side
 	
 	# -- Puck Shooting --
 	if not can_shoot_puck:
@@ -297,7 +333,7 @@ func take_damage(amount := 1.0):
 			
 	# Show "Ouch!" sign
 	ouch_label.visible = true
-	ouch_label.modulate = Color(1, 1, 1, 1)  # full opacity
+	ouch_label.modulate = Color(1, 1, 1, 1) # full opacity
 
 	# Fade out after 2 seconds
 	var tween = create_tween()
@@ -391,9 +427,11 @@ func _on_speed_boost_ended():
 	stop_echo_effect()
 
 func _on_fire_pucks_started():
+	print("DEBUG: _on_fire_pucks_started signal received!")
 	start_fire_stick_effect()
 
 func _on_fire_pucks_ended():
+	print("DEBUG: _on_fire_pucks_ended signal received!")
 	stop_fire_stick_effect()
 
 func start_rainbow_effect():
@@ -446,7 +484,12 @@ func shoot_puck():
 	
 	var puck = puck_scene.instantiate()
 	get_parent().add_child(puck)
-	puck.global_position = $Stick.global_position
+	
+	# Set puck position - use Stick position if available, otherwise player position
+	if $Stick != null:
+		puck.global_position = $Stick.global_position
+	else:
+		puck.global_position = self.global_position
 	
 	if is_level_zero:
 		puck.collision_mask |= (1 << 0) # Enable bit 1 (layer 1)
@@ -491,7 +534,7 @@ func show_game_over():
 	# Show the GameOver screen
 	var game_over = get_parent().get_node("HUD/GameOver")
 	game_over.visible = true
-	game_over.process_mode = Node.PROCESS_MODE_ALWAYS  # just in case
+	game_over.process_mode = Node.PROCESS_MODE_ALWAYS # just in case
 
 	# Give focus to the first button
 	game_over.get_node("VBoxContainer/RestartLevelButton").grab_focus()
@@ -580,24 +623,128 @@ func cleanup_echo_sprites():
 	echo_sprites.clear()
 
 func start_fire_stick_effect():
+	print("DEBUG: start_fire_stick_effect called!")
+	
 	# Create fire effect on the stick
 	if fire_stick_tween:
 		fire_stick_tween.kill()
 	
+	# Create fire particle aura around the stick
+	create_fire_stick_aura()
+	
+	# Make stick EXTREMELY red/orange with no subtlety
+	var extreme_red = Color(10.0, 0.0, 0.0) # EXTREME red
+	var extreme_orange = Color(10.0, 5.0, 0.0) # EXTREME orange
+	
+	print("DEBUG: Setting stick color to extreme red: ", extreme_red)
+	$Stick/Sprite2D.modulate = extreme_red
+	
 	fire_stick_tween = create_tween()
 	fire_stick_tween.set_loops() # Loop infinitely
 	
-	# Flicker between orange and red fire colors
-	var fire_orange = Color(1.0, 0.6, 0.0) # Orange fire
-	var fire_red = Color(1.0, 0.2, 0.0) # Red fire
-	
-	fire_stick_tween.tween_property($Stick, "modulate", fire_red, 0.1)
-	fire_stick_tween.tween_property($Stick, "modulate", fire_orange, 0.1)
+	# Target the actual Sprite2D inside the stick, not the Area2D
+	fire_stick_tween.tween_property($Stick/Sprite2D, "modulate", extreme_red, 0.2)
+	fire_stick_tween.tween_property($Stick/Sprite2D, "modulate", extreme_orange, 0.2)
 
 func stop_fire_stick_effect():
+	print("DEBUG: stop_fire_stick_effect called!")
+	
 	# Stop fire effect and restore original stick color
 	if fire_stick_tween:
 		fire_stick_tween.kill()
 		fire_stick_tween = null
 	
-	$Stick.modulate = stick_original_modulate
+	# Remove fire aura particles
+	remove_fire_stick_aura()
+	
+	# Restore original stick sprite color
+	print("DEBUG: Restoring stick color to: ", stick_original_modulate)
+	$Stick/Sprite2D.modulate = stick_original_modulate
+
+func create_fire_stick_aura():
+	# Safety check - make sure we're still in the scene tree
+	if not is_inside_tree():
+		print("DEBUG: Player not in tree, skipping fire aura creation")
+		return
+	
+	# Remove any existing fire aura first to prevent duplicates
+	remove_fire_stick_aura()
+	
+	# Create particle aura around the stick for fire effect
+	var fire_aura = CPUParticles2D.new()
+	if fire_aura == null:
+		print("ERROR: Failed to create fire aura CPUParticles2D")
+		return
+		
+	# Add to player instead of stick to avoid rotation/scale issues
+	add_child(fire_aura)
+	fire_aura.name = "FireAura"
+	
+	# Position at stick location but don't parent to stick
+	if $Stick != null:
+		fire_aura.position = $Stick.position
+	else:
+		fire_aura.position = Vector2.ZERO # Default position if no stick
+	
+	# Configure fire aura
+	fire_aura.emitting = true
+	fire_aura.amount = 40
+	fire_aura.lifetime = 1.5
+	fire_aura.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
+	fire_aura.emission_sphere_radius = 25.0 # Larger radius
+	
+	# Aura should emanate outward in all directions
+	fire_aura.direction = Vector2(0, -1)
+	fire_aura.spread = 180.0 # Full circle
+	
+	# Slow particles for aura effect
+	fire_aura.initial_velocity_min = 30.0
+	fire_aura.initial_velocity_max = 80.0
+	
+	# Massive fire aura particles - 5x larger
+	fire_aura.scale_amount_min = 7.5
+	fire_aura.scale_amount_max = 15.0
+	
+	# Make particles FULLY OPAQUE and very bright
+	fire_aura.color = Color(3.0, 1.0, 0.0, 1.0) # Bright orange, fully opaque
+	
+	# Remove gradient for now to test visibility
+	# fire_aura.color_ramp = create_fire_aura_gradient()
+	
+	# No gravity for floating aura effect
+	fire_aura.gravity = Vector2.ZERO
+	
+	# Higher z-index to render on top
+	fire_aura.z_index = 100
+	
+	print("DEBUG: Fire aura created with ", fire_aura.amount, " particles at position ", fire_aura.position)
+
+func create_fire_aura_gradient() -> Gradient:
+	var gradient = Gradient.new()
+	
+	# Start bright
+	gradient.add_point(0.0, Color(2.0, 1.0, 0.3, 1.0)) # Bright yellow
+	# Mid-way orange
+	gradient.add_point(0.5, Color(2.0, 0.5, 0.0, 0.6)) # Orange
+	# End transparent red
+	gradient.add_point(1.0, Color(1.5, 0.0, 0.0, 0.0)) # Transparent red
+	
+	return gradient
+
+func remove_fire_stick_aura():
+	# Remove ALL fire aura particles to prevent any from lingering
+	var removed_count = 0
+	
+	# Check for any fire aura nodes and remove them all
+	for child in get_children():
+		if child.name == "FireAura" and child is CPUParticles2D:
+			print("DEBUG: Removing FireAura node")
+			child.emitting = false # Stop creating new particles
+			child.amount = 0 # Clear existing particles
+			child.call_deferred("queue_free")
+			removed_count += 1
+	
+	if removed_count > 0:
+		print("DEBUG: Removed ", removed_count, " FireAura node(s)")
+	else:
+		print("DEBUG: No FireAura nodes found to remove")

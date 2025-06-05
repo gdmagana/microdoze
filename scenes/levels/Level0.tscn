@@ -96,12 +96,12 @@ visible = false
 anchors_preset = -1
 anchor_top = 1.0
 anchor_bottom = 1.18281
-offset_left = 26.0
-offset_top = -167.0
-offset_right = -234.0
-offset_bottom = -190.997
+offset_left = 22.0
+offset_top = -77.0
+offset_right = -238.0
+offset_bottom = -100.997
 grow_vertical = 0
-scale = Vector2(0.75, 0.75)
+scale = Vector2(0.478556, 0.478556)
 metadata/_edit_use_anchors_ = true
 
 [node name="LeftWall" type="StaticBody2D" parent="."]

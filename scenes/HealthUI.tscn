@@ -1,15 +1,17 @@
 [gd_scene load_steps=3 format=3 uid="uid://bsdi5day054n2"]
 
 [ext_resource type="Script" uid="uid://b0tp4q4spq8x2" path="res://scripts/health_ui.gd" id="1_n5v8r"]
-[ext_resource type="Texture2D" uid="uid://g5yvw20sy1ra" path="res://assets/narrative/items/mystical_object.png" id="2_mystical"]
+[ext_resource type="Texture2D" uid="uid://d2equbpnlbwf7" path="res://assets/narrative/items/mystical_heart.png" id="2_aqi5i"]
 
 [node name="HealthUI" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -240.0
-offset_bottom = -1070.0
+offset_left = 1004.0
+offset_top = 690.0
+offset_right = 764.0
+offset_bottom = -380.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_n5v8r")
@@ -17,14 +19,14 @@ script = ExtResource("1_n5v8r")
 [node name="HealthIcon" type="TextureRect" parent="."]
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
-offset_left = -2.0
-offset_top = -31.0
-offset_right = 1022.0
-offset_bottom = 1505.0
-scale = Vector2(0.178807, 0.178807)
+offset_left = -62.0
+offset_top = -93.0
+offset_right = 962.0
+offset_bottom = 1443.0
+scale = Vector2(0.252463, 0.252463)
 size_flags_horizontal = 0
 size_flags_vertical = 4
-texture = ExtResource("2_mystical")
+texture = ExtResource("2_aqi5i")
 stretch_mode = 5
 
 [node name="HealthBarContainer" type="HBoxContainer" parent="."]

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cbp45nyhyledd"]
+[gd_scene load_steps=4 format=3 uid="uid://cbp45nyhyledd"]
 
 [ext_resource type="PackedScene" uid="uid://bpow3r5up0001" path="res://scenes/power_ups/BasePowerUp.tscn" id="1_yg5aw"]
-[ext_resource type="Script" path="res://scripts/power_ups/health_power_up.gd" id="2_health"]
+[ext_resource type="Script" uid="uid://2axebg588fxk" path="res://scripts/power_ups/health_power_up.gd" id="2_health"]
+[ext_resource type="Texture2D" uid="uid://bglkpg0vgd83w" path="res://assets/sprites/powerups/health_powerup.png" id="3_7512g"]
 
 [node name="HealthPowerUp" instance=ExtResource("1_yg5aw")]
 script = ExtResource("2_health")
@@ -9,3 +10,4 @@ health_amount = 20.0
 
 [node name="Sprite2D" parent="." index="0"]
 modulate = Color(0.3, 1, 0.3, 1)
+texture = ExtResource("3_7512g")

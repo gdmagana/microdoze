@@ -33,10 +33,11 @@ sprite_full_health = ExtResource("5_yuhxq")
 sprite_damaged_once = ExtResource("5_yuhxq")
 sprite_damaged_twice = ExtResource("5_yuhxq")
 sprite_raging = ExtResource("5_yuhxq")
-powerup_drop_chance = 1.0
+powerup_drop_chance = 0.3
+speed_boost_weight = 2.0
 unlimited_pucks_weight = 0.0
 invincibility_weight = 1.0
-health_weight = 1.0
+health_weight = 3.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(7, -3)

@@ -60,7 +60,7 @@ func _ready():
 			full_text = "Uhh imma go..."
 			current_speaker = "frat_bro"
 		"NarrativeTwelve":
-			full_text = "I'm really hungry..."
+			full_text = "I'm really hungry... ice cream sounds fire right now"
 			current_speaker = "main_character"
 		"NarrativeFourteen":
 			full_text = "THE FREEZER BECKONS"

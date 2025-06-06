@@ -1,5 +1,5 @@
 extends Area2D
-
+	
 func _ready():
 	connect("body_entered", Callable(self, "_on_body_entered"))
 	flash_aura()
@@ -15,17 +15,10 @@ func flash_aura():
 func _on_body_entered(body):
 	if body.is_in_group("player"):
 		var SpoonSprite = body.get_node("SpoonSprite")
-		if SpoonSprite.visible:
-			var label = get_parent().get_node("Label")
-			label.text = "omg  that \ntickles!"
-			await get_tree().create_timer(2.0).timeout
-			get_tree().change_scene_to_file("res://scenes/narrative_final.tscn")
-		else:
-			var label = get_parent().get_node("Label")
-			label.text = "bro  have\nsome  manners\nuse  a \n spoon"
-			
-
-			
-
-	
-			
+		SpoonSprite.visible = true
+		var Stick = body.get_node("Stick")
+		Stick.visible = false
+		var aura = get_parent().get_node("DyingBoss").get_node("Aura")
+		aura.visible = true
+		queue_free()  # deletes the spoon
+		print("You got the spoon!")

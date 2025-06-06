@@ -37,6 +37,9 @@ var rng = RandomNumberGenerator.new()
 var player: Node2D
 var is_raging := false
 
+# Health bar reference
+var health_bar: Control
+
 # used to keep track of current level
 var level := 0
 
@@ -61,6 +64,11 @@ func _ready():
 	
 	# Load powerup scenes
 	_load_powerup_scenes()
+	
+	# Initialize health bar
+	health_bar = $BossHealthBar
+	if health_bar:
+		health_bar.update_health(health, max_health)
 	
 	# Hide dialog panel initially
 	$BossDialog1.visible = false
@@ -180,6 +188,11 @@ func update_sprite_for_health_state():
 func take_damage(amount := 25.0):
 	health -= amount
 	health = max(health, 0.0) # Prevent negative health
+	
+	# Update health bar
+	if health_bar:
+		health_bar.update_health(health, max_health)
+		health_bar.flash_damage()
 	
 	# Play damage sound if we can find one
 	# if get_node_or_null("../audio/Pain1") != null:

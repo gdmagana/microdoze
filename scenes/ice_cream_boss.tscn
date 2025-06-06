@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://drb605l5hvpfw"]
+[gd_scene load_steps=12 format=3 uid="uid://drb605l5hvpfw"]
 
 [ext_resource type="Script" uid="uid://bh2kvdma1guj7" path="res://scripts/ice_cream_boss.gd" id="1_q3t3g"]
 [ext_resource type="PackedScene" uid="uid://chkrln0i73kui" path="res://scenes/projectile_ice_cube.tscn" id="2_rmwav"]
@@ -7,6 +7,8 @@
 [ext_resource type="Texture2D" uid="uid://boc8ehd6ycmpn" path="res://assets/sprites/evillactosefree.png" id="5_rmwav"]
 [ext_resource type="Texture2D" uid="uid://3m0c0476ch80" path="res://assets/sprites/evil_lactose_free_ice_cream_pixel.png" id="5_yuhxq"]
 [ext_resource type="FontFile" uid="uid://cwrp8r743gy5" path="res://assets/fonts/arcade.ttf" id="9_rocre"]
+[ext_resource type="Script" uid="uid://cp4t6xuks2k1i" path="res://scripts/boss_health_bar_simple.gd" id="10_health"]
+[ext_resource type="Texture2D" uid="uid://deptvrw3nj1i7" path="res://assets/sprites/boss_health_bar.png" id="11_health_bar"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1vifr"]
 size = Vector2(419, 293)
@@ -70,3 +72,42 @@ text = "Your mom never loved you!"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
+
+[node name="BossHealthBar" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -58.0
+offset_top = -118.0
+offset_right = 142.0
+offset_bottom = -98.0
+scale = Vector2(1.37666, 1.08763)
+script = ExtResource("10_health")
+
+[node name="HealthBarFill" type="ColorRect" parent="BossHealthBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -55.2061
+offset_top = -116.768
+offset_right = -61.2061
+offset_bottom = -122.768
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.953179, 1.10261)
+color = Color(1, 0, 0, 1)
+
+[node name="HealthBarFrame" type="TextureRect" parent="BossHealthBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -66.8284
+offset_top = -137.914
+offset_right = 867.172
+offset_bottom = 157.086
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.183878, 0.183878)
+texture = ExtResource("11_health_bar")
+stretch_mode = 3

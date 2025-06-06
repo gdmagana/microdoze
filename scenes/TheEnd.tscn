@@ -1,0 +1,162 @@
+[gd_scene load_steps=22 format=3 uid="uid://cnxct6bha6ole"]
+
+[ext_resource type="Shader" uid="uid://cwbavprnsxd7l" path="res://scripts/levels/level2_shader.gdshader" id="1_4e8ej"]
+[ext_resource type="Script" uid="uid://his2p5rb4rak" path="res://scripts/levels/level_2.gd" id="1_pfpar"]
+[ext_resource type="Texture2D" uid="uid://b2v2alfch3m20" path="res://assets/freezer/snow.png" id="2_vg0w0"]
+[ext_resource type="PackedScene" uid="uid://b7mu1034wh12b" path="res://scenes/Player.tscn" id="4_8l3d5"]
+[ext_resource type="PackedScene" uid="uid://b18aa8ui7s5jr" path="res://scenes/GameOver.tscn" id="7_2ekun"]
+[ext_resource type="AudioStream" uid="uid://dsuur5ttlumq7" path="res://assets/audio/microdozeTheme2.wav" id="9_q2r75"]
+[ext_resource type="AudioStream" uid="uid://cuxhgawi0egl5" path="res://assets/audio/pain_1.wav" id="10_cblnn"]
+[ext_resource type="Texture2D" uid="uid://3m0c0476ch80" path="res://assets/sprites/evil_lactose_free_ice_cream_pixel.png" id="10_ibyr1"]
+[ext_resource type="AudioStream" uid="uid://dppr47m42qmx5" path="res://assets/audio/yay_1.wav" id="11_68p8u"]
+[ext_resource type="Script" uid="uid://refv6dpsuwy0" path="res://scripts/dying_boss.gd" id="11_ibyr1"]
+[ext_resource type="Texture2D" uid="uid://ce2lyvyp8vrih" path="res://assets/sprites/spoon.png" id="13_2ekun"]
+[ext_resource type="Script" path="res://scripts/spoon_area.gd" id="13_6qqnu"]
+[ext_resource type="Texture2D" uid="uid://bje6lvcwssgoa" path="res://assets/sprites/yellow_glare.png" id="13_q2r75"]
+[ext_resource type="FontFile" uid="uid://cwrp8r743gy5" path="res://assets/fonts/arcade.ttf" id="13_uunmg"]
+[ext_resource type="Script" path="res://scripts/spoon_sprite.gd" id="15_6qqnu"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3aekd"]
+shader = ExtResource("1_4e8ej")
+shader_parameter/time = 0.0
+shader_parameter/amplitude = 5.0
+shader_parameter/frequency = 10.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2ekun"]
+size = Vector2(491, 376)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_uu6xs"]
+friction = 0.0
+bounce = 1.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_r0du0"]
+size = Vector2(86, 1370)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cm0pq"]
+size = Vector2(1254.75, 89.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6qqnu"]
+size = Vector2(71, 95)
+
+[node name="TheEnd" type="Node2D"]
+script = ExtResource("1_pfpar")
+
+[node name="Snow" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_3aekd")
+position = Vector2(570.5, 638)
+scale = Vector2(1.29004, 1.32617)
+texture = ExtResource("2_vg0w0")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="DyingBoss" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 15
+script = ExtResource("11_ibyr1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DyingBoss"]
+position = Vector2(487, 308)
+shape = SubResource("RectangleShape2D_2ekun")
+
+[node name="Aura" type="Sprite2D" parent="DyingBoss"]
+visible = false
+position = Vector2(546, 279)
+scale = Vector2(11.07, 6.21062)
+texture = ExtResource("13_q2r75")
+
+[node name="Closed" type="Sprite2D" parent="DyingBoss"]
+position = Vector2(484, 357)
+texture = ExtResource("10_ibyr1")
+
+[node name="Player" parent="." instance=ExtResource("4_8l3d5")]
+position = Vector2(525, 1076)
+
+[node name="Node" type="Node" parent="."]
+
+[node name="WallLeft" type="StaticBody2D" parent="Node"]
+collision_layer = 2
+physics_material_override = SubResource("PhysicsMaterial_uu6xs")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Node/WallLeft"]
+position = Vector2(-45, 635)
+shape = SubResource("RectangleShape2D_r0du0")
+
+[node name="WallTop" type="StaticBody2D" parent="Node"]
+visible = false
+collision_layer = 16
+physics_material_override = SubResource("PhysicsMaterial_uu6xs")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Node/WallTop"]
+visible = false
+position = Vector2(529.625, -44)
+shape = SubResource("RectangleShape2D_cm0pq")
+
+[node name="WallFloor" type="StaticBody2D" parent="Node"]
+visible = false
+collision_layer = 16
+physics_material_override = SubResource("PhysicsMaterial_uu6xs")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Node/WallFloor"]
+visible = false
+position = Vector2(525, 1328)
+shape = SubResource("RectangleShape2D_cm0pq")
+
+[node name="WallRight" type="StaticBody2D" parent="Node"]
+collision_layer = 2
+physics_material_override = SubResource("PhysicsMaterial_uu6xs")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Node/WallRight"]
+position = Vector2(1124, 645)
+shape = SubResource("RectangleShape2D_r0du0")
+
+[node name="GameOver" parent="." instance=ExtResource("7_2ekun")]
+process_mode = 3
+visible = false
+
+[node name="audio" type="Node" parent="."]
+
+[node name="BossMusic" type="AudioStreamPlayer2D" parent="audio"]
+stream = ExtResource("9_q2r75")
+volume_db = -5.354
+autoplay = true
+
+[node name="Pain1" type="AudioStreamPlayer" parent="audio"]
+stream = ExtResource("10_cblnn")
+volume_db = -11.022
+
+[node name="Yay1" type="AudioStreamPlayer" parent="audio"]
+stream = ExtResource("11_68p8u")
+volume_db = -9.546
+
+[node name="Label" type="Label" parent="."]
+offset_left = 755.0
+offset_top = 314.0
+offset_right = 1123.0
+offset_bottom = 617.0
+theme_override_colors/font_color = Color(0.0026959, 0.223637, 1, 1)
+theme_override_fonts/font = ExtResource("13_uunmg")
+theme_override_font_sizes/font_size = 40
+text = "ok fine u 
+can have 
+some 
+ice cream"
+
+[node name="SpoonArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("13_6qqnu")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SpoonArea"]
+position = Vector2(522, 782)
+shape = SubResource("RectangleShape2D_6qqnu")
+
+[node name="Aura" type="Sprite2D" parent="SpoonArea"]
+position = Vector2(534, 777)
+scale = Vector2(2.19647, 2.25209)
+texture = ExtResource("13_q2r75")
+
+[node name="SpoonSprite" type="Sprite2D" parent="SpoonArea"]
+position = Vector2(538, 785)
+scale = Vector2(0.158163, 0.157143)
+texture = ExtResource("13_2ekun")
+script = ExtResource("15_6qqnu")

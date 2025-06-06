@@ -1,0 +1,71 @@
+[gd_scene load_steps=5 format=3 uid="uid://b18aa8ui7s5jr"]
+
+[ext_resource type="Script" uid="uid://bto37lh71q0xj" path="res://scripts/game_over.gd" id="1_gom54"]
+[ext_resource type="FontFile" uid="uid://cwrp8r743gy5" path="res://assets/fonts/arcade.ttf" id="2_qae0b"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qae0b"]
+bg_color = Color(0, 0, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vuicl"]
+bg_color = Color(0.0392157, 0.0588235, 0.172549, 1)
+
+[node name="GameOver" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 650.0
+offset_top = 336.0
+offset_right = 690.0
+offset_bottom = 376.0
+script = ExtResource("1_gom54")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = -658.0
+offset_top = -336.0
+offset_right = 558.0
+offset_bottom = 1088.0
+color = Color(0.737255, 0.823529, 1, 0)
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = -377.0
+offset_top = 263.0
+offset_right = 167.0
+offset_bottom = 385.5
+theme_override_colors/font_color = Color(0, 0, 1, 1)
+theme_override_fonts/font = ExtResource("2_qae0b")
+theme_override_font_sizes/font_size = 120
+text = "game over"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = -451.0
+offset_top = 426.0
+offset_right = 277.0
+offset_bottom = 767.0
+
+[node name="RestartLevelButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_hover_color = Color(0, 0, 1, 1)
+theme_override_colors/font_color = Color(0.0392157, 0.0588235, 0.172549, 1)
+theme_override_fonts/font = ExtResource("2_qae0b")
+theme_override_font_sizes/font_size = 90
+theme_override_styles/hover = SubResource("StyleBoxFlat_qae0b")
+theme_override_styles/normal = SubResource("StyleBoxFlat_vuicl")
+text = "Restart Level"
+flat = true
+
+[node name="MenuButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_hover_color = Color(0, 0, 1, 1)
+theme_override_colors/font_color = Color(0.0392157, 0.0588235, 0.172549, 1)
+theme_override_fonts/font = ExtResource("2_qae0b")
+theme_override_font_sizes/font_size = 90
+text = "Back to Menu
+"
+flat = true
+
+[connection signal="pressed" from="VBoxContainer/RestartLevelButton" to="." method="_on_restart_level_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]

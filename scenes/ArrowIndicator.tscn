@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://l143rv8mjfvk"]
+
+[ext_resource type="Script" uid="uid://d0ah0vq3hq17l" path="res://scripts/arrow_indicator.gd" id="1_6rp8k"]
+[ext_resource type="Texture2D" uid="uid://lpml1rwi0egb" path="res://assets/ui/arrow pixel.png" id="1_j64mb"]
+
+[node name="ArrowIndicator" type="Sprite2D"]
+rotation = 3.14159
+scale = Vector2(0.25, 0.274)
+texture = ExtResource("1_j64mb")
+script = ExtResource("1_6rp8k")

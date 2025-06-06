@@ -11,19 +11,47 @@ config_version=5
 [application]
 
 config/name="MICRODOZE"
-run/main_scene="uid://bhbf48fir0ikx"
+run/main_scene="uid://d12e5n7wqoxwo"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+PowerUpManager="*res://scripts/power_ups/power_up_manager.gd"
+DebugSettings="*res://scripts/debug_settings.gd"
+GameState="*res://scripts/GameState.gd"
+NarrativeAudioManager="*res://scripts/NarrativeAudioManager.gd"
+
 [display]
 
-window/size/viewport_width=720
+window/size/viewport_width=1080
 window/size/viewport_height=1280
+window/size/resizable=false
+
+[input]
+
+shoot_puck={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194325,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+]
+}
+start_game={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+]
+}
+back_to_menu={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+]
+}
 
 [layer_names]
 
 2d_physics/layer_1="Environment"
 2d_physics/layer_2="Player"
+2d_physics/layer_3="Mobs"
+2d_physics/layer_4="Projectiles"
 2d_physics/layer_9="Props"
 
 [rendering]

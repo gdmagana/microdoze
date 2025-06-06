@@ -1,0 +1,58 @@
+[gd_scene load_steps=8 format=3 uid="uid://bvq2bv1jmsjwb"]
+
+[ext_resource type="Texture2D" uid="uid://ctrc2aqacldld" path="res://assets/narrative/kitchen_wide.png" id="1_t4g1w"]
+[ext_resource type="Script" uid="uid://b28nu71rh3oox" path="res://scripts/narrative/intro/narrative_11.gd" id="1_tubme"]
+[ext_resource type="Texture2D" uid="uid://b2fn5knoj3pmq" path="res://assets/narrative/characters/main_character_two.png" id="2_sn0ci"]
+[ext_resource type="Texture2D" uid="uid://ckk1rs0v8o008" path="res://assets/narrative/kitchen_trippy.png" id="2_tubme"]
+
+[sub_resource type="AnimatedTexture" id="AnimatedTexture_4ic7j"]
+frames = 2
+frame_0/texture = ExtResource("2_tubme")
+frame_1/texture = ExtResource("1_t4g1w")
+frame_1/duration = 1.0
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_x67uo"]
+
+[sub_resource type="Theme" id="Theme_v4oae"]
+
+[node name="NarrativeEleven" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tubme")
+
+[node name="KitchenWide" type="Sprite2D" parent="."]
+position = Vector2(538.5, 638.5)
+scale = Vector2(1.05957, 0.833984)
+texture = SubResource("AnimatedTexture_4ic7j")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = -3.0
+offset_right = 1081.0
+offset_bottom = 145.0
+texture = SubResource("CanvasTexture_x67uo")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.993
+anchor_bottom = 0.102
+offset_right = 7.55994
+offset_bottom = 14.44
+theme = SubResource("Theme_v4oae")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "You feel a little weird"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MainCharacter" type="Sprite2D" parent="."]
+position = Vector2(241, 970)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("2_sn0ci")
+
+[node name="Timer" type="Timer" parent="."]

@@ -1,51 +1,89 @@
-[gd_scene load_steps=8 format=3 uid="uid://b7mu1034wh12b"]
+[gd_scene load_steps=14 format=3 uid="uid://b7mu1034wh12b"]
 
 [ext_resource type="Script" uid="uid://c42nmw6pvf0vi" path="res://scripts/player.gd" id="1_xhfnw"]
 [ext_resource type="Script" uid="uid://qeipi7vrr5j6" path="res://scripts/stick.gd" id="2_kpjcp"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_xhfnw"]
-radius = 35.0
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_xhfnw"]
+[ext_resource type="PackedScene" uid="uid://c56tdwek10dmn" path="res://scenes/Ball.tscn" id="2_qu4a1"]
+[ext_resource type="Texture2D" uid="uid://cr106ydl1b4j0" path="res://assets/ui/stick.png" id="3_3li8b"]
+[ext_resource type="Texture2D" uid="uid://b7e4n2nobps06" path="res://assets/sprites/player.png" id="5_khinc"]
+[ext_resource type="AudioStream" uid="uid://cuxhgawi0egl5" path="res://assets/audio/pain_1.wav" id="6_cw2d6"]
+[ext_resource type="FontFile" uid="uid://cwrp8r743gy5" path="res://assets/fonts/arcade.ttf" id="6_khinc"]
+[ext_resource type="AudioStream" uid="uid://dppr47m42qmx5" path="res://assets/audio/yay_1.wav" id="7_cw2d6"]
+[ext_resource type="Texture2D" uid="uid://ce2lyvyp8vrih" path="res://assets/sprites/spoon.png" id="9_bruh7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kpjcp"]
-size = Vector2(77, 17.5)
+size = Vector2(181.066, 59.7047)
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_xhfnw"]
+[sub_resource type="AnimatedTexture" id="AnimatedTexture_mdl7e"]
+frame_0/texture = ExtResource("3_3li8b")
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_xhfnw"]
+radius = 56.0089
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_v6fml"]
-radius = 38.0
+radius = 55.0364
 
 [node name="Player" type="CharacterBody2D"]
-collision_layer = 4
+collision_layer = 2
 collision_mask = 0
 script = ExtResource("1_xhfnw")
+puck_scene = ExtResource("2_qu4a1")
+
+[node name="Stick" type="Area2D" parent="."]
+position = Vector2(9, -38)
+collision_layer = 2
+collision_mask = 9
+script = ExtResource("2_kpjcp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stick"]
+position = Vector2(62.4672, -15.1476)
+shape = SubResource("RectangleShape2D_kpjcp")
+
+[node name="Sprite2D" type="Sprite2D" parent="Stick"]
+position = Vector2(67, -18)
+rotation = -0.760964
+scale = Vector2(0.182449, 0.103073)
+texture = SubResource("AnimatedTexture_mdl7e")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_xhfnw")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-4.76837e-07, -0.499998)
-scale = Vector2(0.128906, 0.130859)
-texture = SubResource("NoiseTexture2D_xhfnw")
-
-[node name="Stick" type="Area2D" parent="."]
-collision_layer = 2
-collision_mask = 257
-script = ExtResource("2_kpjcp")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Stick"]
-shape = SubResource("RectangleShape2D_kpjcp")
-
-[node name="Sprite2D" type="Sprite2D" parent="Stick"]
-position = Vector2(0.5, 1)
-scale = Vector2(67, 12)
-texture = SubResource("PlaceholderTexture2D_xhfnw")
+position = Vector2(-0.500007, 1.5)
+scale = Vector2(0.124023, 0.129883)
+texture = ExtResource("5_khinc")
 
 [node name="Hitbox" type="Area2D" parent="."]
 collision_layer = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 shape = SubResource("CircleShape2D_v6fml")
+
+[node name="Ouch" type="Label" parent="."]
+visible = false
+offset_left = 19.0
+offset_top = -89.0
+offset_right = 136.0
+offset_bottom = -48.1667
+theme_override_colors/font_color = Color(0, 0, 0.321569, 1)
+theme_override_fonts/font = ExtResource("6_khinc")
+theme_override_font_sizes/font_size = 40
+text = "Ouch!"
+
+[node name="Audio" type="Node" parent="."]
+
+[node name="Pain1" type="AudioStreamPlayer" parent="Audio"]
+stream = ExtResource("6_cw2d6")
+volume_db = -11.022
+
+[node name="Yay1" type="AudioStreamPlayer" parent="Audio"]
+stream = ExtResource("7_cw2d6")
+volume_db = -9.546
+
+[node name="SpoonSprite" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(-217, -128)
+rotation = 1.4083
+scale = Vector2(0.518397, 0.537012)
+texture = ExtResource("9_bruh7")
 
 [connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]

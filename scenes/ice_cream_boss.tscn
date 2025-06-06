@@ -1,0 +1,112 @@
+[gd_scene load_steps=11 format=3 uid="uid://drb605l5hvpfw"]
+
+[ext_resource type="Script" uid="uid://bh2kvdma1guj7" path="res://scripts/ice_cream_boss.gd" id="1_q3t3g"]
+[ext_resource type="PackedScene" uid="uid://chkrln0i73kui" path="res://scenes/projectile_ice_cube.tscn" id="2_rmwav"]
+[ext_resource type="PackedScene" uid="uid://cevktclg1pfkk" path="res://scenes/IceCreamScoop.tscn" id="3_jfhmo"]
+[ext_resource type="PackedScene" uid="uid://cbb2ytbvuoo7c" path="res://scenes/Icicle.tscn" id="4_yuhxq"]
+[ext_resource type="Texture2D" uid="uid://3m0c0476ch80" path="res://assets/sprites/evil_lactose_free_ice_cream_pixel.png" id="5_yuhxq"]
+[ext_resource type="FontFile" uid="uid://cwrp8r743gy5" path="res://assets/fonts/arcade.ttf" id="9_rocre"]
+[ext_resource type="Script" path="res://scripts/boss_health_bar_simple.gd" id="10_health"]
+[ext_resource type="Texture2D" uid="uid://deptvrw3nj1i7" path="res://assets/sprites/boss_health_bar.png" id="11_health_bar"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1vifr"]
+size = Vector2(419, 293)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qtmpm"]
+bg_color = Color(0, 0, 0, 0.419608)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.8, 0, 0, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+
+[node name="IceCreamBoss" type="Area2D"]
+collision_layer = 4
+collision_mask = 15
+script = ExtResource("1_q3t3g")
+projectile_ice_cube_scene = ExtResource("2_rmwav")
+projectile_ice_cream_scoop = ExtResource("3_jfhmo")
+projectile_icicle = ExtResource("4_yuhxq")
+sprite_full_health = ExtResource("5_yuhxq")
+sprite_damaged_once = ExtResource("5_yuhxq")
+sprite_damaged_twice = ExtResource("5_yuhxq")
+sprite_raging = ExtResource("5_yuhxq")
+powerup_drop_chance = 0.3
+speed_boost_weight = 2.0
+unlimited_pucks_weight = 0.0
+invincibility_weight = 1.0
+health_weight = 3.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(7, -3)
+scale = Vector2(0.803191, 0.744681)
+texture = ExtResource("5_yuhxq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(7.5, -55.5)
+shape = SubResource("RectangleShape2D_1vifr")
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[node name="BossDialog1" type="Panel" parent="."]
+offset_left = 248.0
+offset_top = -139.0
+offset_right = 561.0
+offset_bottom = -4.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_qtmpm")
+
+[node name="BossDialog1Label" type="Label" parent="BossDialog1"]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 28.0
+offset_right = 312.0
+offset_bottom = 111.0
+theme_override_fonts/font = ExtResource("9_rocre")
+theme_override_font_sizes/font_size = 36
+text = "Your mom never loved you!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="BossHealthBar" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -58.0
+offset_top = -118.0
+offset_right = 142.0
+offset_bottom = -98.0
+scale = Vector2(1.37666, 1.08763)
+script = ExtResource("10_health")
+
+[node name="HealthBarFill" type="ColorRect" parent="BossHealthBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -55.2061
+offset_top = -116.768
+offset_right = -61.2061
+offset_bottom = -122.768
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.953179, 1.10261)
+color = Color(1, 0, 0, 1)
+
+[node name="HealthBarFrame" type="TextureRect" parent="BossHealthBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -66.8284
+offset_top = -137.914
+offset_right = 867.172
+offset_bottom = 157.086
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.183878, 0.183878)
+texture = ExtResource("11_health_bar")
+stretch_mode = 3

@@ -1,0 +1,36 @@
+[gd_scene load_steps=3 format=3 uid="uid://c1a08s7pevgjb"]
+
+[ext_resource type="Script" path="res://scripts/boss_health_bar.gd" id="1_boss_hb"]
+[ext_resource type="Texture2D" uid="uid://deptvrw3nj1i7" path="res://assets/sprites/boss_health_bar.png" id="2_boss_frame"]
+
+[node name="BossHealthBar" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 52.0
+offset_bottom = 15.0
+grow_horizontal = 2
+scale = Vector2(2, 2)
+script = ExtResource("1_boss_hb")
+
+[node name="HealthBarFrame" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_boss_frame")
+stretch_mode = 1
+
+[node name="HealthBarFill" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 5.5
+offset_right = -2.0
+offset_bottom = -5.5
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0, 0, 1)

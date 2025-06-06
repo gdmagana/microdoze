@@ -5,7 +5,7 @@
 [ext_resource type="AudioStream" uid="uid://b87o6gx50qrn8" path="res://assets/audio/microdozeTheme0.wav" id="3_auvjl"]
 [ext_resource type="Texture2D" uid="uid://b2v2alfch3m20" path="res://assets/freezer/snow.png" id="3_l5fl4"]
 [ext_resource type="PackedScene" uid="uid://b7mu1034wh12b" path="res://scenes/Player.tscn" id="4_nx170"]
-[ext_resource type="Script" uid="uid://13dfxerpiie1" path="res://scripts/camera_2d.gd" id="5_h27y2"]
+[ext_resource type="Script" path="res://scripts/camera_2d.gd" id="5_h27y2"]
 [ext_resource type="FontFile" uid="uid://cwrp8r743gy5" path="res://assets/fonts/arcade.ttf" id="6_jkdna"]
 [ext_resource type="PackedScene" uid="uid://b18aa8ui7s5jr" path="res://scenes/GameOver.tscn" id="7_d6wyi"]
 [ext_resource type="PackedScene" uid="uid://bsdi5day054n2" path="res://scenes/HealthUI.tscn" id="8_bmjl8"]

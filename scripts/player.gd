@@ -51,6 +51,8 @@ var stick_base_offset := Vector2(30, -30)
 var stick_extended_offset := Vector2(30, -25)
 var stick_rotation_max := -0.5 # Maximum rotation in radians
 
+var canMoveUp = false
+
 # -- Puck --
 @export var puck_scene: PackedScene
 @export var puck_speed := 700.0
@@ -73,6 +75,9 @@ var is_level_zero := false
 signal bounced_off_ice
 
 func _ready():
+	var current_scene_name = get_tree().current_scene.name
+	if current_scene_name == "TheEnd":
+		canMoveUp = true
 	GameState.current_level_path = get_tree().current_scene.scene_file_path
 	add_to_group("player")
 	
@@ -226,7 +231,10 @@ func _physics_process(delta):
 	
 	# clamp player movement to screen bounds
 	position.x = clamp(position.x, 0, stage_width)
-	#position.y = clamp(position.y, 0, stage_height)
+	if canMoveUp:
+		position.y = clamp(position.y, 0, stage_height)
+	elif not is_level_zero:
+		position.y = clamp(position.y, 550, stage_height)
 	
 	# Reset velocity if player hit the screen bounds
 	if old_position.x != position.x:
@@ -307,7 +315,7 @@ func _process(_delta):
 		var current_scene_name = get_tree().current_scene.name
 		if current_scene_name == "Level2":
 			change_to_the_end()
-		else:
+		elif current_scene_name != "TheEnd":
 			change_to_level_2()
 
 func change_to_level_2():
@@ -350,7 +358,7 @@ func take_damage(amount := 1.0):
 		return # Don't play sound effects or continue damage processing if dead
 
 	# Flash red to indicate damage (only if still alive)
-	$Sprite2D.modulate = Color(1, 0.5, 0.5)
+	$Sprite2D.modulate = Color(1, 0, 0)
 	is_invulnerable = true
 	invulnerable_timer = 1.0 # seconds
 	$"Audio/Pain1".play()

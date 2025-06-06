@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://b8031r7ess33k"]
+[gd_scene load_steps=33 format=3 uid="uid://b8031r7ess33k"]
 
 [ext_resource type="Script" uid="uid://dsm5ftrt306io" path="res://scripts/levels/level_0.gd" id="1_hsw41"]
 [ext_resource type="PackedScene" uid="uid://cbb2ytbvuoo7c" path="res://scenes/Icicle.tscn" id="2_auvjl"]
@@ -27,6 +27,8 @@
 [ext_resource type="Texture2D" uid="uid://dgcpynwbm3oc7" path="res://assets/freezer/texas pete pixel.png" id="25_cyfud"]
 [ext_resource type="Texture2D" uid="uid://b5rhfm22tvwqm" path="res://assets/freezer/buzzballz tequila 'rita pixel.png" id="25_r8tyr"]
 [ext_resource type="Texture2D" uid="uid://dy0fxmfhrv7f2" path="res://assets/freezer/red bull pixel.png" id="26_r8tyr"]
+[ext_resource type="Texture2D" uid="uid://d0srcv3osrw2a" path="res://assets/freezer/paper plate pixel.png" id="29_k81si"]
+[ext_resource type="Texture2D" uid="uid://voosvrw7mi6u" path="res://assets/freezer/red solo cup pixel.png" id="29_l7113"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qnx47"]
 size = Vector2(407, 4215)
@@ -262,8 +264,19 @@ position = Vector2(1024, -215)
 scale = Vector2(2, 1.972)
 texture = ExtResource("24_r8tyr")
 
+[node name="RedSoloCupPixel" type="Sprite2D" parent="."]
+position = Vector2(-66.0001, -1782)
+rotation = -2.50106
+scale = Vector2(1.22963, 1.26111)
+texture = ExtResource("29_l7113")
+
 [node name="RedBullPixel" type="Sprite2D" parent="."]
 position = Vector2(185, -1264)
 rotation = -0.340339
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("26_r8tyr")
+
+[node name="PaperPlatePixel" type="Sprite2D" parent="."]
+position = Vector2(1169, -1737)
+scale = Vector2(1.10027, 1.08727)
+texture = ExtResource("29_k81si")

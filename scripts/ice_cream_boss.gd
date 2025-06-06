@@ -46,6 +46,8 @@ var level := 0
 # Ice cube tracking system to prevent overlapping ice cubes
 var active_ice_cubes = {} # Dictionary to track ice cubes by position key
 
+signal ran_away
+
 func _ready():
 	var current_scene_name = get_tree().current_scene.name
 	if current_scene_name == "Level2":
@@ -397,3 +399,4 @@ func run_away():
 	var tween = create_tween()
 	tween.tween_property(self, "position:y", position.y - 300, 1.5)
 	tween.tween_callback(Callable(self, "queue_free"))
+	emit_signal("ran_away")

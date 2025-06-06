@@ -96,7 +96,7 @@ func _ready():
 	stage_height = get_viewport_rect().size.y
 	
 	var center_x = stage_width / 2
-	var start_position = Vector2(center_x, stage_height - 150)
+	var start_position = Vector2(center_x, stage_height - 180)
 	var entry_position = Vector2(center_x, stage_height + 100)
 	# Set entry position and freeze
 	global_position = entry_position
@@ -309,7 +309,7 @@ func apply_movement_rotation(horizontal_input: float):
 func _process(_delta):
 	if is_level_zero:
 		return
-
+	
 	if not scene_change_triggered and global_position.y <= 0:
 		scene_change_triggered = true
 		var current_scene_name = get_tree().current_scene.name
@@ -317,6 +317,14 @@ func _process(_delta):
 			change_to_the_end()
 		elif current_scene_name != "TheEnd":
 			change_to_level_2()
+			
+func lock_player():
+	can_move_horizontally = false
+	can_move_vertically = false
+	
+func unlock_player():
+	can_move_horizontally = true
+	can_move_vertically = true	
 
 func change_to_level_2():
 	get_tree().change_scene_to_file("res://scenes/levels/Level2.tscn")

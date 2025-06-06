@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cardie8r2ie3n"]
+[gd_scene load_steps=15 format=3 uid="uid://cardie8r2ie3n"]
 
 [ext_resource type="Script" uid="uid://his2p5rb4rak" path="res://scripts/levels/level_2.gd" id="1_mcssb"]
 [ext_resource type="Shader" uid="uid://cwbavprnsxd7l" path="res://scripts/levels/level2_shader.gdshader" id="2_dwyyt"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://b18aa8ui7s5jr" path="res://scenes/GameOver.tscn" id="4_6rin4"]
 [ext_resource type="PackedScene" uid="uid://bsdi5day054n2" path="res://scenes/HealthUI.tscn" id="5_5v643"]
 [ext_resource type="PackedScene" uid="uid://do281nd83ggn3" path="res://scenes/PuckCounter.tscn" id="6_o6ptl"]
+[ext_resource type="PackedScene" uid="uid://l143rv8mjfvk" path="res://scenes/ArrowIndicator.tscn" id="7_dpm1s"]
 [ext_resource type="PackedScene" uid="uid://b7mu1034wh12b" path="res://scenes/Player.tscn" id="7_mctl7"]
 [ext_resource type="PackedScene" uid="uid://drb605l5hvpfw" path="res://scenes/ice_cream_boss.tscn" id="8_fpd7d"]
 [ext_resource type="AudioStream" uid="uid://d4f60iyp70eg3" path="res://assets/audio/microdozeTheme3.wav" id="9_mcssb"]
@@ -44,18 +45,24 @@ visible = false
 [node name="HealthUI" parent="HUD" instance=ExtResource("5_5v643")]
 anchors_preset = -1
 anchor_top = 1.0
-offset_left = 20.0
-offset_top = -106.0
-offset_bottom = 104.0
+offset_left = 210.0
+offset_top = -120.0
+offset_right = -50.0
+offset_bottom = 90.0
 grow_vertical = 0
-scale = Vector2(0.436, 0.436)
+scale = Vector2(0.5, 0.5)
 metadata/_edit_use_anchors_ = true
 
 [node name="PuckCounter" parent="HUD" instance=ExtResource("6_o6ptl")]
-offset_left = -165.0
-offset_top = 1193.0
-offset_right = -18.0
-offset_bottom = 1247.0
+offset_left = -510.0
+offset_top = 1175.0
+offset_right = -363.0
+offset_bottom = 1229.0
+scale = Vector2(1.5, 1.5)
+
+[node name="ArrowIndicator" parent="." instance=ExtResource("7_dpm1s")]
+visible = false
+position = Vector2(548, 60)
 
 [node name="Player" parent="." instance=ExtResource("7_mctl7")]
 position = Vector2(525, 1076)

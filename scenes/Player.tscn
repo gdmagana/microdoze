@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://b7mu1034wh12b"]
+[gd_scene load_steps=14 format=3 uid="uid://b7mu1034wh12b"]
 
 [ext_resource type="Script" uid="uid://c42nmw6pvf0vi" path="res://scripts/player.gd" id="1_xhfnw"]
 [ext_resource type="Script" uid="uid://qeipi7vrr5j6" path="res://scripts/stick.gd" id="2_kpjcp"]
@@ -8,6 +8,7 @@
 [ext_resource type="AudioStream" uid="uid://cuxhgawi0egl5" path="res://assets/audio/pain_1.wav" id="6_cw2d6"]
 [ext_resource type="FontFile" uid="uid://cwrp8r743gy5" path="res://assets/fonts/arcade.ttf" id="6_khinc"]
 [ext_resource type="AudioStream" uid="uid://dppr47m42qmx5" path="res://assets/audio/yay_1.wav" id="7_cw2d6"]
+[ext_resource type="Texture2D" uid="uid://ce2lyvyp8vrih" path="res://assets/sprites/spoon.png" id="9_bruh7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kpjcp"]
 size = Vector2(181.066, 59.7047)
@@ -77,5 +78,12 @@ volume_db = -11.022
 [node name="Yay1" type="AudioStreamPlayer" parent="Audio"]
 stream = ExtResource("7_cw2d6")
 volume_db = -9.546
+
+[node name="SpoonSprite" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(-217, -128)
+rotation = 1.4083
+scale = Vector2(0.518397, 0.537012)
+texture = ExtResource("9_bruh7")
 
 [connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]

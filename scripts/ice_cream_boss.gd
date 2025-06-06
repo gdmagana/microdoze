@@ -5,15 +5,16 @@ extends Area2D
 @export var projectile_icicle: PackedScene
 
 @export var throw_speed := 400.0
-@export var hits_to_ice_wall_rage := 3
+@export var max_health := 100.0
+@export var health := 100.0
 @export var damage_flash_duration := 0.3
 
 # Boss sprite textures for different health states
 @export_group("Boss Sprites")
-@export var sprite_full_health: Texture2D # When hits_to_ice_wall_rage = 3
-@export var sprite_damaged_once: Texture2D # When hits_to_ice_wall_rage = 2
-@export var sprite_damaged_twice: Texture2D # When hits_to_ice_wall_rage = 1
-@export var sprite_raging: Texture2D # When hits_to_ice_wall_rage = 0 (raging state)
+@export var sprite_full_health: Texture2D # When health > 75%
+@export var sprite_damaged_once: Texture2D # When health 50-75%
+@export var sprite_damaged_twice: Texture2D # When health 25-50%
+@export var sprite_raging: Texture2D # When health 0-25% (raging state)
 
 # Powerup integration
 @export_group("Powerups")
@@ -35,6 +36,9 @@ var rng = RandomNumberGenerator.new()
 
 var player: Node2D
 var is_raging := false
+
+# Health bar reference
+var health_bar: Control
 
 # used to keep track of current level
 var level := 0
@@ -60,6 +64,11 @@ func _ready():
 	
 	# Load powerup scenes
 	_load_powerup_scenes()
+	
+	# Initialize health bar
+	health_bar = $BossHealthBar
+	if health_bar:
+		health_bar.update_health(health, max_health)
 	
 	# Hide dialog panel initially
 	$BossDialog1.visible = false
@@ -161,26 +170,29 @@ func _on_Timer_timeout():
 
 func update_sprite_for_health_state():
 	var current_texture: Texture2D = null
+	var health_percentage = health / max_health
 	
-	match hits_to_ice_wall_rage:
-		3:
-			current_texture = sprite_full_health
-		2:
-			current_texture = sprite_damaged_once
-		1:
-			current_texture = sprite_damaged_twice
-		0:
-			current_texture = sprite_raging
-		_:
-			# Fallback for any unexpected values
-			current_texture = sprite_full_health
+	if health_percentage > 0.75:
+		current_texture = sprite_full_health
+	elif health_percentage > 0.5:
+		current_texture = sprite_damaged_once
+	elif health_percentage > 0.25:
+		current_texture = sprite_damaged_twice
+	else:
+		current_texture = sprite_raging
 	
 	# Only update if we have a texture assigned, otherwise keep current
 	if current_texture != null:
 		$Sprite2D.texture = current_texture
 
-func take_damage(amount := 1):
-	hits_to_ice_wall_rage -= amount
+func take_damage(amount := 25.0):
+	health -= amount
+	health = max(health, 0.0) # Prevent negative health
+	
+	# Update health bar
+	if health_bar:
+		health_bar.update_health(health, max_health)
+		health_bar.flash_damage()
 	
 	# Play damage sound if we can find one
 	# if get_node_or_null("../audio/Pain1") != null:
@@ -196,7 +208,7 @@ func take_damage(amount := 1):
 	
 	# Do wave that kills nearby pucks??
 	
-	if not is_raging and hits_to_ice_wall_rage == 0:
+	if not is_raging and health <= 0:
 		rage()
 	else:
 		throw_ice_wall(-200)
@@ -268,7 +280,8 @@ func _dramatic_damage_sequence():
 		
 		# Start typewriter effect as a concurrent task
 		var dialog_text = "Your mom never loved you!"
-		if hits_to_ice_wall_rage == 1:
+		var health_percentage = health / max_health
+		if health_percentage <= 0.5 and health_percentage > 0.25:
 			dialog_text = "You lactose intolerant slut"
 		_start_typewriter_concurrent(dialog_label, dialog_text)
 		

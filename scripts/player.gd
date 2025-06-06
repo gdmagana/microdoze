@@ -59,6 +59,7 @@ var stick_rotation_max := -0.5 # Maximum rotation in radians
 var active_pucks := 0 # Current number of active pucks
 var puck_cooldown_timer := 0.0 # Timer for puck shooting cooldown
 var can_shoot_puck = true
+var is_puck_cooldown_complete = true
 
 # -- Stage Bounds --
 var stage_width
@@ -265,14 +266,13 @@ func _physics_process(delta):
 		$Stick.scale.x = last_direction # Flip the stick sprite to face correct side
 	
 	# -- Puck Shooting --
-	if not can_shoot_puck:
-		puck_cooldown_timer -= delta
-		if puck_cooldown_timer <= 0:
-			can_shoot_puck = true # Re-enable puck shooting after cooldown
-	else:
-		# Check if the player is trying to shoot a puck
+	if can_shoot_puck and is_puck_cooldown_complete:
 		if Input.is_action_just_pressed("shoot_puck"):
 			shoot_puck()
+	else:
+		puck_cooldown_timer -= delta
+		if puck_cooldown_timer <= 0:
+			is_puck_cooldown_complete = true
 
 # NEW THING
 func _on_intro_finished():
@@ -470,17 +470,14 @@ func bounce_back_from_wall(wall_pos):
 	var bounce_dir = (position - wall_pos).normalized()
 	velocity = bounce_dir * 400
 	
-func enable_puck_shooting():
-	can_shoot_puck = true
-	
-func disable_puck_shooting():
-	can_shoot_puck = false
-	
 func shoot_puck():
+	if not can_shoot_puck || not is_puck_cooldown_complete:
+		return
+	
 	# Check if unlimited pucks powerup is active
 	var has_unlimited = PowerUpManager and PowerUpManager.has_unlimited_pucks()
-	if not can_shoot_puck or (not has_unlimited and active_pucks >= max_active_pucks):
-		return # Can't shoot if puck shooting is disabled or max pucks active (unless unlimited)
+	if not has_unlimited and active_pucks >= max_active_pucks:
+		return # Can't shoot if max pucks active (unless unlimited)
 	
 	var puck = puck_scene.instantiate()
 	get_parent().add_child(puck)
@@ -509,7 +506,7 @@ func shoot_puck():
 	if puck_counter:
 		puck_counter.update_puck_count(max_active_pucks, active_pucks)
 	
-	can_shoot_puck = false
+	is_puck_cooldown_complete = false
 	puck_cooldown_timer = puck_cooldown # Reset cooldown timer
 
 func _on_hitbox_body_entered(body):

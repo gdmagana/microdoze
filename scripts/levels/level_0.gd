@@ -25,6 +25,7 @@ func _ready():
 	
 	player.max_health = 5
 	player.health = 5
+	player.can_shoot_puck = false
 	player.connect("bounced_off_ice", Callable(self, "_on_player_bounce_off_ice"))
 
 func stop_narrative_audio():
@@ -40,6 +41,7 @@ func _on_player_bounce_off_ice():
 		health_ui.visible = true
 		bounce_hint_label.visible = true
 		gave_bounce_hint = true
+		player.can_shoot_puck = true
 			
 func _input(_event):	
 	if bounce_hint_label.visible and Input.is_action_just_pressed("shoot_puck"):

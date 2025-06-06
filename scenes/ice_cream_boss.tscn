@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://cbb2ytbvuoo7c" path="res://scenes/Icicle.tscn" id="4_yuhxq"]
 [ext_resource type="Texture2D" uid="uid://3m0c0476ch80" path="res://assets/sprites/evil_lactose_free_ice_cream_pixel.png" id="5_yuhxq"]
 [ext_resource type="FontFile" uid="uid://cwrp8r743gy5" path="res://assets/fonts/arcade.ttf" id="9_rocre"]
-[ext_resource type="Script" uid="uid://cp4t6xuks2k1i" path="res://scripts/boss_health_bar_simple.gd" id="10_health"]
+[ext_resource type="Script" path="res://scripts/boss_health_bar_simple.gd" id="10_health"]
 [ext_resource type="Texture2D" uid="uid://deptvrw3nj1i7" path="res://assets/sprites/boss_health_bar.png" id="11_health_bar"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1vifr"]

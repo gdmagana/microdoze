@@ -279,17 +279,17 @@ func _dramatic_damage_sequence():
 		zoom_tween.parallel().tween_property(camera, "global_position", target_camera_pos, 0.4)
 		
 		# Start typewriter effect as a concurrent task
-		var dialog_text = "Your mom never loved you!"
-		var health_percentage = health / max_health
-		if health_percentage <= 0.5 and health_percentage > 0.25:
-			dialog_text = "You lactose intolerant slut"
+		var dialog_text = GameState.boss_dialogues[GameState.curr_dialogue]
+		GameState.curr_dialogue = (GameState.curr_dialogue + 1) % len(GameState.boss_dialogues)
+		#if hits_to_ice_wall_rage == 1:
+			#dialog_text = "You lactose intolerant slut"
 		_start_typewriter_concurrent(dialog_label, dialog_text)
 		
 		# Wait for zoom to complete
 		await zoom_tween.finished
 
 		# Wait using a proper timer
-		await get_tree().create_timer(1.2, true).timeout
+		await get_tree().create_timer(1.6, true).timeout
 
 		# Unzoom and move camera back concurrently
 		var unzoom_tween = create_tween()
@@ -345,8 +345,6 @@ func rage():
 	# Update sprite for raging state
 	update_sprite_for_health_state()
 	run_away()
-	if player:
-		player.enable_puck_shooting()
 	call_deferred("throw_ice_wall")
 	
 func throw_ice_wall(y_offset = null):
@@ -394,6 +392,8 @@ func _on_ice_cube_destroyed(position_key: String):
 		active_ice_cubes.erase(position_key)
 
 func run_away():
+	var player = get_parent().get_node("Player")
+	player.canMoveUp = true
 	var tween = create_tween()
 	tween.tween_property(self, "position:y", position.y - 300, 1.5)
 	tween.tween_callback(Callable(self, "queue_free"))

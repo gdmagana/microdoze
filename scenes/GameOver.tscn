@@ -44,17 +44,6 @@ offset_top = 426.0
 offset_right = 277.0
 offset_bottom = 767.0
 
-[node name="MenuButton" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-focus_mode = 0
-theme_override_colors/font_hover_color = Color(0, 0, 1, 1)
-theme_override_colors/font_color = Color(0.0392157, 0.0588235, 0.172549, 1)
-theme_override_fonts/font = ExtResource("2_qae0b")
-theme_override_font_sizes/font_size = 90
-text = "Back to Menu
-"
-flat = true
-
 [node name="RestartLevelButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 focus_mode = 0
@@ -67,5 +56,16 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_vuicl")
 text = "Restart Level"
 flat = true
 
-[connection signal="pressed" from="VBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]
+[node name="MenuButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_hover_color = Color(0, 0, 1, 1)
+theme_override_colors/font_color = Color(0.0392157, 0.0588235, 0.172549, 1)
+theme_override_fonts/font = ExtResource("2_qae0b")
+theme_override_font_sizes/font_size = 90
+text = "Back to Menu
+"
+flat = true
+
 [connection signal="pressed" from="VBoxContainer/RestartLevelButton" to="." method="_on_restart_level_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]

@@ -69,13 +69,11 @@ position = Vector2(529.625, -44)
 shape = SubResource("RectangleShape2D_cm0pq")
 
 [node name="WallFloor" type="StaticBody2D" parent="Node"]
-visible = false
 collision_layer = 16
 physics_material_override = SubResource("PhysicsMaterial_uu6xs")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Node/WallFloor"]
-visible = false
-position = Vector2(525, 1328)
+position = Vector2(560, 1326)
 shape = SubResource("RectangleShape2D_cm0pq")
 
 [node name="WallRight" type="StaticBody2D" parent="Node"]

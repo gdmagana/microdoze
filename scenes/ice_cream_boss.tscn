@@ -1,10 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://drb605l5hvpfw"]
+[gd_scene load_steps=11 format=3 uid="uid://drb605l5hvpfw"]
 
 [ext_resource type="Script" uid="uid://bh2kvdma1guj7" path="res://scripts/ice_cream_boss.gd" id="1_q3t3g"]
 [ext_resource type="PackedScene" uid="uid://chkrln0i73kui" path="res://scenes/projectile_ice_cube.tscn" id="2_rmwav"]
 [ext_resource type="PackedScene" uid="uid://cevktclg1pfkk" path="res://scenes/IceCreamScoop.tscn" id="3_jfhmo"]
 [ext_resource type="PackedScene" uid="uid://cbb2ytbvuoo7c" path="res://scenes/Icicle.tscn" id="4_yuhxq"]
-[ext_resource type="Texture2D" uid="uid://boc8ehd6ycmpn" path="res://assets/sprites/evillactosefree.png" id="5_rmwav"]
 [ext_resource type="Texture2D" uid="uid://3m0c0476ch80" path="res://assets/sprites/evil_lactose_free_ice_cream_pixel.png" id="5_yuhxq"]
 [ext_resource type="FontFile" uid="uid://cwrp8r743gy5" path="res://assets/fonts/arcade.ttf" id="9_rocre"]
 [ext_resource type="Script" uid="uid://cp4t6xuks2k1i" path="res://scripts/boss_health_bar_simple.gd" id="10_health"]
@@ -44,7 +43,7 @@ health_weight = 3.0
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(7, -3)
 scale = Vector2(0.803191, 0.744681)
-texture = ExtResource("5_rmwav")
+texture = ExtResource("5_yuhxq")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(7.5, -55.5)

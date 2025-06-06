@@ -6,12 +6,18 @@ extends Control
 
 var low_health_tween: Tween
 var rainbow_tween: Tween
+var health_animation_tween: Tween
 var current_health_percentage: float = 1.0
+var previous_health_percentage: float = 1.0
 
 # Shader effect variables - CUSTOMIZE THESE FOR PIXELATED RAINBOW EFFECT
-var rainbow_scroll_speed := 1.0 # How fast the rainbow scrolls (higher = faster)
+var rainbow_scroll_speed := 0.3 # How fast the rainbow scrolls (higher = faster)
 
 var shader_material: ShaderMaterial
+
+# Animation settings
+var health_decrease_duration: float = 0.5 # How long the health decrease animation takes
+var health_increase_duration: float = 0.2 # How long the health increase animation takes
 
 func _ready():
 	# Set up the health bar frame with a border
@@ -130,8 +136,14 @@ func update_health(current_health: float, max_health: float):
 		return
 		
 	# Calculate health percentage
-	var health_percentage = clamp(current_health / max_health, 0.0, 1.0)
-	current_health_percentage = health_percentage
+	var target_health_percentage = clamp(current_health / max_health, 0.0, 1.0)
+	
+	# Store previous health for animation
+	previous_health_percentage = current_health_percentage
+	
+	# Check if we need to animate
+	if target_health_percentage != current_health_percentage:
+		animate_health_change(target_health_percentage)
 	
 	# Reset health bar to full size - the shader will handle clipping
 	health_bar.anchor_left = 0.0
@@ -142,12 +154,46 @@ func update_health(current_health: float, max_health: float):
 	health_bar.offset_top = 3.0
 	health_bar.offset_right = -3.0
 	health_bar.offset_bottom = -3.0
+
+func animate_health_change(target_percentage: float):
+	# Kill any existing health animation
+	if health_animation_tween:
+		health_animation_tween.kill()
+	
+	# Create new tween
+	health_animation_tween = create_tween()
+	
+	# Determine animation duration based on whether health is increasing or decreasing
+	var duration: float
+	var easing: Tween.EaseType
+	
+	if target_percentage < current_health_percentage:
+		# Health decreasing - slower, more dramatic animation
+		duration = health_decrease_duration
+		easing = Tween.EASE_OUT # Starts fast, slows down (more dramatic)
+	else:
+		# Health increasing - faster, snappier animation
+		duration = health_increase_duration
+		easing = Tween.EASE_IN # Starts slow, speeds up (more responsive)
+	
+	# Animate the health percentage
+	health_animation_tween.tween_method(
+		update_animated_health_percentage,
+		current_health_percentage,
+		target_percentage,
+		duration
+	)
+	health_animation_tween.set_ease(easing)
+	health_animation_tween.set_trans(Tween.TRANS_QUART)
+
+func update_animated_health_percentage(animated_percentage: float):
+	current_health_percentage = animated_percentage
 	
 	# Adjust shader effects based on health level
-	if health_percentage > 0.6:
+	if current_health_percentage > 0.6:
 		# High health - smooth, pleasant scrolling with smaller blocks
 		rainbow_scroll_speed = 0.3
-	elif health_percentage > 0.3:
+	elif current_health_percentage > 0.3:
 		# Medium health - faster scrolling with medium blocks
 		rainbow_scroll_speed = 0.5
 	else:

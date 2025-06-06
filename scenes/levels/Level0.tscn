@@ -1,22 +1,24 @@
-[gd_scene load_steps=33 format=3 uid="uid://b8031r7ess33k"]
+[gd_scene load_steps=36 format=3 uid="uid://b8031r7ess33k"]
 
-[ext_resource type="Script" uid="uid://dsm5ftrt306io" path="res://scripts/levels/level_0.gd" id="1_hsw41"]
+[ext_resource type="Script" uid="uid://dsm5ftrt306io" path="res://scripts/levels/level_0/level_0.gd" id="1_hsw41"]
 [ext_resource type="PackedScene" uid="uid://cbb2ytbvuoo7c" path="res://scenes/Icicle.tscn" id="2_auvjl"]
 [ext_resource type="AudioStream" uid="uid://b87o6gx50qrn8" path="res://assets/audio/microdozeTheme0.wav" id="3_auvjl"]
 [ext_resource type="Texture2D" uid="uid://b2v2alfch3m20" path="res://assets/freezer/snow.png" id="3_l5fl4"]
 [ext_resource type="PackedScene" uid="uid://b7mu1034wh12b" path="res://scenes/Player.tscn" id="4_nx170"]
-[ext_resource type="Script" path="res://scripts/camera_2d.gd" id="5_h27y2"]
+[ext_resource type="Script" uid="uid://13dfxerpiie1" path="res://scripts/camera_2d.gd" id="5_h27y2"]
 [ext_resource type="FontFile" uid="uid://cwrp8r743gy5" path="res://assets/fonts/arcade.ttf" id="6_jkdna"]
 [ext_resource type="PackedScene" uid="uid://b18aa8ui7s5jr" path="res://scenes/GameOver.tscn" id="7_d6wyi"]
 [ext_resource type="PackedScene" uid="uid://bsdi5day054n2" path="res://scenes/HealthUI.tscn" id="8_bmjl8"]
 [ext_resource type="PackedScene" uid="uid://chkrln0i73kui" path="res://scenes/projectile_ice_cube.tscn" id="9_6gnjo"]
 [ext_resource type="PackedScene" uid="uid://cbp45nyhyledd" path="res://scenes/power_ups/HealthPowerUp.tscn" id="10_w1wr0"]
+[ext_resource type="PackedScene" uid="uid://do281nd83ggn3" path="res://scenes/PuckCounter.tscn" id="11_04h5w"]
 [ext_resource type="Texture2D" uid="uid://df3nmsirqvo2s" path="res://assets/freezer/frozen peas pixel.png" id="11_nhxcs"]
 [ext_resource type="Texture2D" uid="uid://c4mjd12ou81kn" path="res://assets/freezer/twisted tea pixel.png" id="12_48n36"]
 [ext_resource type="Texture2D" uid="uid://c77ok1d77aw72" path="res://assets/freezer/fish sticks pixel.png" id="13_48n36"]
 [ext_resource type="Texture2D" uid="uid://dxkmuhokaonh1" path="res://assets/freezer/milk_pixel.png" id="13_r8tyr"]
 [ext_resource type="Texture2D" uid="uid://cgjobw0l58b34" path="res://assets/freezer/frozen pizza pixel.png" id="14_cyfud"]
 [ext_resource type="Texture2D" uid="uid://3m0c0476ch80" path="res://assets/sprites/evil_lactose_free_ice_cream_pixel.png" id="15_k81si"]
+[ext_resource type="Script" uid="uid://cdaep43qg1qn8" path="res://scripts/levels/level_0/ice_cream_boss_sprite.gd" id="17_l7113"]
 [ext_resource type="Texture2D" uid="uid://dme1fpg06lqtd" path="res://assets/freezer/quest brownie pixel.png" id="21_w1wr0"]
 [ext_resource type="Texture2D" uid="uid://bdlvuhcit1yo0" path="res://assets/freezer/quest chocolate peanut butter pixel.png" id="22_nhxcs"]
 [ext_resource type="Texture2D" uid="uid://b3pse8hre6e18" path="res://assets/freezer/ketchup pixel.png" id="23_48n36"]
@@ -29,6 +31,7 @@
 [ext_resource type="Texture2D" uid="uid://dy0fxmfhrv7f2" path="res://assets/freezer/red bull pixel.png" id="26_r8tyr"]
 [ext_resource type="Texture2D" uid="uid://d0srcv3osrw2a" path="res://assets/freezer/paper plate pixel.png" id="29_k81si"]
 [ext_resource type="Texture2D" uid="uid://voosvrw7mi6u" path="res://assets/freezer/red solo cup pixel.png" id="29_l7113"]
+[ext_resource type="PackedScene" uid="uid://l143rv8mjfvk" path="res://scenes/ArrowIndicator.tscn" id="31_7k0sl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qnx47"]
 size = Vector2(407, 4215)
@@ -48,15 +51,23 @@ stream = ExtResource("3_auvjl")
 volume_db = -13.507
 autoplay = true
 
+[node name="FloorSprite2" type="Sprite2D" parent="."]
+position = Vector2(523, -239)
+scale = Vector2(1.62039, 3.57031)
+texture = ExtResource("3_l5fl4")
+
 [node name="FloorSprite" type="Sprite2D" parent="."]
 position = Vector2(519.5, 63.5)
 scale = Vector2(1.61621, 3.47754)
 texture = ExtResource("3_l5fl4")
 
-[node name="FloorSprite2" type="Sprite2D" parent="."]
-position = Vector2(559.724, -3443.01)
-scale = Vector2(1.5982, 3.5)
-texture = ExtResource("3_l5fl4")
+[node name="ArrowIndicator" parent="." instance=ExtResource("31_7k0sl")]
+visible = false
+position = Vector2(531, 390)
+
+[node name="ArrowIndicator2" parent="." instance=ExtResource("31_7k0sl")]
+visible = false
+position = Vector2(531, -1938)
 
 [node name="Player" parent="." instance=ExtResource("4_nx170")]
 position = Vector2(528, 900)
@@ -67,6 +78,7 @@ position = Vector2(5, -174)
 script = ExtResource("5_h27y2")
 
 [node name="OnBounceLabel" type="Label" parent="Player"]
+visible = false
 offset_left = -137.0
 offset_top = 66.0
 offset_right = 154.0
@@ -80,6 +92,7 @@ autowrap_mode = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="OhNoLabel" type="Label" parent="Player"]
+visible = false
 offset_left = -143.0
 offset_right = -11.0
 offset_bottom = 51.0
@@ -95,16 +108,25 @@ process_mode = 3
 visible = false
 
 [node name="HealthUI" parent="HUD" instance=ExtResource("8_bmjl8")]
+visible = false
 anchors_preset = -1
 anchor_top = 1.0
 anchor_bottom = 1.18281
-offset_left = 22.0
-offset_top = -113.0
-offset_right = -238.0
-offset_bottom = -136.997
+offset_left = 150.0
+offset_top = -130.0
+offset_right = -110.0
+offset_bottom = -153.997
 grow_vertical = 0
-scale = Vector2(0.478556, 0.478556)
+scale = Vector2(0.6, 0.6)
 metadata/_edit_use_anchors_ = true
+
+[node name="PuckCounter" parent="HUD" instance=ExtResource("11_04h5w")]
+visible = false
+offset_left = -530.0
+offset_top = 1160.0
+offset_right = -383.0
+offset_bottom = 1214.0
+scale = Vector2(2, 2)
 
 [node name="LeftWall" type="StaticBody2D" parent="."]
 collision_mask = 10
@@ -125,6 +147,7 @@ position = Vector2(540, 1400)
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
+position = Vector2(0, -69)
 shape = SubResource("RectangleShape2D_0lbt8")
 
 [node name="IceCubeBarrier1" type="Node2D" parent="."]
@@ -162,7 +185,7 @@ theme_override_fonts/normal_font = ExtResource("6_jkdna")
 theme_override_font_sizes/normal_font_size = 75
 bbcode_enabled = true
 text = "use
-[img=200]res://assets/ui/arrow_keys.png[/img] 
+[img=220]res://assets/ui/arrow_keys.png[/img] 
 to move"
 fit_content = true
 scroll_active = false
@@ -195,12 +218,14 @@ texture = ExtResource("14_cyfud")
 position = Vector2(530, -1683)
 scale = Vector2(1.2018, 1.13531)
 texture = ExtResource("15_k81si")
+script = ExtResource("17_l7113")
 
 [node name="EvilLabel" type="Label" parent="EvilLactoseFreeIceCreamPixel"]
-offset_left = -252.285
-offset_top = 146.638
-offset_right = 279.715
-offset_bottom = 231.305
+visible = false
+offset_left = -302.047
+offset_top = 147.977
+offset_right = 229.953
+offset_bottom = 232.644
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("6_jkdna")
 theme_override_font_sizes/font_size = 40

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bw1uuxujg0tq7"
-path="res://.godot/imported/ketchup.png-9fd1234eb29ca55ca2bc5a3c616ca8ee.ctex"
+uid="uid://lpml1rwi0egb"
+path="res://.godot/imported/arrow pixel.png-283814518464beb3c713b851422eee7e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/freezer/ketchup.png"
-dest_files=["res://.godot/imported/ketchup.png-9fd1234eb29ca55ca2bc5a3c616ca8ee.ctex"]
+source_file="res://assets/ui/arrow pixel.png"
+dest_files=["res://.godot/imported/arrow pixel.png-283814518464beb3c713b851422eee7e.ctex"]
 
 [params]
 

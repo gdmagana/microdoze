@@ -6,4 +6,5 @@ extends Control
 # Function to update the displayed puck count
 func update_puck_count(max_pucks: int, active_pucks: int):
 	var remaining = max_pucks - active_pucks
-	remaining_pucks_label.text = "x " + str(remaining)
+	if remaining_pucks_label:
+		remaining_pucks_label.text = "x " + str(remaining)

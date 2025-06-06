@@ -11,10 +11,10 @@
 [ext_resource type="AudioStream" uid="uid://dppr47m42qmx5" path="res://assets/audio/yay_1.wav" id="11_68p8u"]
 [ext_resource type="Script" uid="uid://refv6dpsuwy0" path="res://scripts/dying_boss.gd" id="11_ibyr1"]
 [ext_resource type="Texture2D" uid="uid://ce2lyvyp8vrih" path="res://assets/sprites/spoon.png" id="13_2ekun"]
-[ext_resource type="Script" uid="uid://ph5xr0e85cik" path="res://scripts/spoon_area.gd" id="13_6qqnu"]
+[ext_resource type="Script" path="res://scripts/spoon_area.gd" id="13_6qqnu"]
 [ext_resource type="Texture2D" uid="uid://bje6lvcwssgoa" path="res://assets/sprites/yellow_glare.png" id="13_q2r75"]
 [ext_resource type="FontFile" uid="uid://cwrp8r743gy5" path="res://assets/fonts/arcade.ttf" id="13_uunmg"]
-[ext_resource type="Script" uid="uid://c15ta62wbhbs" path="res://scripts/spoon_sprite.gd" id="15_6qqnu"]
+[ext_resource type="Script" path="res://scripts/spoon_sprite.gd" id="15_6qqnu"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3aekd"]
 shader = ExtResource("1_4e8ej")
